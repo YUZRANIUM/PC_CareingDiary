@@ -23,7 +23,7 @@
 	c_clum_w = 60, 60, 110, 85, 80, 80
 	g_clum_w = 60, 60, 110, 85, 80, 80
 	r_clum_w = 60, 60, 110, 85, 80, 80
-	dim cnum : f = "C:\\HSP.git\\Project\\PCProject.git\\Syouhin.db"
+	dim cnum : f = "C:\HSP.git\Syouhin.db"
 
 	sql_open f
 	sql_q "BEGIN;"
@@ -177,6 +177,7 @@
 /*******************************************************************************
 		SQLite DB Table Schema Infomation for HSP3.6 (SQLele)
 ********************************************************************************/
+	#include "hsp3utf.as"
 	#include "hsp3util.as"
 	#include "sqlele.hsp"
 	#include "00_module_pc.hsp"
@@ -186,7 +187,8 @@
 	sdim tz1, 2048 : sdim tz2, 2048 : sdim tz3, 512
 	tzw = 50, 90, 89, 75, 920 : sdim f
 
-	pos 5, 10 : mes "対象のDBファイル :", 1
+	pos 5, 10 : mes "対象のDBファイル : ", 1
+
 	pos ginfo(14) + 10,
 	winobj "static", f, , $50000000 | SS_SUNKEN, 700, 25
 	id_file = stat : hStfile = objinfo(id_file, 2)
