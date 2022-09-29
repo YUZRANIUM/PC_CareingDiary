@@ -1,0 +1,184 @@
+#packopt name "PC育成日記実行ファイル"
+// #packopt type 0
+// #packopt hide 1
+/*********************layerobjの処理************************/
+	#include "hsp3utf.as"
+	#include "user32.as"
+	#include "gdi32.as"
+	#include "hsp3util.as"
+	#include "mod_menu.as"
+	#include "hspda.as"	//vsave系
+	#include "sqlele.hsp"
+
+	#include "00_module_pc.hsp"
+	#include "01_Constants_pc.hsp"
+	#include "02_UI_pc.hsp"
+	#include "03_Process1_pc.hsp"
+
+//ゲーム内時間とステータス
+*lay
+	layl = lparam
+	switch layl
+		//レイヤー設置直後の処理
+		case objlayer_cmdinit
+			swbreak
+		//int値を渡された
+		case objlayer_cmdprmi
+			layint = iparam
+			switch layint
+				case 0
+					gosub *hlay_u
+					swbreak
+				case 1
+					gosub *hlay_u
+					swbreak
+			swend
+			swbreak
+		//文字列を渡された
+		case objlayer_cmdprms
+			//layerobjに渡す文字列
+			string = refstr
+			//ログ表示用の時間
+			time = "" + gettime(1) + "/" + gettime(3) + " " + gettime(4) + ":" + gettime(5) + ":" + gettime(6)
+			notesel logmoni
+			if string == "asc" {
+				//notesel logmoni
+				noteadd "\n", 1, 0
+				noteadd time + " : AutoSave Successed! " + fname, 1, 0
+				noteunsel
+				gsel ID_TAB_LOG : objprm id_logmoni, logmoni : gsel ID_WIN_MAIN
+			}
+			if string == "auto_chk" {
+				//notesel logmoni
+				noteadd "\n", 1, 0
+				noteadd time + " : 設定変更 " + savebut_text(opt(0, 0)) + string2, 1, 0
+				noteunsel
+			}
+			if string == "ロード" {
+				//notesel logmoni
+				noteadd "\n", 1, 0
+				noteadd time + " : ロード完了 " + fname, 1, 0
+				noteunsel
+				gsel ID_TAB_LOG : objprm id_logmoni, logmoni : gsel ID_WIN_MAIN
+			}
+			if string == "セーブ" {
+				//notesel logmoni
+				noteadd "\n", 1, 0
+				noteadd time + " : セーブ完了 " + fname, 1, 0
+				noteunsel
+				gsel ID_TAB_LOG : objprm id_logmoni, logmoni : gsel ID_WIN_MAIN
+			}
+			if string == "dd" {
+				//notesel logmoni
+				noteadd "\n", 1, 0
+				noteadd "------------------------------------------------------------------------------------", 1, 0
+				noteadd time + " : ゲーム内 " + gt(2, 0) + "/" + gt(3, 0) + " になりました.", 1, 0
+				noteunsel
+				gsel ID_TAB_LOG : objprm id_logmoni, logmoni : gsel ID_WIN_MAIN
+			}
+			if string == "yy" {
+				//notesel logmoni
+				noteadd "\n", 1, 0
+				noteadd time + " : ゲーム内 新年を迎えました.", 1, 0
+				noteunsel
+				gsel ID_TAB_LOG : objprm id_logmoni, logmoni : gsel ID_WIN_MAIN
+			}
+			swbreak
+		//redraw命令が実行されたとき
+		case objlayer_cmddraw
+			gosub *hlay_gt
+			swbreak
+	swend
+	return
+
+//ゲーム内時間
+*hlay_gt
+	sdim hmoni, 64 : sdim mesmoni, 128
+	//時間
+	if int(gt(5, 0)) == 59 {
+		gt(5, 0) = "00"
+		gt(4, 0) = strf("%02d", int(gt(4, 0)) + 1)
+	}
+	//日数
+	if int(gt(4, 0)) == 24 {
+		gt(4, 0) = "00"
+		gt(3, 0) = strf("%2d", int(gt(3, 0)) + 1)
+		opt(6, 0) = 1
+	}
+	//月
+	if int(gt(3, 0)) > 31 {
+		gt(3, 0) = " 1"
+		gt(2, 0) = strf("%2d", int(gt(2, 0)) + 1)
+	}
+	//四半期
+	switch int(gt(2, 0))
+		case 4
+		case 5
+		case 6
+			gt(1, 0) = "1st"
+			swbreak
+		case 7
+		case 8
+		case 9
+			gt(1, 0) = "2nd"
+			swbreak
+		case 10
+		case 11
+		case 12
+			gt(1, 0) = "3rd"
+			swbreak
+		case 1
+		case 2
+		case 3
+			gt(1, 0) = "4th"
+			swbreak
+	swend
+	//年
+	if int(gt(2, 0)) > 12 {
+		gt(2, 0) = " 1"
+		gt(0, 0) = strf("%3d", int(gt(0, 0)) + 1)
+		gsel ID_WIN_MAIN : objprm layid0, "yy"
+	}
+	repeat 6
+		hmoni += "" + gt(cnt, 0) + gt(cnt, 1)
+	loop
+
+	//表示文字列の変更 (WM_SETTEXT)
+	sendmsg hStatic_h, $C, , hmoni
+
+	if opt(6, 0) == 1 {
+		gsel ID_WIN_MAIN : objprm layid0, "dd"
+		opt(6, 0) = 0
+	}
+//======================================ステータス
+
+	repeat 5, 2
+		st(cnt, 2) = strf("%.1f", st(cnt, 0))
+	loop
+
+	repeat 7
+		mesmoni += st(cnt, 2) + "\n"
+	loop
+
+	//表示文字列の変更 (WM_SETTEXT)
+	sendmsg hStatic_m, $C, , mesmoni
+	return
+
+//ROM,SSD単位変換
+*hlay_u
+	sdim mesmoni_u, 16
+	/***ROM***/
+	if int(st(2, 0)) > 1023 {
+		st(2, 0) = "1"
+		u(0) = str(int(u(0)) + 1)
+		st(2, 1) = u(int(u(0)))
+	}
+	/***SSD***/
+	if int(st(3, 0)) > 1023 {
+		st(3, 0) = "1"
+		u(1) = str(int(u(1)) + 1)
+		st(3, 1) = u(int(u(1)))
+	}
+	mesmoni_u += " " + st(2, 1) + "\n" + " " + st(3, 1)
+	sendmsg hStatic_u, $C, , mesmoni_u
+	return

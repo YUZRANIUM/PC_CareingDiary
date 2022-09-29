@@ -1,0 +1,409 @@
+//					<<  自作命令･関数の作成  >>
+
+;TCS_BUTTONSとの組み合わせで平らなボタンを表示する
+;(TCS_BUTTONS以外の組み合わせによっては表示の挙動が変になります。
+#define global TCS_FLATBUTTONS $8
+;TCS_FLATBUTTONSとTCS_BUTTONSの組み合わせでマウスカーソル下のボタンをハイライト表示するようにします
+#define global TCS_HOTTRACK $40
+;タブのつまみをボタン形式で表示します。
+#define global TCS_BUTTONS $100
+;タブ項目の文字列の長さに関わらず、タブつまみの横幅をすべて同じサイズにします。(※)
+#define global TCS_FIXEDWIDTH $400
+;タブつまみにフォーカスを受け取らないようにします。
+#define TCS_FOCUSNEVER $8000
+
+//スタティックテキスト
+//winobj "static", "表示するもの", <拡張ウィンドウスタイル>, <ウィンドウスタイル>, Xサイズ, Yサイズ
+//<拡張ウィンドウスタイル> : 深い凹み
+#define global WS_EX_WINDOWEDGE $200
+//<ウィンドウスタイル>
+#define global WS_BORDER        $800000		//境界枠線
+#define global WS_DISABLED      $8000000	//無効
+#define global WS_DLGFRAME      $400000		//膨らみ
+#define global SS_CENTER        $1			//中央揃え
+#define global SS_RIGHT         $2			//右揃え
+#define global SS_SUNKEN        $1000		//浅い凹み
+
+/*******************************************************************************/
+#module
+#deffunc mycolor double p1, double p2, double p3, int p4
+	switch p4
+		case 0
+			color double(p1 * 255), double(p2 * 255), double(p3 * 255)
+			swbreak
+		case 1
+			objcolor double(p1 * 255), double(p2 * 255), double(p3 * 255)
+			swbreak
+		case 2
+			color double(p1 * 255), double(p2 * 255), double(p3 * 255)
+			objcolor double(p1 * 255), double(p2 * 255), double(p3 * 255)
+			swbreak
+		default
+			swbreak
+	swend
+	return
+#global
+/******************************************************************************/
+#module
+//vsave短縮
+//%1,%2,%3,%4,%5,%6
+//%1～%5:保存したい配列変数
+//%6:ファイル名
+#define global mysave(%1,%2,%3,%4,%5,%6)\
+	vsave_start\
+	: vsave_put %1\
+	: vsave_put %2\
+	: vsave_put %3\
+	: vsave_put %4\
+	: vsave_put %5\
+	: vsave_end %6
+#global
+
+/******************************************************************************/
+
+#module
+#uselib "user32"
+#func GetClientRect "GetClientRect" int, int
+#func SetWindowLong "SetWindowLongA" int, int, int
+#func SetParent "SetParent" int, int
+
+#uselib "gdi32"
+#cfunc GetStockObject "GetStockObject" int
+
+;	CreateTab p1, p2, p3, p4
+;	タブコントロールを設置します。statにタブコントロールのハンドルが返ります。
+;	p1～p2=タブコントロールのX/Y方向のサイズ
+;	p3 : タブコントロールのハンドルを受け取る変数
+;	p4=タブコントロールの追加ウィンドウスタイル
+#deffunc CreateTab int p1, int p2, var p3, int p4
+	winobj "systabcontrol32", "", , $52000000 | p4, p1, p2
+	p3 = objinfo(stat, 2)
+	sendmsg p3, $30, GetStockObject(17)
+	dim rect, 4
+	return p3
+/*******************************************************************************/
+
+//CreateTab p1, p2, p3, p4
+//タブコントロールを設置します。
+//p1～p2=タブコントロールのX/Y方向のサイズ
+//p3 : タブコントロールのハンドルを受け取る変数
+//p4($400) : タブコントロールの追加ウィンドウスタイル
+#define global My_CreateTab(%1, %2, %3, %4 = $400) CreateTab %1,%2,%3,%4
+/*******************************************************************************/
+
+
+//InsertTab p1,p2,index,p3
+//タブコントロールに項目を追加します。
+//p1 : "タブつまみ部分の文字列"
+//p2 : タブの項目として貼り付けるbgscr命令のウィンドウID値
+//index = 0～ : タブの序列
+//p4 : タブコントロールのオブジェクトハンドル
+#deffunc InsertTab str p1, int p2, int index, var p3
+	pszText = p1 : tcitem = 1, 0, 0, varptr(pszText)
+	sendmsg p3, $1307, index, varptr(tcitem)
+
+	GetClientRect p3, varptr(rect)
+	sendmsg p3, $1328, , varptr(rect)
+
+	bgscr p2, rect(2) - rect(0) + 2, rect(3) - rect(1) + 8, 2, rect(0) + 2, rect(1) + 8
+	SetWindowLong hwnd, -16, $40000000
+	SetParent hwnd, p3
+	return
+
+
+//ChangeTab p1,
+//タブ切り替え処理用
+//p1 : タブの項目として貼り付けるbgscr命令の初回ウィンドウID値
+//p2 : タブコントロールのオブジェクトハンドル
+#deffunc ChangeTab int p1, var p2
+	gsel wID + p1, -1
+	sendmsg p2, $130B
+	wID = stat
+	gsel wID + p1, 1
+	return
+/*******************************************************************************/
+
+//My_ChangeTab %1,%2,%3
+//タブ切り替え処理用
+//%1 : タブの項目として貼り付けるbgscr命令の初回ウィンドウID値
+//%2 : タブコントロールのオブジェクトハンドル
+//%3 : タブが設置されているウィンドウID
+#define global My_ChangeTab(%1,%2,%3)\
+		dupptr nmhdr, lparam, 12, 4\
+		: if nmhdr(0) = %2 & nmhdr(2) = -551 {\
+		:	ChangeTab %1,%2\
+		:	gsel %3\
+		:}
+/*******************************************************************************/
+#global
+
+;【HSP3.x 移植版】
+;『HSPの裏技』リストビューを作成してみる ACT-1
+; http://chokuto.ifdef.jp/urawaza/listview1.html
+;============= リストビュー操作モジュール ===============
+#module
+#uselib "comctl32.dll"
+#func InitCommonControlsEx "InitCommonControlsEx" int
+
+#define ICC_LISTVIEW_CLASSES    4
+
+#define WS_CHILD    0x40000000
+#define WS_VISIBLE  0x10000000
+#define WS_CAPTION  0x00C00000
+
+#define LVS_REPORT         0x0001
+#define LVS_SORTASCENDING  0x0010
+#define LVS_SORTDESCENDING 0x0020
+#define global LVS_EX_GRIDLINES      0x00000001
+#define global LVS_EX_FULLROWSELECT  0x00000020
+#define global LVS_EX_HEADERDRAGDROP 0x00000010
+
+#define global LVM_SETBLCOLOR      0x1001
+#define global LVM_GETNEXTITEM     0x100C
+#define global LVM_FINDITEM        0x100D
+#define global LVM_GETITEM         0x1005
+#define global LVM_SETITEM         0x1006
+#define global LVM_INSERTITEM      0x1007
+#define global LVM_INSERTCOLUMN    0x101B
+
+#define LVCF_FMT        0x0001
+#define LVCF_WIDTH      0x0002
+#define LVCF_TEXT       0x0004
+#define LVCF_SUBITEM    0x0008
+
+#define LVIF_TEXT       0x0001
+; (外部から参照できるように global 指定)
+#define global LVCFMT_LEFT      0x0000
+#define global LVCFMT_RIGHT     0x0001
+#define global LVCFMT_CENTER    0x0002
+
+#define global WM_NOTIFY         $0000004E
+#define global LVN_COLUMNCLICK   $FFFFFF94
+#define global LVM_SORTITEMSEX   $00001051
+
+; リストビュー作成
+#deffunc CreateListView int sx, int sy
+	; コモンコントロールライブラリの初期化
+	initinfo = 8, ICC_LISTVIEW_CLASSES
+	InitCommonControlsEx varptr(initinfo)
+	; リストビューの作成
+	styleFlags = WS_CHILD | WS_VISIBLE | LVS_REPORT// | WS_CAPTION
+	winobj "SysListView32", "", , styleFlags, sx, sy
+	return
+/*******************************************************************************/
+
+//リストビュー設置
+//%1,%2,%3,%4
+//%1,%2 : Xサイズ,Yサイズ
+//%3 : オブジェクトIDを受け取る変数
+//%4 : オブジェクトハンドルを受け取る変数
+#define global My_CreateListView(%1,%2,%3,%4)\
+		CreateListView %1, %2\
+		: %3 = stat\
+		: %4 = objinfo(%3, 2)\
+		: sendmsg %4, 0x1036, , 0x00000020 | 0x00000010 | 1 | 4
+/*******************************************************************************/
+
+; リストビューに列を追加
+#deffunc InsertListViewColumn int objID, int index, var v1, int align, int pixels
+	; LVCOLUMN 構造体をセット
+	dim lvcolumn, 8
+	lvcolumn(0) = LVCF_FMT | LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM
+	lvcolumn(1) = align
+	lvcolumn(2) = pixels
+	lvcolumn(3) = varptr(v1)
+	; LVM_INSERTCOLUMN メッセージ送信
+	sendmsg objinfo_hwnd(objID), LVM_INSERTCOLUMN, index, varptr(lvcolumn)
+	return
+/*******************************************************************************/
+
+//リストビューのカラム追加  %1,%2,%3,%4,%5
+//%1 : 設置したリストビューのオブジェクトID
+//%2 : カラムを格納した配列変数
+//%3 : カラムの数
+//%4 : カラムの幅
+//%5 : 0=左揃え / 1=右揃え / 2=中央揃え
+#define global My_InsertColumn(%1,%2,%3,%4,%5 = 0)\
+		repeat %3\
+		: InsertListViewColumn %1, cnt, %2(cnt), %5, %4(cnt)\
+		: loop
+/*******************************************************************************/
+
+; リストビューに項目追加
+#deffunc InsertListViewItem int objID, int index, var v2
+	; LVITEM 構造体をセット
+	dim lvitem, 13
+	lvitem(0) = LVIF_TEXT
+	lvitem(1) = index
+	lvitem(5) = varptr(v2)
+	; LVM_INSERTITEM メッセージ送信
+	sendmsg objinfo_hwnd(objID), LVM_INSERTITEM, 0, varptr(lvitem)
+	return
+
+; リストビューの項目またはサブ項目テキスト設定
+#deffunc SetListViewItemText int objID, int index, int subitem, var v3
+	; LVITEM 構造体をセット
+	dim lvitem, 13
+	lvitem(0) = LVIF_TEXT
+	lvitem(1) = index
+	lvitem(2) = subitem
+	lvitem(5) = varptr(v3)
+	; LVM_SETITEM メッセージ送信
+	sendmsg objinfo_hwnd(objID), LVM_SETITEM, 0, varptr(lvitem)
+	return
+/*******************************************************************************/
+
+//リストビューのレコードを追加  %1,%2,%3,%4
+//%1 : 設置したリストビューのオブジェクトID
+//%2 : レコードを格納した配列変数
+//%3 : レコードの数
+//%4 : カラムの数
+#define global My_InsertChItem(%1,%2,%3,%4)\
+		i = 0\
+		: repeat %3\
+		: InsertListViewItem %1, i, %2(i * %4)\
+		: repeat %4 - 1, 1\
+		: SetListViewItemText %1, i, cnt, %2(cnt + (i * %4))\
+		: loop\
+		: i++\
+		: loop
+/*******************************************************************************/
+#global
+#module
+//リストビューアイテムの削除
+//h1 : リストビューのオブジェクトID
+//index : アイテムのインデックス
+#deffunc DelListItem int h1, int pp
+	sendmsg objinfo(h1, 2), 0x1009, pp, 0
+	return
+#global
+
+#module
+//リストビューアイテムの文字列取得
+// p1 : リストビューのオブジェクトID
+// p2 : アイテムのインデックス
+// p3 : サブアイテムのインデックス
+// p4 : 取得文字列を格納する文字列型変数
+// p5 : バッファサイズ
+#deffunc GetListItem int p1, int p2, int p3, var p4, int p5
+	dim lvitem, 13
+	lvitem(0) = 0x0001
+	lvitem(1) = p2
+	lvitem(2) = p3
+	lvitem(5) = varptr(p4)
+	lvitem(6) = p5
+	sendmsg objinfo_hwnd(p1), 0x1005, 0, varptr(lvitem)
+	return
+#global
+
+#module
+//CL_GetCheckState p1, p2
+//p1 = リストビューのオブジェクトID
+//p2 = 項目のインデックス番号(0～)
+//チェックボックスの状態を取得します。状態を取得したい項目のインデックス番号(0～)を指定してください。statに0(チェックなし)、1(チェックあり)が返ります。
+#deffunc CL_GetCheckState int p1, int p2
+	sendmsg objinfo(p1, 2), $102C, p2, $F000
+	return (stat >> 12) - 1
+#global
+
+#module
+//p1 : リストビューのオブジェクトID
+//p2 : カラムの数
+//p3 : 取得文字列を格納する文字列型変数
+#deffunc My_GetListItem int p1, int p2, var v
+	i = -1 : sdim v2
+	repeat
+		sendmsg objinfo(p1, 2), 0x100C, i, 0x0002
+		i = stat
+		if i == -1 : break
+		j = 0
+		repeat p2
+			GetListItem p1, i, j, v2(j), 126
+			j++
+		loop
+		v += "\n" + v2(0) + " | " + v2(1) + " | " +  v2(2) + " | " +  v2(3) + " | " +  v2(4) + " | " +  v2(5)
+	loop
+	return
+#global
+
+#module
+//SQLのデータを文字列型配列変数に変換し格納する
+//p1 : レコードの数
+//p2 : カラムの数
+//p3 : カラムを格納した文字列型配列変数
+//p4 : レコードを受け取る文字列型配列変数
+#define global Datainput(%1,%2,%3,%4)\
+	repeat %1\
+	: j = 0\
+	: repeat %2\
+	: %4 += "" + sql_v(%3(j)) + ","\
+	: j++\
+	: loop\
+	: sql_next\
+	: loop\
+	: split %4,",",%4
+#global
+
+/*******************************************************************************/
+//#module
+;ハイパーリンクを設置する命令
+; p1,p2,p3,p4,p5,p6
+/*p1=文字列 : 表示する文字列
+  p2=文字列 : リンク先のhttps～
+  p3=0~: マウスが反応する範囲. Xサイズ
+  p4=0~: マウスが反応する範囲. Yサイズ*/
+;gdi32.as と user32.as をインクルードしてください.
+/*
+#deffunc hyperlink str p1, str p2, int p3, int p4
+	#define ctype RGB(%1,%2,%3) (%1 | %2 << 8 | %3 << 16)
+	//RECT構造体用
+	dim RECT, 4
+	winobj "static", p1, , $50000001 | $100, p3, p4
+	hStatic = objinfo(stat, 2)
+	mref BMSCR, 67
+	sendmsg hStatic, $30, BMSCR.38
+	LoadCursor 0, 32649     //スタティックテキスト上のカーソルをハンドカーソルに変更
+	SetClassLong hStatic, -12, stat
+	//スタティックテキストが描画されているときに送られてくるウィンドウメッセージ
+	oncmd gosub *ctlcolorstatic, $138
+	oncmd gosub *command, $111      //マウスクリック時のウィンドウメッセージ
+	oncmd gosub *wmsetcursor, $20   //WM_SETCURSOR
+	stop
+
+*ctlcolorstatic
+	if hStatic = lparam {
+		if oncursor {
+			crColor = RGB($FF, $00, $00)
+		} else {
+			crColor = RGB($00, $00, $FF)
+		}
+		SetTextColor wparam, crColor
+		return hBrush
+	}
+	return
+
+*command
+	if hStatic = lparam : exec p2, 16
+	return
+
+*wmsetcursor
+	if (lparam & $FFFF) != 1 : return
+		// オブジェクトの左上XY、右下XYの座標位置を取得
+	GetWindowRect hStatic, varptr(RECT)
+		// 取得したオブジェクトの座標位置とカーソルの座標位置を比較
+	PtInRect varptr(RECT), ginfo(0), ginfo(1)
+	if stat {
+		if oncursor : return
+		InvalidateRect hStatic, 0, 0
+		oncursor = 1
+		return
+	} else {
+		if oncursor = 0 : return
+		InvalidateRect hStatic, 0, 0
+		oncursor = 0
+		return
+	}
+	return
+	return
+#global
+*/

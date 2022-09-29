@@ -1,0 +1,253 @@
+//                              試作用ファイル
+
+#define SW1
+#define SW2
+#ifdef SW1
+	#ifdef SW2
+	#include "hsp3utf.as"
+	#include "user32.as"
+	#include "gdi32.as"
+	#include "sqlele.hsp"
+	#include "00_module_pc.hsp"
+	screen 0, 1200, 900, 0 : font "メイリオ", 16 : objmode 2, 1
+	mref BMSCRn, 67 : hFontn = BMSCRn.38
+	sdim all, 2048 : sdim all_clum, 64
+	sdim cpu, 2048 : sdim data_cpu, 1024 : sdim cpu_culm, 64 : dim c_culm_num
+	sdim gpu, 2048 : sdim data_gpu, 1024 : sdim gpu_culm, 64 : dim g_culm_num
+	sdim rom, 2048 : sdim data_rom, 1024 : sdim rom_culm, 64 : dim r_culm_num
+	cpu_culm = "" : gpu_culm = "" : rom_culm = "" : all_clum = ""
+
+	sdim moni0, 2048 : sdim moni1, 2048
+	Tyuc = 1 : Tyug = 1 : Tyur = 1
+	clum_w = 60, 60, 110, 85, 80, 80, 80, 80
+	c_clum_w = 60, 60, 110, 85, 80, 80
+	g_clum_w = 60, 60, 110, 85, 80, 80
+	r_clum_w = 60, 60, 110, 85, 80, 80
+	dim cnum : f = "C:\\HSP.git\\Project\\PCProject.git\\Syouhin.db"
+
+	sql_open f
+	sql_q "BEGIN;"
+
+	sql_q "SELECT * FROM MyAll;"
+	//レコードの数
+	cunt = stat
+	all_clum_num = length(tmparr)
+	all_clum = sql_collist() : split all_clum, ",", all_clum
+	Datainput cunt, all_clum_num, all_clum, all
+	moni1 += "" + moni0 : sdim moni0
+
+	sql_q "SELECT * FROM MyCPU;"
+	//レコードの数
+	cpu_cunt = stat
+	c_culm_num = length(tmparr)
+	cpu_culm = sql_collist() : split cpu_culm, ",", cpu_culm
+	Datainput cpu_cunt, c_culm_num, cpu_culm, cpu
+
+	sql_q "SELECT * FROM MyGPU;"
+	//レコードの数
+	gpu_cunt = stat
+	gpu_culm = sql_collist() : split gpu_culm, ",", gpu_culm
+	g_culm_num = length(tmparr)
+	Datainput gpu_cunt, g_culm_num, gpu_culm, gpu
+
+	sql_q "SELECT * FROM MyROM;"
+	//レコードの数
+	rom_cunt = stat
+	rom_culm = sql_collist() : split rom_culm, ",", rom_culm
+	r_culm_num = length(tmparr)
+	Datainput rom_cunt, r_culm_num, rom_culm, rom
+
+	pos 10, 0 : mes f
+	x = ginfo(14)
+
+	pos 10, 30 : mesbox moni1, 400, 400, 4 : id_moni1 = stat
+
+	objsize 200, 25 : pos x + 20, 0
+	button gosub "リストアイテムの取得", *getitem
+	id_butget = stat
+	hButget = objinfo_hwnd(id_butget)
+
+	font "メイリオ", 12
+	mref BMSCRn1, 67 : hFontn1 = BMSCRn1.38
+
+	pos 420, 30
+	/***リストビューの設置***/
+	My_CreateListView 710, 280, id_cpumoni, hLVcsouko
+	My_InsertColumn id_cpumoni, cpu_culm, c_culm_num, c_clum_w
+	My_InsertChItem id_cpumoni, cpu, cpu_cunt, c_culm_num
+
+	pos 420, 320
+	/***リストビューの設置***/
+	My_CreateListView 710, 280, id_gpumoni, hLVgsouko
+	My_InsertColumn id_gpumoni, gpu_culm, g_culm_num, g_clum_w
+	My_InsertChItem id_gpumoni, gpu, gpu_cunt, g_culm_num
+
+	pos 420, 610
+	/***リストビューの設置***/
+	My_CreateListView 710, 280, id_rommoni, hLVrsouko
+	My_InsertColumn id_rommoni, rom_culm, r_culm_num, r_clum_w
+	My_InsertChItem id_rommoni, rom, rom_cunt, r_culm_num
+
+	objprm id_moni1, moni1
+
+	/******フォントの反映******/
+	sendmsg hLVcsouko, $30, , hFontn1
+	sendmsg hLVgsouko, $30, , hFontn1
+	sendmsg hLVrsouko, $30, , hFontn1
+
+	oncmd gosub *listnotify, WM_NOTIFY
+	onexit gosub *Owari
+	stop
+
+//選択したリストアイテムの取得
+*getitem
+	sdim infonoteC, 1024 : sdim infonoteG, 1024 : sdim infonoteR, 1024 : sdim infotext, 1024
+	My_GetListItem id_cpumoni, 6, infonoteC
+	My_GetListItem id_gpumoni, 6, infonoteG
+	My_GetListItem id_rommoni, 6, infonoteR
+	infotext += "---CPU---" + infonoteC + "\n---GPU---" + infonoteG + "\n---ROM---" + infonoteR
+	dialog "購入リスト\n-----------------\n" + infotext + "\n\n\t\t以上を購入しますか?", 0, "購入確認"
+	return
+
+//並べ替え
+*listnotify
+	dupptr nmhdr, lparam, 12, 4 : id = nmhdr(0)
+	if (nmhdr(2) = LVN_COLUMNCLICK) {
+		dupptr nmlv, lparam, 40, 4 : inde = nmlv(4)
+		switch id
+			/***CPUの処理***/
+			case hLVcsouko
+				sdim cpu, 2048 : sdim data_cpu, 1024
+				Tyuc = Tyuc * -1
+				if Tyuc == -1 {
+					sql_q "SELECT * FROM MyCPU ORDER BY " + cpu_culm(inde) + " DESC;"
+				}
+				else {
+					sql_q "SELECT * FROM MyCPU ORDER BY " + cpu_culm(inde) + " ASC;"
+				}
+				/***今あるリストアイテムの削除***/
+				DelListItem id_cpumoni, 0
+				cpu_culm = sql_collist() : split cpu_culm, ",", cpu_culm
+				Datainput cpu_cunt, c_culm_num, cpu_culm, cpu
+				My_InsertChItem id_cpumoni, cpu, cpu_cunt, c_culm_num
+				swbreak
+
+			/***GPU***/
+			case hLVgsouko
+				sdim gpu, 2048 : sdim data_gpu, 1024
+				Tyug = Tyug * -1
+				if Tyug == -1 {
+					sql_q "SELECT * FROM MyGPU ORDER BY " + gpu_culm(inde) + " DESC;"
+				}
+				else {
+					sql_q "SELECT * FROM MyGPU ORDER BY " + gpu_culm(inde) + " ASC;"
+				}
+				DelListItem id_gpumoni, 0
+				gpu_culm = sql_collist() : split gpu_culm, ",", gpu_culm
+				Datainput gpu_cunt, g_culm_num, gpu_culm, gpu
+				My_InsertChItem id_gpumoni, gpu, gpu_cunt, g_culm_num
+				swbreak
+
+			/***ROM***/
+			case hLVrsouko
+				sdim rom, 2048 : sdim data_rom, 1024
+				Tyur = Tyur * -1
+				if Tyur == -1 {
+					sql_q "SELECT * FROM MyROM ORDER BY " + rom_culm(inde) + " DESC;"
+				}
+				else {
+					sql_q "SELECT * FROM MyROM ORDER BY " + rom_culm(inde) + " ASC;"
+				}
+				DelListItem id_rommoni, 0
+				rom_culm = sql_collist() : split rom_culm, ",", rom_culm
+				Datainput rom_cunt, r_culm_num, rom_culm, rom
+				My_InsertChItem id_rommoni, rom, rom_cunt, r_culm_num
+				swbreak
+		swend
+	}
+	return
+
+
+*Owari
+	sql_q "COMMIT;"
+	sql_close
+	end
+	return
+#else
+/*******************************************************************************
+		SQLite DB Table Schema Infomation for HSP3.6 (SQLele)
+********************************************************************************/
+	#include "hsp3util.as"
+	#include "sqlele.hsp"
+	#include "00_module_pc.hsp"
+	screen 0, 1250, 450, 2 : title "SQLite DB Table Schema Information for HSP" + strf("%.3f", double(strf("%4x", __hspver__)) / 1000) + " (SQLele)"
+	font "メイリオ", 12 : mref BMSCR, 67 : hFont = BMSCR(38) : objmode 2, 1
+
+	sdim tz1, 2048 : sdim tz2, 2048 : sdim tz3, 512
+	tzw = 50, 90, 89, 75, 920 : sdim f
+
+	pos 5, 10 : mes "対象のDBファイル :", 1
+	pos ginfo(14) + 10,
+	winobj "static", f, , $50000000 | SS_SUNKEN, 700, 25
+	id_file = stat : hStfile = objinfo(id_file, 2)
+
+	objsize 100, 30
+	pos ginfo(14) + 720, 5
+	button gosub "OPEN", *OPEN
+	id_butop = stat : hButop = objinfo(id_butop, 2)
+
+	pos 10, 50
+	My_CreateListView 1230, 300, id_dbinfo, hLVdbinfo
+	sendmsg hLVdbinfo, 0x1036, , 0x00000020 | 0x00000010
+
+	/***Create Dummy DB***/
+	sql_open f
+
+	sql_q "BEGIN;"
+	sql_q "SELECT * FROM sqlite_master;"
+	repeat length(tmparr)
+		tz3 += "" + tmparr(cnt, length2(tmparr) - 1) + ","
+	loop
+	split tz3, ",", tz3
+	My_InsertColumn id_dbinfo, tz3, length(tmparr), tzw, 0
+	sql_q "COMMIT;"
+
+	sql_close
+
+	/***フォントの適用***/
+	sendmsg objinfo(id_dbinfo, 2), $30, hFont
+	gsel 0, 1
+	stop
+
+*OPEN
+	dialog "db", 16, "データベース"
+	if stat = 0 : return
+	f = refstr : fpath = getpath(f, 2)
+	if fpath != ".db" {
+		dialog "データベース(\".db\")ファイルではありません!", 1, "ファイルエラー"
+		sdim f : return
+	}
+	sendmsg hStfile, $C, , f
+	sdim tz1, 2048 : sdim tz2, 2048 : sdim tz3, 512
+
+	/*** DB OPEN ***/
+	sql_open f
+
+	sql_q "BEGIN;"
+	sql_q "SELECT * FROM sqlite_master;"
+
+	repeat length2(tmparr) - 1
+		tz2 += "" + tmparr(0, cnt) + "|" + tmparr(1, cnt) + "|" + tmparr(2, cnt) + "|" + tmparr(3, cnt) + "|" + tmparr(4, cnt) + "|"
+	loop
+	split tz2, "|", tz2
+	DelListItem id_dbinfo, 0
+	/***Item reload***/
+	My_InsertChItem id_dbinfo, tz2, length2(tmparr) - 1, length(tmparr)
+
+	sql_q "COMMIT;"
+
+	sql_close
+	/*** DB CLOSE ***/
+
+	return
+#endif
