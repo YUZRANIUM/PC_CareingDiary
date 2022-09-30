@@ -1,51 +1,51 @@
-//					<<  •Ï”‚Ì’è‹`  >>
+//					<<  å¤‰æ•°ã®å®šç¾©  >>
 
-	//ŠeƒEƒBƒ“ƒhƒEID
-	#enum ID_WIN_MAIN = 0	//ƒƒCƒ“ƒEƒBƒ“ƒhƒE
-	#enum ID_WIN_INFO		//î•ñƒEƒBƒ“ƒhƒE
-	#enum ID_WIN_OPEN		//OPƒEƒBƒ“ƒhƒE
-	//bgscr–½—ß‚ÌƒEƒBƒ“ƒhƒEID
-	#enum ID_TAB_MOTI		//ƒ^ƒuid‚¿•¨
-	#enum ID_TAB_SOUKO		//ƒ^ƒuid‘qŒÉ
-	#enum ID_TAB_OMISE		//ƒ^ƒuid“X
-	#enum ID_TAB_LOG		//ƒ^ƒuidƒƒO
-	#enum ID_TAB_SETTEI		//ƒ^ƒuidİ’è
-	//‚¨“Xƒ^ƒu
+	//å„ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ID
+	#enum ID_WIN_MAIN = 0	//ãƒ¡ã‚¤ãƒ³ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦
+	#enum ID_WIN_INFO		//æƒ…å ±ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦
+	#enum ID_WIN_OPEN		//OPã‚¦ã‚£ãƒ³ãƒ‰ã‚¦
+	//bgscrå‘½ä»¤ã®ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ID
+	#enum ID_TAB_MOTI		//ã‚¿ãƒ–idæŒã¡ç‰©
+	#enum ID_TAB_SOUKO		//ã‚¿ãƒ–idå€‰åº«
+	#enum ID_TAB_OMISE		//ã‚¿ãƒ–idåº—
+	#enum ID_TAB_LOG		//ã‚¿ãƒ–idãƒ­ã‚°
+	#enum ID_TAB_SETTEI		//ã‚¿ãƒ–idè¨­å®š
+	//ãŠåº—ã‚¿ãƒ–
 	#enum ID_OMTAB_CPU //CPU
 	#enum ID_OMTAB_GPU //GPU
 	#enum ID_OMTAB_ROM //ROM
 	#enum ID_OMTAB_SSD //SSD
 	#enum ID_OMTAB_FAN //FAN
 	#enum ID_OMTAB_POW //Power
-	//ƒo[ƒWƒ‡ƒ“
+	//ãƒãƒ¼ã‚¸ãƒ§ãƒ³
 	ver = "0.1.5"
-	//HSP‚Ìƒo[ƒWƒ‡ƒ“
+	//HSPã®ãƒãƒ¼ã‚¸ãƒ§ãƒ³
 	hspv = strf("%.3f", double(strf("%4x", __hspver__)) / 1000)
-	//ƒI[ƒgƒZ[ƒu’Ê’m"AutoSave Successed!"
+	//ã‚ªãƒ¼ãƒˆã‚»ãƒ¼ãƒ–é€šçŸ¥"AutoSave Successed!"
 	astip = ""
-	//titleƒo[
-	titlemes = "PCˆç¬“ú‹Lver " + ver + " /HSP" + hspv
-	//ƒo[ƒWƒ‡ƒ“î•ñ
+	//titleãƒãƒ¼
+	titlemes = "PCè‚²æˆæ—¥è¨˜ver " + ver + " /HSP" + hspv
+	//ãƒãƒ¼ã‚¸ãƒ§ãƒ³æƒ…å ±
 	infa = "" : sdim infa, 128, 5
-	infa(0) = "PCˆç¬“ú‹Lver vv"
+	infa(0) = "PCè‚²æˆæ—¥è¨˜ver vv"
 	infa(1) = "ver vv"
 	infa(2) = "ver hh"
-	infa(3) = "YUZRANIUM ( ‚ä‚¸‚ç‚É‚¤‚Ş )"
+	infa(3) = "YUZRANIUM ( ã‚†ãšã‚‰ã«ã†ã‚€ )"
 	infa(4) = "https://twitter.com/YUZRANIUM"
 	strrep infa(0), "vv", ver : strrep infa(1), "vv", ver : strrep infa(2), "hh", hspv
-	//XV—š—ğ.txt
+	//æ›´æ–°å±¥æ­´.txt
 	infa2 = "" : sdim infa2, 4096
 	notesel infa2
 	noteload "09_ChangeLog_pc.txt" : noteunsel
 
-	//İ’è€–Ú”z—ñ
-	//opt(0, 0):ƒI[ƒgƒZ[ƒuON/OFF
-	//opt(1, 0):ƒQ[ƒ€‘¬“x€–Ú[’x  ‚ß]
-	//opt(2, 0):ƒQ[ƒ€‘¬“x€–Ú[‚Ó‚Â‚¤]
-	//opt(3, 0):ƒQ[ƒ€‘¬“x€–Ú[‘  ‚ß]
-	//opt(4, 0):ƒQ[ƒ€‘¬“xè—]Z
-	//opt(5, 0):‚ß‚¢‚ñ‚é[‚Ä‚ñ§Œä
-	//opt(6, 0):“ú•t•ÏXƒtƒ‰ƒO
+	//è¨­å®šé …ç›®é…åˆ—
+	//opt(0, 0):ã‚ªãƒ¼ãƒˆã‚»ãƒ¼ãƒ–ON/OFF
+	//opt(1, 0):ã‚²ãƒ¼ãƒ é€Ÿåº¦é …ç›®[é…  ã‚]
+	//opt(2, 0):ã‚²ãƒ¼ãƒ é€Ÿåº¦é …ç›®[ãµã¤ã†]
+	//opt(3, 0):ã‚²ãƒ¼ãƒ é€Ÿåº¦é …ç›®[æ—©  ã‚]
+	//opt(4, 0):ã‚²ãƒ¼ãƒ é€Ÿåº¦å‰°ä½™ç®—
+	//opt(5, 0):ã‚ã„ã‚“ã‚‹ãƒ¼ã¦ã‚“åˆ¶å¾¡
+	//opt(6, 0):æ—¥ä»˜å¤‰æ›´ãƒ•ãƒ©ã‚°
 	opt = "" : dim opt, 7, 0
 	opt(0, 0) = 0
 	opt(1, 0) = 0
@@ -55,25 +55,25 @@
 	opt(5, 0) = -1
 	opt(6, 0) = 0
 
-	//Œo‰ßŠÔ
+	//çµŒéæ™‚é–“
 	hmoni = "" : sdim hmoni, 64
-	//ƒXƒe[ƒ^ƒX•\¦—p
+	//ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹è¡¨ç¤ºç”¨
 	mesmoni = "" : sdim mesmoni, 128
-	//’PˆÊ•\¦—p
+	//å˜ä½è¡¨ç¤ºç”¨
 	mesmoni_u = "" : sdim mesmoni_u, 16
-	//ƒZ[ƒuƒJƒEƒ“ƒ^[
+	//ã‚»ãƒ¼ãƒ–ã‚«ã‚¦ãƒ³ã‚¿ãƒ¼
 	savec = 0
-	//ƒQ[ƒ€“àŠÔ‚Ì‘¬“x•ÏX
+	//ã‚²ãƒ¼ãƒ å†…æ™‚é–“ã®é€Ÿåº¦å¤‰æ›´
 	gtcontrol = 0
-	//ƒZ[ƒuƒf[ƒ^ƒtƒHƒ‹ƒ_‚ÌƒfƒBƒŒƒNƒgƒŠ
+	//ã‚»ãƒ¼ãƒ–ãƒ‡ãƒ¼ã‚¿ãƒ•ã‚©ãƒ«ãƒ€ã®ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒª
 	savedir = dir_cur + "\\savedata"
-	//ƒtƒ@ƒCƒ‹–¼•Ï”
+	//ãƒ•ã‚¡ã‚¤ãƒ«åå¤‰æ•°
 	fname = ""
-	//İ’è•ÏX‚ÌƒQ[ƒ€‘¬“x
+	//è¨­å®šå¤‰æ›´æ™‚ã®ã‚²ãƒ¼ãƒ é€Ÿåº¦
 	string2 = ""
 
-	//’PˆÊ•ÏŠ·
-	//u(0):rom•ÏŠ·ƒJƒEƒ“ƒ^ u(1):ssd•ÏŠ·ƒJƒEƒ“ƒ^
+	//å˜ä½å¤‰æ›
+	//u(0):romå¤‰æ›ã‚«ã‚¦ãƒ³ã‚¿ u(1):ssdå¤‰æ›ã‚«ã‚¦ãƒ³ã‚¿
 	//u(2):"B" u(3):"KB" u(4):"MB" u(5):"GB" u(6):"TB" u(7):"PB" u(8):"EB"
 	u = "" : sdim u, 32, 11
 	u(0) = "2"
@@ -88,13 +88,13 @@
 	u(9) = "ZB"
 	u(10) = "YB"
 
-	//ƒXƒe[ƒ^ƒXŠÇ—
+	//ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ç®¡ç†
 	//st(0, 0):CPU
 	//st(1, 0):GPU
 	//st(2, 0):ROM
 	//st(3, 0):SSD
 	//st(4, 0):FAN
-	//st(5, 0):‰·“x
+	//st(5, 0):æ¸©åº¦
 	//st(6, 0):Power
 	st = "" : sdim st, 32, 7
 	st(0, 0) = "1"   : st(0, 1) = ""    : st(0, 2) = "Core i" + st(0, 0)
@@ -105,13 +105,13 @@
 	st(5, 0) = "30"  : st(5, 1) = "deg" : st(5, 2) = strf("%.1f", st(5, 0))
 	st(6, 0) = "100" : st(6, 1) = "%"   : st(6, 2) = strf("%.1f", st(6, 0))
 
-	//“ú•tŠÇ—
-	//gt(0, 0):”N
-	//gt(1, 0):l”¼Šú
-	//gt(2, 0):Œ
-	//gt(3, 0):“ú
-	//gt(4, 0):ŠÔ
-	//gt(5, 0):•ª
+	//æ—¥ä»˜ç®¡ç†
+	//gt(0, 0):å¹´
+	//gt(1, 0):å››åŠæœŸ
+	//gt(2, 0):æœˆ
+	//gt(3, 0):æ—¥
+	//gt(4, 0):æ™‚é–“
+	//gt(5, 0):åˆ†
 	gt = "" : sdim gt, 125, 7
 	gt(0, 0) = "0"   : gt(0, 1) = "/"  : gt(0, 2) = gt(0, 0)
 	gt(1, 0) = "1st" : gt(1, 1) = "Q/" : gt(1, 2) = gt(1, 0)
@@ -122,24 +122,24 @@
 	gt(6, 0) = "0"
 
 	sdim opebut_text, 10
-	opebut_text(0) = "ƒXƒ^[ƒg"
-	opebut_text(1) = "ƒXƒgƒbƒv"
+	opebut_text(0) = "ã‚¹ã‚¿ãƒ¼ãƒˆ"
+	opebut_text(1) = "ã‚¹ãƒˆãƒƒãƒ—"
 
 	sdim motimono, 2048 : sdim soukomoni, 2048 : sdim logmoni, 2048 : sdim omisemoni, 2048
-	//‚¿•¨•\¦—p‚»‚Ì‘¼1
-	motimono += "‚¿•¨ˆê——‚Å‚·\n\n"
-	//‘qŒÉ
+	//æŒã¡ç‰©è¡¨ç¤ºç”¨ãã®ä»–1
+	motimono += "æŒã¡ç‰©ä¸€è¦§ã§ã™\n\n"
+	//å€‰åº«
 	soukomoni = ""
-	//‚¨“X
+	//ãŠåº—
 	omisemoni = ""
-	//ƒƒO•\¦—p
+	//ãƒ­ã‚°è¡¨ç¤ºç”¨
 	logmoni = "\n\n"
-//ƒAƒCƒeƒ€DB
+//ã‚¢ã‚¤ãƒ†ãƒ DB
 	db = "C:\HSP.git\Syouhin.db"
-	//¤•iƒf[ƒ^
-	//ƒJƒ‰ƒ€
-	//ƒJƒ‰ƒ€‚Ì”
-	//ƒŒƒR[ƒh‚Ì”
+	//å•†å“ãƒ‡ãƒ¼ã‚¿
+	//ã‚«ãƒ©ãƒ 
+	//ã‚«ãƒ©ãƒ ã®æ•°
+	//ãƒ¬ã‚³ãƒ¼ãƒ‰ã®æ•°
 	sdim cpu, 2048 : sdim gpu, 2048 : sdim rom, 2048 : sdim ssd, 2048
 	sdim col_c, 64 : sdim col_g, 64 : sdim col_r, 64 : sdim col_s, 64
 	dim col_ci     : dim col_g      : dim col_r      : dim col_s
