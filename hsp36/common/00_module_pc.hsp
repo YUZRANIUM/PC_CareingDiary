@@ -1,13 +1,13 @@
 //					<<  自作命令･関数の作成  >>
 
 ;TCS_BUTTONSとの組み合わせで平らなボタンを表示する
-;(TCS_BUTTONS以外の組み合わせによっては表示の挙動が変になります。
+;TCS_BUTTONS以外の組み合わせによっては表示の挙動が変になります。
 #define global TCS_FLATBUTTONS $8
 ;TCS_FLATBUTTONSとTCS_BUTTONSの組み合わせでマウスカーソル下のボタンをハイライト表示するようにします
 #define global TCS_HOTTRACK $40
 ;タブのつまみをボタン形式で表示します。
 #define global TCS_BUTTONS $100
-;タブ項目の文字列の長さに関わらず、タブつまみの横幅をすべて同じサイズにします。(※)
+;タブ項目の文字列の長さに関わらず、タブつまみの横幅をすべて同じサイズにします
 #define global TCS_FIXEDWIDTH $400
 ;タブつまみにフォーカスを受け取らないようにします。
 #define TCS_FOCUSNEVER $8000

@@ -34,7 +34,7 @@
 		"editor.comments.insertSpace": false,
 		"editor.copyWithSyntaxHighlighting": true,
 		"editor.customCodeActionMenu.showHeaders": true,
-		"editor.defaultFormatter": "vain0x.hsp3-analyzer-mini",
+		"editor.defaultFormatter": "honobonosun.language-hsp3",
 		"editor.experimental.pasteActions.enabled": true,
 		"editor.folding": false,
 		"editor.foldingHighlight": false,
@@ -86,7 +86,7 @@
 		"editor.scrollBeyondLastLine": true,
 		"editor.scrollPredominantAxis": true,
 		"editor.selectionHighlight": true,
-		"editor.semanticHighlighting.enabled": true,
+		"editor.semanticHighlighting.enabled": "configuredByTheme",
 		"editor.showDeprecated": true,
 		"editor.showFoldingControls": "never",
 		"editor.showUnused": true,
@@ -169,7 +169,7 @@
 		"zenMode.hideStatusBar": false,
 		"zenMode.hideTabs": false,
 		"window.commandCenter": true,
-		"explorer.excludeGitIgnore": true,
+		"explorer.excludeGitIgnore": false,
 		"explorer.fileNesting.enabled": true,
 		"workbench.editor.enablePreviewFromQuickOpen": true,
 		"explorer.fileNesting.patterns": {
@@ -286,6 +286,8 @@
 		"typescript.format.insertSpaceAfterOpeningAndBeforeClosingTemplateStringBraces": true,
 		"typescript.format.insertSpaceAfterTypeAssertion": true,
 		"typescript.format.insertSpaceBeforeFunctionParenthesis": true,
-		"typescript.tsserver.useSyntaxServer": "never"
+		"typescript.tsserver.useSyntaxServer": "never",
+		"hsp3-vscode-syntax.line-comment": "//",
+		"editor.definitionLinkOpensInPeek": true
 	}
 }

@@ -9,7 +9,7 @@
 	"editor.suggest.showStatusBar": true,
 	"files.trimTrailingWhitespace": true,
 	"workbench.editor.restoreViewState": false,
-	"explorer.excludeGitIgnore": true,
+	"explorer.excludeGitIgnore": false,
 	"explorer.fileNesting.enabled": true,
 	"explorer.fileNesting.patterns": {
 		"*.hsp": "${extname}.hsp"
@@ -31,7 +31,7 @@
 	"git.suggestSmartCommit": false,
 	"git.useCommitInputAsStashMessage": false,
 	"editor.fontSize": 16,
-	"editor.defaultFormatter": "vain0x.hsp3-analyzer-mini",
+	"editor.defaultFormatter": "honobonosun.language-hsp3",
 	"editor.experimental.pasteActions.enabled": true,
 	"editor.folding": false,
 	"editor.foldingHighlight": false,
@@ -103,7 +103,7 @@
 	"search.useParentIgnoreFiles": true,
 	"scm.defaultViewMode": "tree",
 	"editor.guides.highlightActiveIndentation": "always",
-	"editor.semanticHighlighting.enabled": true,
+	"editor.semanticHighlighting.enabled": "configuredByTheme",
 	"[hsp3]": {
 		"editor.defaultFormatter": "vain0x.hsp3-analyzer-mini"
 	},

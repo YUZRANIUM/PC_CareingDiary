@@ -30,7 +30,7 @@
 	"editor.comments.insertSpace": false,
 	"editor.copyWithSyntaxHighlighting": true,
 	"editor.customCodeActionMenu.showHeaders": true,
-	"editor.defaultFormatter": "vain0x.hsp3-analyzer-mini",
+	"editor.defaultFormatter": "honobonosun.language-hsp3",
 	"editor.experimental.pasteActions.enabled": true,
 	"editor.folding": false,
 	"editor.foldingHighlight": false,
@@ -82,7 +82,7 @@
 	"editor.scrollBeyondLastLine": true,
 	"editor.scrollPredominantAxis": true,
 	"editor.selectionHighlight": true,
-	"editor.semanticHighlighting.enabled": true,
+	"editor.semanticHighlighting.enabled": "configuredByTheme",
 	"editor.showDeprecated": true,
 	"editor.showFoldingControls": "never",
 	"editor.showUnused": true,
@@ -132,7 +132,7 @@
 	"workbench.localHistory.enabled": true,
 	"breadcrumbs.symbolSortOrder": "name",
 	"workbench.editor.restoreViewState": false,
-	"explorer.excludeGitIgnore": true,
+	"explorer.excludeGitIgnore": false,
 	"explorer.fileNesting.enabled": true,
 	"explorer.fileNesting.patterns": {
 		"*.hsp": "${extname}.hsp"
@@ -207,5 +207,7 @@
 	"typescript.format.insertSpaceBeforeFunctionParenthesis": true,
 	"[hsp3]": {
 		"editor.defaultFormatter": "vain0x.hsp3-analyzer-mini"
-	}
+	},
+	"editor.bracketPairColorization.independentColorPoolPerBracketType": false,
+	"editor.definitionLinkOpensInPeek": true
 }
