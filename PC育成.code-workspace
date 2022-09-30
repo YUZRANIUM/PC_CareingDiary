@@ -34,7 +34,7 @@
 		"editor.comments.insertSpace": false,
 		"editor.copyWithSyntaxHighlighting": true,
 		"editor.customCodeActionMenu.showHeaders": true,
-		"editor.defaultFormatter": "honobonosun.language-hsp3",
+		"editor.defaultFormatter": "vain0x.hsp3-analyzer-mini",
 		"editor.experimental.pasteActions.enabled": true,
 		"editor.folding": false,
 		"editor.foldingHighlight": false,
@@ -86,7 +86,7 @@
 		"editor.scrollBeyondLastLine": true,
 		"editor.scrollPredominantAxis": true,
 		"editor.selectionHighlight": true,
-		"editor.semanticHighlighting.enabled": "configuredByTheme",
+		"editor.semanticHighlighting.enabled": true,
 		"editor.showDeprecated": true,
 		"editor.showFoldingControls": "never",
 		"editor.showUnused": true,
@@ -259,10 +259,9 @@
 		"language-hsp3.helpman.path.local": "\"C:\\HSP.git\\hsp36\\hsphelp\\helpman.exe\"",
 		"language-hsp3.helpman.path.online": "https://docs.hsp.moe/3.6/?q=%s",
 		"hsp3-debug-window-adapter.hsp3-root": "C:\\HSP.git\\hsp36",
-		"hsp3-vscode-syntax.line-comment": "//",
 		"hsp3-analyzer-mini.hsp3-root": "C:\\HSP.git\\hsp36",
 		"hsp3-analyzer-mini.trace.server": "verbose",
-		"json.format.keepLines": true,
+		"json.format.keepLines": false,
 		"markdown.experimental.validate.enabled": true,
 		"markdown.preview.breaks": true,
 		"markdown.preview.fontFamily": "MyricaM M",
@@ -287,8 +286,6 @@
 		"typescript.format.insertSpaceAfterOpeningAndBeforeClosingTemplateStringBraces": true,
 		"typescript.format.insertSpaceAfterTypeAssertion": true,
 		"typescript.format.insertSpaceBeforeFunctionParenthesis": true,
-		"typescript.tsserver.useSyntaxServer": "never",
-
-
+		"typescript.tsserver.useSyntaxServer": "never"
 	}
 }

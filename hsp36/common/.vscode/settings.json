@@ -1,5 +1,4 @@
 // hsp36/common/.vscode/settings.json
-
 {
 	"files.encoding": "utf8",
 	"files.autoGuessEncoding": true,
@@ -32,7 +31,7 @@
 	"git.suggestSmartCommit": false,
 	"git.useCommitInputAsStashMessage": false,
 	"editor.fontSize": 16,
-	"editor.defaultFormatter": "honobonosun.language-hsp3",
+	"editor.defaultFormatter": "vain0x.hsp3-analyzer-mini",
 	"editor.experimental.pasteActions.enabled": true,
 	"editor.folding": false,
 	"editor.foldingHighlight": false,
@@ -104,7 +103,7 @@
 	"search.useParentIgnoreFiles": true,
 	"scm.defaultViewMode": "tree",
 	"editor.guides.highlightActiveIndentation": "always",
-	"editor.semanticHighlighting.enabled": "configuredByTheme",
+	"editor.semanticHighlighting.enabled": true,
 	"[hsp3]": {
 		"editor.defaultFormatter": "vain0x.hsp3-analyzer-mini"
 	},

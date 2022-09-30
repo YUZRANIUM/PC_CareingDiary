@@ -135,7 +135,7 @@
 	//ログ表示用
 	logmoni = "\n\n"
 //アイテムDB
-	db = "C:\HSP.git\Syouhin.db"
+	db = "Syouhin.db"
 	//商品データ
 	//カラム
 	//カラムの数
