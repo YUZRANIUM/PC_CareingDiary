@@ -1,6 +1,6 @@
 // hsp36/common/.vscode/settings.json
 {
-	"files.encoding": "utf8",
+	"files.encoding": "shiftjis",
 	"files.autoGuessEncoding": true,
 	"editor.fontFamily": "MyricaM M",
 	"diffEditor.codeLens": true,
@@ -73,7 +73,7 @@
 	"breadcrumbs.symbolSortOrder": "name",
 	"scm.inputFontFamily": "MyricaM M",
 	"git.closeDiffOnOperation": true,
-	"git-graph.fileEncoding": "UTF-8",
+	"git-graph.fileEncoding": "Shift_JIS",
 	"language-hsp3.choiceWorkDirCur": true,
 	"language-hsp3.compiler": "\"C:\\HSP.git\\hsp36\\hspc.exe\"",
 	"language-hsp3.executor.enable": true,
