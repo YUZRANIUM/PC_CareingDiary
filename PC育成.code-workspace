@@ -169,7 +169,7 @@
 		"zenMode.hideStatusBar": false,
 		"zenMode.hideTabs": false,
 		"window.commandCenter": true,
-		"explorer.excludeGitIgnore": true,
+		"explorer.excludeGitIgnore": false,
 		"explorer.fileNesting.enabled": true,
 		"workbench.editor.enablePreviewFromQuickOpen": true,
 		"explorer.fileNesting.patterns": {

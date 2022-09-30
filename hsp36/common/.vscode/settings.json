@@ -9,7 +9,7 @@
 	"editor.suggest.showStatusBar": true,
 	"files.trimTrailingWhitespace": true,
 	"workbench.editor.restoreViewState": false,
-	"explorer.excludeGitIgnore": true,
+	"explorer.excludeGitIgnore": false,
 	"explorer.fileNesting.enabled": true,
 	"explorer.fileNesting.patterns": {
 		"*.hsp": "${extname}.hsp"

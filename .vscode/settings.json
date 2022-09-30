@@ -132,7 +132,7 @@
 	"workbench.localHistory.enabled": true,
 	"breadcrumbs.symbolSortOrder": "name",
 	"workbench.editor.restoreViewState": false,
-	"explorer.excludeGitIgnore": true,
+	"explorer.excludeGitIgnore": false,
 	"explorer.fileNesting.enabled": true,
 	"explorer.fileNesting.patterns": {
 		"*.hsp": "${extname}.hsp"
