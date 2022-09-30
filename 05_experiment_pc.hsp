@@ -23,7 +23,7 @@
 	c_clum_w = 60, 60, 110, 85, 80, 80
 	g_clum_w = 60, 60, 110, 85, 80, 80
 	r_clum_w = 60, 60, 110, 85, 80, 80
-	dim cnum : f = "C:\HSP.git\Syouhin.db"
+	dim cnum : f = "Syouhin.db"
 
 	sql_open f
 	sql_q "BEGIN;"
