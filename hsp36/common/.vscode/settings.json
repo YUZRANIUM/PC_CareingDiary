@@ -90,11 +90,13 @@
 	"editor.autoClosingOvertype": "always",
 	"editor.autoIndent": "advanced",
 	"files.exclude": {
+		"**/[a-z]*": true,
+		"**/[A-Z]*": true,
 		"**/*.as": true,
 		"**/*.ax": true,
-		"**/packfile": true,
 		"**/hsptmp": true,
 		"**/obj": true,
+		"**/packfile": true
 	},
 	"editor.codeLensFontFamily": "MyricaM M",
 	"editor.renderLineHighlight": "all",
