@@ -1,84 +1,84 @@
-//							ƒƒCƒ“ƒEƒBƒ“ƒhƒE[winID=0]
+//							ãƒ¡ã‚¤ãƒ³ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦[winID=0]
 	screen ID_WIN_MAIN, 800, 500, 6 : gsel ID_WIN_MAIN, -1 : title titlemes
-	font "ƒƒCƒŠƒI", 16 : objmode 2, 1 : oncmd 0
-	//HSP‚ÌBMSCR\‘¢‘Ì‚©‚çƒtƒHƒ“ƒgƒnƒ“ƒhƒ‹‚ğæ“¾
+	font "ãƒ¡ã‚¤ãƒªã‚ª", 16 : objmode 2, 1 : oncmd 0
+	//HSPã®BMSCRæ§‹é€ ä½“ã‹ã‚‰ãƒ•ã‚©ãƒ³ãƒˆãƒãƒ³ãƒ‰ãƒ«ã‚’å–å¾—
 	mref BMSCR, 67 : hFont = BMSCR.38
-/*************<<  ƒƒjƒ…[ƒo[‚Ìİ’u  >>*************/
+/*************<<  ãƒ¡ãƒ‹ãƒ¥ãƒ¼ãƒãƒ¼ã®è¨­ç½®  >>*************/
 
 	#define CMD_OPEN 1
 	#define CMD_SAVE 2
 	#define CMD_QUIT 3
 	#define CMD_INFO 4
-	/******ƒTƒuƒƒjƒ…[‚Ìİ’è******/
-	// ƒƒjƒ…[ƒo[ >> ƒtƒ@ƒCƒ‹ V
+	/******ã‚µãƒ–ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã®è¨­å®š******/
+	// ãƒ¡ãƒ‹ãƒ¥ãƒ¼ãƒãƒ¼ >> ãƒ•ã‚¡ã‚¤ãƒ« V
 	newmenu hfilemenu, 1
-	addmenu hfilemenu, "ŠJ‚­(&O)", CMD_OPEN
-	addmenu hfilemenu, "•Û‘¶(&S)", CMD_SAVE
-	addmenu hfilemenu, "I—¹(&Q)", CMD_QUIT
-	// ƒƒjƒ…[ƒo[ >> ƒwƒ‹ƒv V
+	addmenu hfilemenu, "é–‹ã(&O)", CMD_OPEN
+	addmenu hfilemenu, "ä¿å­˜(&S)", CMD_SAVE
+	addmenu hfilemenu, "çµ‚äº†(&Q)", CMD_QUIT
+	// ãƒ¡ãƒ‹ãƒ¥ãƒ¼ãƒãƒ¼ >> ãƒ˜ãƒ«ãƒ— V
 	newmenu hhelpmenu, 1
-	addmenu hhelpmenu, "‚±‚Ìƒ\ƒtƒg‚É‚Â‚¢‚Ä(&I)", CMD_INFO
-	/******ƒƒCƒ“ƒƒjƒ…[‚Ìİ’è******/
-	// ƒtƒ@ƒCƒ‹(F) | ƒwƒ‹ƒv(H)
+	addmenu hhelpmenu, "ã“ã®ã‚½ãƒ•ãƒˆã«ã¤ã„ã¦(&I)", CMD_INFO
+	/******ãƒ¡ã‚¤ãƒ³ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã®è¨­å®š******/
+	// ãƒ•ã‚¡ã‚¤ãƒ«(F) | ãƒ˜ãƒ«ãƒ—(H)
 	newmenu hmenu, 0
-	addmenu hmenu, "ƒtƒ@ƒCƒ‹(&F)", hfilemenu, 0x10
-	addmenu hmenu, "ƒwƒ‹ƒv(&H)", hhelpmenu, 0x10
-	applymenu hmenu // İ’è‚µ‚½ƒƒjƒ…[ƒo[‚ğ“K—p
+	addmenu hmenu, "ãƒ•ã‚¡ã‚¤ãƒ«(&F)", hfilemenu, 0x10
+	addmenu hmenu, "ãƒ˜ãƒ«ãƒ—(&H)", hhelpmenu, 0x10
+	applymenu hmenu // è¨­å®šã—ãŸãƒ¡ãƒ‹ãƒ¥ãƒ¼ãƒãƒ¼ã‚’é©ç”¨
 
-/*******************<<  ƒEƒBƒ“ƒhƒEƒIƒuƒWƒFƒNƒg‚Ìİ’u  >>********************/
+/*******************<<  ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®è¨­ç½®  >>********************/
 
 	hx = 580 : hy = 15
-	/***ƒQ[ƒ€“àŠÔ***/
+	/***ã‚²ãƒ¼ãƒ å†…æ™‚é–“***/
 	pos hx, hy
-	winobj "static", "ƒQ[ƒ€“àŠÔ‚ğ•\‹L‚µ‚Ü‚·", , $50000000 | $1 | $800000, 200, 28
-	//ƒIƒuƒWƒFhWnd (ƒQ[ƒ€“àŠÔ)
+	winobj "static", "ã‚²ãƒ¼ãƒ å†…æ™‚é–“ã‚’è¡¨è¨˜ã—ã¾ã™", , $50000000 | $1 | $800000, 200, 28
+	//ã‚ªãƒ–ã‚¸ã‚§hWnd (ã‚²ãƒ¼ãƒ å†…æ™‚é–“)
 	hStatic_h = objinfo(stat, 2)
 
 	mx = 20 : my = 35
-	/***ƒXƒe[ƒ^ƒX€–Ú•\¦***/
+	/***ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹é …ç›®è¡¨ç¤º***/
 	pos mx, my
-	winobj "static", " C P U\n G P U\n ƒƒ‚ƒŠ\n S S D\n F a n\n ‰· “x\n Power", , $50000000 | $800000, 170, 170
-	//ƒIƒuƒWƒFhWnd (ƒXƒe[ƒ^ƒX€–Ú)
+	winobj "static", " C P U\n G P U\n ãƒ¡ãƒ¢ãƒª\n S S D\n F a n\n æ¸© åº¦\n Power", , $50000000 | $800000, 170, 170
+	//ã‚ªãƒ–ã‚¸ã‚§hWnd (ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹é …ç›®)
 	hStatic_i = objinfo(stat, 2)
 
 
-	/***ƒXƒe[ƒ^ƒX”’l•\¦***/
+	/***ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹æ•°å€¤è¡¨ç¤º***/
 	pos mx + 58, my + 1
 	winobj "static", "", , $50000000 | $800000 | $2, 70, 169
-	//ƒIƒuƒWƒFhWnd (ƒXƒe[ƒ^ƒX”’l)
+	//ã‚ªãƒ–ã‚¸ã‚§hWnd (ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹æ•°å€¤)
 	hStatic_m = objinfo(stat, 2)
 
 
-	/***ƒXƒe[ƒ^ƒX’PˆÊ•\¦(•Ï“®—p)***/
+	/***ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹å˜ä½è¡¨ç¤º(å¤‰å‹•ç”¨)***/
 	pos mx + 126, my + 50
 	winobj "static", " B\n B", , $50000000 | $800000, 40, 50
-	//ƒIƒuƒWƒFhWnd (ƒXƒe[ƒ^ƒX’PˆÊ•Ï“®—p)
+	//ã‚ªãƒ–ã‚¸ã‚§hWnd (ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹å˜ä½å¤‰å‹•ç”¨)
 	hStatic_u = objinfo(stat, 2)
 
 
-	/***ƒXƒe[ƒ^ƒX’PˆÊ•\¦(ŒÅ’è—p)***/
+	/***ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹å˜ä½è¡¨ç¤º(å›ºå®šç”¨)***/
 	pos mx + 126, my + 96
 	winobj "static", " rpm\n deg\n %", , $50000000 | $800000, 40, 70
-	//ƒIƒuƒWƒFhWnd (ƒXƒe[ƒ^ƒX’PˆÊŒÅ’è)
+	//ã‚ªãƒ–ã‚¸ã‚§hWnd (ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹å˜ä½å›ºå®š)
 	hStatic_u2 = objinfo(stat, 2)
 
 /*******************************************************************************/
 
-	/***ƒ^ƒuƒRƒ“ƒgƒ[ƒ‹***/
+	/***ã‚¿ãƒ–ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ«***/
 	pos 0, 240
 	My_CreateTab 800, 240, hTab_main
 
 //==========================================================[winID=3]
-	InsertTab "‚¿•¨", ID_TAB_MOTI, 0, hTab_main
-	font "ƒƒCƒŠƒI", 15 : objmode 2, 0
+	InsertTab "æŒã¡ç‰©", ID_TAB_MOTI, 0, hTab_main
+	font "ãƒ¡ã‚¤ãƒªã‚ª", 15 : objmode 2, 0
 	pos 0, 0
 	mesbox motimono, 794, 210, 0
-	//ƒIƒuƒWƒFID (motimono)
+	//ã‚ªãƒ–ã‚¸ã‚§ID (motimono)
 	id_motimono = stat
 
 
 //==========================================================[winID=4]
-	InsertTab "‘q  ŒÉ", ID_TAB_SOUKO, 1, hTab_main
+	InsertTab "å€‰  åº«", ID_TAB_SOUKO, 1, hTab_main
 	pos 5, 0
 	My_CreateListView 794, 210, id_soukomoni, hLVsouko
 	//My_InsertColumn id_soukomoni, lis, 6, clum_w, 0
@@ -88,7 +88,7 @@
 
 
 //==========================================================[winID=5]
-	InsertTab "‚¨  “X", ID_TAB_OMISE, 2, hTab_main
+	InsertTab "ãŠ  åº—", ID_TAB_OMISE, 2, hTab_main
 	gsel ID_TAB_OMISE
 	pos 5, 5
 	My_CreateTab 750, 230, hTabOMI
@@ -105,7 +105,7 @@
 	My_CreateListView listx, listy, id_LVGPU, hLVGPU
 	//My_InsertColumn id_LVGPU, lis, 6, clum_w, 0
 
-	InsertTab "ƒƒ‚ƒŠ", ID_OMTAB_ROM, 7, hTabOMI
+	InsertTab "ãƒ¡ãƒ¢ãƒª", ID_OMTAB_ROM, 7, hTabOMI
 	pos 2, 2
 	My_CreateListView listx, listy, id_LVROM, hLVROM
 	//My_InsertColumn id_LVROM, lis, 6, clum_w, 0
@@ -128,87 +128,87 @@
 
 
 	gsel ID_OMTAB_CPU, 1 : gsel ID_TAB_OMISE
-	oncmd gosub *notify, $4E //ƒ^ƒu€–ÚØ‚è‘Ö‚¦ˆ—‚ÌƒƒbƒZ[ƒW
+	oncmd gosub *notify, $4E //ã‚¿ãƒ–é …ç›®åˆ‡ã‚Šæ›¿ãˆå‡¦ç†æ™‚ã®ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
 	gsel ID_WIN_MAIN
 
 
 //==========================================================[winID=6]
-	InsertTab "ƒ  ƒO", ID_TAB_LOG, 3, hTab_main
+	InsertTab "ãƒ­  ã‚°", ID_TAB_LOG, 3, hTab_main
 	pos 0, 0
 	mesbox logmoni, 794, 210, 0
-	//ƒIƒuƒWƒFID (logmoni)
+	//ã‚ªãƒ–ã‚¸ã‚§ID (logmoni)
 	id_logmoni = stat
 
 
 //==========================================================[winID=7]
-	InsertTab "İ  ’è", ID_TAB_SETTEI, 4, hTab_main
-	font "ƒƒCƒŠƒI", 12 : objmode 2, 0
+	InsertTab "è¨­  å®š", ID_TAB_SETTEI, 4, hTab_main
+	font "ãƒ¡ã‚¤ãƒªã‚ª", 12 : objmode 2, 0
 
 	pos 20, 20 : objsize 115, 20
-	chkbox "ƒI[ƒgƒZ[ƒuOFF", opt(0, 0)
+	chkbox "ã‚ªãƒ¼ãƒˆã‚»ãƒ¼ãƒ–OFF", setting(0, 0)
 	id_savebut = stat : hButton = objinfo(id_savebut, 2)
-	savebut_text = "ƒI[ƒgƒZ[ƒuOFF", "ƒI[ƒgƒZ[ƒuON"
+	savebut_text = "ã‚ªãƒ¼ãƒˆã‚»ãƒ¼ãƒ–OFF", "ã‚ªãƒ¼ãƒˆã‚»ãƒ¼ãƒ–ON"
 
-	//==================================ƒQ[ƒ€‘¬“x‚Ìİ’è
+	//==================================ã‚²ãƒ¼ãƒ é€Ÿåº¦ã®è¨­å®š
 	pos 20, 60 : objsize 60, 19
-	mes "ƒQ[ƒ€‘¬“x"
+	mes "ã‚²ãƒ¼ãƒ é€Ÿåº¦"
 	//----------------------------------chkbox
 	pos 20, 90
-	chkbox "’x  ‚ß", opt(1, 0)
+	chkbox "é…  ã‚", setting(1, 0)
 	id_chkosoi = stat : hChkbox1 = objinfo(id_chkosoi, 2)
 	sendmsg hChkbox1, $F4, $9
 	//----------------------------------chkbox
 	pos 110, 90
-	chkbox "‚Ó‚Â‚¤", opt(2, 0)
-	//ƒIƒuƒWƒFID (İ’èƒQ[ƒ€‘¬“x)
+	chkbox "ãµã¤ã†", setting(2, 0)
+	//ã‚ªãƒ–ã‚¸ã‚§ID (è¨­å®šã‚²ãƒ¼ãƒ é€Ÿåº¦)
 	id_chkfutu = stat
-	//ƒIƒuƒWƒFhWnd (İ’èƒQ[ƒ€‘¬“x)
+	//ã‚ªãƒ–ã‚¸ã‚§hWnd (è¨­å®šã‚²ãƒ¼ãƒ é€Ÿåº¦)
 	hChkbox2 = objinfo(id_chkfutu, 2)
 	sendmsg hChkbox2, $F4, $9
 	//----------------------------------chkbox
 	pos 200, 90
-	chkbox "‘  ‚ß", opt(3, 0)
-	//ƒIƒuƒWƒFID (İ’èƒQ[ƒ€‘¬“x)
+	chkbox "æ—©  ã‚", setting(3, 0)
+	//ã‚ªãƒ–ã‚¸ã‚§ID (è¨­å®šã‚²ãƒ¼ãƒ é€Ÿåº¦)
 	id_chkhaya = stat
-	//ƒIƒuƒWƒFhWnd (İ’èƒQ[ƒ€‘¬“x)
+	//ã‚ªãƒ–ã‚¸ã‚§hWnd (è¨­å®šã‚²ãƒ¼ãƒ é€Ÿåº¦)
 	hChkbox3 = objinfo(id_chkhaya, 2)
 	sendmsg hChkbox3, $F4, $9
 
-	//------------------“K—pƒ{ƒ^ƒ“[ID=5]
+	//------------------é©ç”¨ãƒœã‚¿ãƒ³[ID=5]
 	pos 700, 170 : objsize 75, 28
-	button gosub "“K  —p", *tekiou
+	button gosub "é©  ç”¨", *tekiou
 
 //==========================================================
 
 	gsel ID_OMTAB_CPU, 1 : gsel ID_WIN_MAIN, 0
 
-	/******ƒtƒHƒ“ƒg‚Ì”½‰f******/
+	/******ãƒ•ã‚©ãƒ³ãƒˆã®åæ˜ ******/
 	sendmsg hStatic_h, $30, hFont
 	sendmsg hStatic_i, $30, hFont
 	sendmsg hStatic_m, $30, hFont
 	sendmsg hStatic_u, $30, hFont
 	sendmsg hStatic_u2, $30, hFont
 
-//--------------------------------------ƒŒƒCƒ„[ƒIƒuƒWƒFƒNƒglay0
+//--------------------------------------ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆlay0
 	pos 0, 0
 	layerobj 800, 200, 4, *lay, 0
-	//ƒIƒuƒWƒFID (ƒŒƒCƒ„[ƒIƒuƒWƒFƒNƒg)
+	//ã‚ªãƒ–ã‚¸ã‚§ID (ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ)
 	layid0 = stat
 
-//--------------------------------------ÄŠJƒ{ƒ^ƒ“
+//--------------------------------------å†é–‹ãƒœã‚¿ãƒ³
 	pos hx + 90, hy + 50
 	objsize 110, 30
-	button gosub "ƒXƒ^[ƒg", *ope
-	//ƒIƒuƒWƒFID (ÄŠJƒ{ƒ^ƒ“)
+	button gosub "ã‚¹ã‚¿ãƒ¼ãƒˆ", *ope
+	//ã‚ªãƒ–ã‚¸ã‚§ID (å†é–‹ãƒœã‚¿ãƒ³)
 	id_opebut = stat
 	SetWindowLong objinfo(id_opebut, 2), -16, $50000003 | $1000
 
 //##############################################################################
-//					î•ñƒEƒBƒ“ƒhƒE[winID=1]
+//					æƒ…å ±ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦[winID=1]
 //##############################################################################
 
-	screen ID_WIN_INFO, 650, 450, 6 : gsel ID_WIN_INFO, -1 : title "‚±‚Ìƒ\ƒtƒg‚É‚Â‚¢‚Ä ver" + ver
-	font "ƒƒCƒŠƒI", 16 : objmode 2, 0
+	screen ID_WIN_INFO, 650, 450, 6 : gsel ID_WIN_INFO, -1 : title "ã“ã®ã‚½ãƒ•ãƒˆã«ã¤ã„ã¦ ver" + ver
+	font "ãƒ¡ã‚¤ãƒªã‚ª", 16 : objmode 2, 0
 
 	pos 10, 15 : mes "N A M E\nVERSION\nHSP ver\nAUTHOR\nU  R  L", 1
 	pos 100,
@@ -216,24 +216,24 @@
 		mes infa(cnt)
 	loop
 //==============================================================================
-//			<<  ƒIƒuƒWƒFƒNƒg‚Ìİ’u  >>
+//			<<  ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®è¨­ç½®  >>
 //==============================================================================
-//----------------------------------------------------------ƒTƒumesboxİ’u[ID=0]
-	font "ƒƒCƒŠƒI", 14 : objmode 2, 1
-	//HSP‚ÌBMSCR\‘¢‘Ì‚©‚çƒtƒHƒ“ƒgƒnƒ“ƒhƒ‹‚ğæ“¾
+//----------------------------------------------------------ã‚µãƒ–mesboxè¨­ç½®[ID=0]
+	font "ãƒ¡ã‚¤ãƒªã‚ª", 14 : objmode 2, 1
+	//HSPã®BMSCRæ§‹é€ ä½“ã‹ã‚‰ãƒ•ã‚©ãƒ³ãƒˆãƒãƒ³ãƒ‰ãƒ«ã‚’å–å¾—
 	mref BMSCR2, 67 : hFont2 = BMSCR2.38
 
 	pos 0, 140
-	mes "  XV—š—ğ  "
+	mes "  æ›´æ–°å±¥æ­´  "
 	mesbox infa2, 650, 262, 0
-//----------------------------------------------------------ƒTƒubuttonİ’u[ID=1]
+//----------------------------------------------------------ã‚µãƒ–buttonè¨­ç½®[ID=1]
 	pos 525, 426 : objsize 125,
-	button gosub "•Â‚¶‚é", *subw_exi
+	button gosub "é–‰ã˜ã‚‹", *subw_exi
 
 
 
 //##############################################################################
-//					ƒI[ƒvƒjƒ“ƒO‰æ–Ê[winID=2]
+//					ã‚ªãƒ¼ãƒ—ãƒ‹ãƒ³ã‚°ç”»é¢[winID=2]
 //##############################################################################
 
 	screen ID_WIN_OPEN, 800, 500, 6 : gsel ID_WIN_OPEN, -1 : title titlemes
@@ -242,41 +242,41 @@
 	mycolor 0.4, 0.7, 0.85, 0
 	boxf 10, 10, 790, 480
 
-	font "ƒƒCƒŠƒI", 40, 1, 4
+	font "ãƒ¡ã‚¤ãƒªã‚ª", 40, 1, 4
 	pos 200, 40
-	mycolor 1, 0.5, 0.75, 1 //—ÖŠsü
-	mycolor 0.95, 0.95, 0.95, 0 //•¶šF
-	mes "PCˆç¬“ú‹Lver" + ver, 4
+	mycolor 1, 0.5, 0.75, 1 //è¼ªéƒ­ç·š
+	mycolor 0.95, 0.95, 0.95, 0 //æ–‡å­—è‰²
+	mes "PCè‚²æˆæ—¥è¨˜ver" + ver, 4
 
-	font "ƒƒCƒŠƒI", 40, 1, 2
+	font "ãƒ¡ã‚¤ãƒªã‚ª", 40, 1, 2
 	pos 200, 40
-	mycolor 0, 0, 0, 1 //—ÖŠsü
-	mycolor 0.95, 0.95, 0.95, 0 //•¶šF
-	mes "PCˆç¬“ú‹Lver" + ver, 4
+	mycolor 0, 0, 0, 1 //è¼ªéƒ­ç·š
+	mycolor 0.95, 0.95, 0.95, 0 //æ–‡å­—è‰²
+	mes "PCè‚²æˆæ—¥è¨˜ver" + ver, 4
 
-	pos 300, 200 : objsize 200, 40, 60 : font "‚¯‚¢‚Ó‚§‚ñ‚Æ", 16
-	button gosub "V‚µ‚­n‚ß‚é", *OPV‹K
-	//ƒIƒuƒWƒFID (OP‰æ–ÊV‹Kƒ{ƒ^ƒ“)
+	pos 300, 200 : objsize 200, 40, 60 : font "ã‘ã„ãµã‰ã‚“ã¨", 16
+	button gosub "æ–°ã—ãå§‹ã‚ã‚‹", *OPæ–°è¦
+	//ã‚ªãƒ–ã‚¸ã‚§ID (OPç”»é¢æ–°è¦ãƒœã‚¿ãƒ³)
 	id_opB0 = stat
-	button gosub "‘±‚«‚©‚çn‚ß‚é", *OPƒ[ƒh
-	//ƒIƒuƒWƒFID (OP‰æ–Êƒ[ƒhƒ{ƒ^ƒ“)
+	button gosub "ç¶šãã‹ã‚‰å§‹ã‚ã‚‹", *OPãƒ­ãƒ¼ãƒ‰
+	//ã‚ªãƒ–ã‚¸ã‚§ID (OPç”»é¢ãƒ­ãƒ¼ãƒ‰ãƒœã‚¿ãƒ³)
 	id_opB1 = stat
 
 	/*******************************************************************************/
 
-	font "ƒƒCƒŠƒI", 13
-	//HSP‚ÌBMSCR\‘¢‘Ì‚©‚çƒtƒHƒ“ƒgƒnƒ“ƒhƒ‹‚ğæ“¾
+	font "ãƒ¡ã‚¤ãƒªã‚ª", 13
+	//HSPã®BMSCRæ§‹é€ ä½“ã‹ã‚‰ãƒ•ã‚©ãƒ³ãƒˆãƒãƒ³ãƒ‰ãƒ«ã‚’å–å¾—
 	mref BMSCR3, 67 : hFont3 = BMSCR3.38
 
 	gsel ID_WIN_MAIN, 0
-	/******ƒtƒHƒ“ƒg‚Ì”½‰f******/
+	/******ãƒ•ã‚©ãƒ³ãƒˆã®åæ˜ ******/
 	sendmsg hTab_main, $30, hFont2
 	sendmsg hLVomise, $30, hFont3
 	sendmsg hLVsouko, $30, hFont3
 	sendmsg hTabOMI, $30, hFont3
 
 	oncmd 1
-	oncmd gosub *OnCommand, WM_COMMAND   //ƒƒjƒ…[ƒo[
-	oncmd gosub *notify, $4E //ƒ^ƒu€–ÚØ‚è‘Ö‚¦ˆ—‚ÌƒƒbƒZ[ƒW
-	onexit gosub *exit	//I—¹ƒ{ƒ^ƒ“
+	oncmd gosub *OnCommand, WM_COMMAND   //ãƒ¡ãƒ‹ãƒ¥ãƒ¼ãƒãƒ¼
+	oncmd gosub *notify, $4E //ã‚¿ãƒ–é …ç›®åˆ‡ã‚Šæ›¿ãˆå‡¦ç†æ™‚ã®ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
+	onexit gosub *exit	//çµ‚äº†ãƒœã‚¿ãƒ³
 	gsel ID_WIN_OPEN, 1

@@ -1,8 +1,8 @@
-/***ƒƒCƒ“ƒ‹[ƒv***/
+/***ãƒ¡ã‚¤ãƒ³ãƒ«ãƒ¼ãƒ—***/
 *main
-	gsel ID_TAB_SETTEI : objprm id_savebut, savebut_text(opt(0, 0))
-	//ƒ‹[ƒv§Œäƒ{ƒ^ƒ“‚Ì•\¦Ø‚è‘Ö‚¦
-	if opt(5, 0) == -1 {
+	gsel ID_TAB_SETTEI : objprm id_savebut, savebut_text(setting(0, 0))
+	//ãƒ«ãƒ¼ãƒ—åˆ¶å¾¡ãƒœã‚¿ãƒ³ã®è¡¨ç¤ºåˆ‡ã‚Šæ›¿ãˆ
+	if setting(5, 0) == -1 {
 		gsel ID_WIN_MAIN : objprm id_opebut, opebut_text(0)
 		wait 10
 		goto *main
@@ -10,12 +10,12 @@
 	else {
 		gsel ID_WIN_MAIN : objprm id_opebut, opebut_text(1)
 	}
-	/***•Ï”ˆ—‚Æ•`‰æ***/
+	/***å¤‰æ•°å‡¦ç†ã¨æç”»***/
 	redraw 0, 0, 0, 800, 200
-	gt(6, 0) = str(int(gt(6, 0)) + 1) //ƒQ[ƒ€“àŠÔƒJƒEƒ“ƒ^
+	gt(6, 0) = str(int(gt(6, 0)) + 1) //ã‚²ãƒ¼ãƒ å†…æ™‚é–“ã‚«ã‚¦ãƒ³ã‚¿
 	if int(gt(6, 0)) > 5000 : gt(6, 0) = "1"
 
-	gtcontrol = int(gt(6, 0)) \ opt(4, 0)
+	gtcontrol = int(gt(6, 0)) \ setting(4, 0)
 
 	if gtcontrol == 0 {
 		gt(5, 0) = strf("%02d", int(gt(5, 0)) + 1)
@@ -23,27 +23,27 @@
 		st(3, 0) = str(double(st(3, 0)) + 0.1)
 		st(6, 0) = str(double(st(6, 0)) - 0.01)
 	}
-	/***’PˆÊ•ÏŠ·ƒ`ƒFƒbƒN***/
+	/***å˜ä½å¤‰æ›ãƒã‚§ãƒƒã‚¯***/
 	if int(st(2, 0)) > 1023 : objprm layid0, 0
 	if int(st(3, 0)) > 1023 : objprm layid0, 1
 	await 32 : redraw 1, 0, 0, 800, 200
-	/***ƒI[ƒgƒZ[ƒu***/
+	/***ã‚ªãƒ¼ãƒˆã‚»ãƒ¼ãƒ–***/
 	gosub *chautosave
 	goto *main
 
-//ƒI[ƒgƒZ[ƒu
+//ã‚ªãƒ¼ãƒˆã‚»ãƒ¼ãƒ–
 *chautosave
-	//İ’è‚ª—LŒø‚©‚Ç‚¤‚©
-	if opt(0, 0) == 1 {
+	//è¨­å®šãŒæœ‰åŠ¹ã‹ã©ã†ã‹
+	if setting(0, 0) == 1 {
 		savecontrol = int(gt(6, 0)) \ 10
 		if savecontrol == 0 : savec = 1 + savec
 		if savec > 5000 {
-			//ƒtƒ@ƒCƒ‹‚ÌŠm”F
+			//ãƒ•ã‚¡ã‚¤ãƒ«ã®ç¢ºèª
 			exist fname
 			if strsize == -1 {
 				fname = savedir + "\\autosave.var"
 			}
-			mysave u, st, gt, opt, motimono, fname
+			mysave u, st, gt, setting, motimono, fname
 			astip = "asc"
 			objprm layid0, astip
 			gsel ID_TAB_LOG, 0 : objprm id_logmoni, logmoni
@@ -53,81 +53,81 @@
 	}
 	return
 
-//ƒƒjƒ…[ƒo[
+//ãƒ¡ãƒ‹ãƒ¥ãƒ¼ãƒãƒ¼
 *OnCommand
 	cmd = wparam & 0xFFFF
 	switch cmd
-		//ƒtƒ@ƒCƒ‹(F) >> ŠJ‚­
+		//ãƒ•ã‚¡ã‚¤ãƒ«(F) >> é–‹ã
 		case CMD_OPEN
-			opt(5, 0) = -1
-			dialog "var", 16, "ƒZ[ƒuƒf[ƒ^"
+			setting(5, 0) = -1
+			dialog "var", 16, "ã‚»ãƒ¼ãƒ–ãƒ‡ãƒ¼ã‚¿"
 			if stat = 0 : return
 			fname = refstr
 			vload fname
 
-			//ƒƒCƒ“ƒEƒBƒ“ƒhƒEXV
+			//ãƒ¡ã‚¤ãƒ³ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦æ›´æ–°
 			gsel ID_WIN_MAIN, 0 : redraw 0 : redraw 1
 			gsel ID_TAB_MOTI, 0 : objprm id_motimono, motimono
 			gsel ID_TAB_SETTEI, 0
-			objprm id_savebut, opt(0, 0)
-			objprm id_chkosoi, opt(1, 0)
-			objprm id_chkfutu, opt(2, 0)
-			objprm id_chkhaya, opt(3, 0)
-			gsel ID_WIN_MAIN, 0 : objprm layid0, "ƒ[ƒh"
+			objprm id_savebut, setting(0, 0)
+			objprm id_chkosoi, setting(1, 0)
+			objprm id_chkfutu, setting(2, 0)
+			objprm id_chkhaya, setting(3, 0)
+			gsel ID_WIN_MAIN, 0 : objprm layid0, "ãƒ­ãƒ¼ãƒ‰"
 			gsel ID_TAB_LOG, 0 : objprm id_logmoni, logmoni
 			gsel ID_WIN_MAIN
 			swbreak
 
-		//ƒtƒ@ƒCƒ‹(F) >> •Û‘¶
+		//ãƒ•ã‚¡ã‚¤ãƒ«(F) >> ä¿å­˜
 		case CMD_SAVE
-			opt(5, 0) = -1
-			dialog "var", 17, "ƒZ[ƒuƒf[ƒ^"
+			setting(5, 0) = -1
+			dialog "var", 17, "ã‚»ãƒ¼ãƒ–ãƒ‡ãƒ¼ã‚¿"
 			if stat = 0 : return
 			fname = refstr
-			//Šg’£q
+			//æ‹¡å¼µå­
 			exname = getpath(fname, 2)
 			if exname = "" : fname += ".var"
-			mysave u, st, gt, opt, motimono, fname
-			gsel ID_WIN_MAIN, 0 : objprm layid0, "ƒZ[ƒu"
+			mysave u, st, gt, setting, motimono, fname
+			gsel ID_WIN_MAIN, 0 : objprm layid0, "ã‚»ãƒ¼ãƒ–"
 			gsel ID_TAB_LOG, 0 : objprm id_logmoni, logmoni
 			gsel ID_WIN_MAIN
 			swbreak
 
-		//ƒtƒ@ƒCƒ‹(F) >> I—¹
+		//ãƒ•ã‚¡ã‚¤ãƒ«(F) >> çµ‚äº†
 		case CMD_QUIT
-			opt(5, 0) = -1
+			setting(5, 0) = -1
 			exist fname
 			if strsize == -1 {
 				fname = savedir + "\\autosave.var"
 			}
-			mysave u, st, gt, opt, motimono, fname
+			mysave u, st, gt, setting, motimono, fname
 			oncmd 0
 			end
 			swbreak
 
-		//ƒwƒ‹ƒv(H) >> ‚±‚Ìƒ\ƒtƒg‚É‚Â‚¢‚Ä
+		//ãƒ˜ãƒ«ãƒ—(H) >> ã“ã®ã‚½ãƒ•ãƒˆã«ã¤ã„ã¦
 		case CMD_INFO
-			opt(5, 0) = -1
+			setting(5, 0) = -1
 			gsel ID_WIN_INFO, 1
 			swbreak
 	swend
 	return
 
-//ƒXƒ^[ƒg/ƒXƒgƒbƒv
+//ã‚¹ã‚¿ãƒ¼ãƒˆ/ã‚¹ãƒˆãƒƒãƒ—
 *ope
-	opt(5, 0) = opt(5, 0) * -1
+	setting(5, 0) = setting(5, 0) * -1
 	gsel ID_TAB_MOTI, 0 : objprm id_motimono, motimono
 	gsel ID_TAB_LOG, 0 : objprm id_logmoni, logmoni
 	gsel ID_WIN_MAIN
 	return
 
-//ƒ^ƒu€–ÚØ‚è‘Ö‚¦ˆ—•”•ª‚Å‚·B
+//ã‚¿ãƒ–é …ç›®åˆ‡ã‚Šæ›¿ãˆå‡¦ç†éƒ¨åˆ†ã§ã™ã€‚
 *notify
 	dupptr nmhdr, lparam, 12, 4 : tabhwnd = nmhdr(0)
-	/***ƒ^ƒuƒRƒ“ƒgƒ[ƒ‹Ø‚è‘Ö‚¦ˆ—***/
+	/***ã‚¿ãƒ–ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ«åˆ‡ã‚Šæ›¿ãˆå‡¦ç†***/
 	if (nmhdr(2) == -551) {
 		switch tabhwnd
-			/***ƒƒCƒ“‚Ìƒ^ƒuƒRƒ“ƒgƒ[ƒ‹***/
+			/***ãƒ¡ã‚¤ãƒ³ã®ã‚¿ãƒ–ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ«***/
 			case hTab_main
 				//ChangeTab ID_TAB_MOTI, hTab_main
 				gsel wID + ID_TAB_MOTI, -1
@@ -137,7 +137,7 @@
 
 				gsel ID_WIN_MAIN
 				swbreak
-			/***“ü‚êq‚Ìƒ^ƒuƒRƒ“ƒgƒ[ƒ‹***/
+			/***å…¥ã‚Œå­ã®ã‚¿ãƒ–ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ«***/
 			case hTabOMI
 				ChangeTab ID_OMTAB_CPU, hTabOMI
 				gsel ID_TAB_OMISE
@@ -146,82 +146,82 @@
 	}
 	return
 
-//################################################OP‰æ–Êˆ—
+//################################################OPç”»é¢å‡¦ç†
 
-*OPV‹K
+*OPæ–°è¦
 	gsel ID_WIN_OPEN, -1
 	gsel ID_WIN_MAIN, 1
 	return
 
-*OPƒ[ƒh
-	opt(5, 0) = -1
-	dialog "var", 16, "ƒZ[ƒuƒf[ƒ^"
+*OPãƒ­ãƒ¼ãƒ‰
+	setting(5, 0) = -1
+	dialog "var", 16, "ã‚»ãƒ¼ãƒ–ãƒ‡ãƒ¼ã‚¿"
 	if stat = 0 : return
 	fname = refstr
 	vload fname
-	//ƒƒCƒ“ƒEƒBƒ“ƒhƒEXV
+	//ãƒ¡ã‚¤ãƒ³ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦æ›´æ–°
 	gsel ID_WIN_MAIN, 0 : redraw 0 : redraw 1
 	gsel ID_TAB_MOTI, 0 : objprm id_motimono, motimono
 	gsel ID_TAB_SETTEI, 0
-	sendmsg hButton, $F1, opt(0, 0)
-	objprm id_chkosoi, opt(1, 0)
-	objprm id_chkfutu, opt(2, 0)
-	objprm id_chkhaya, opt(3, 0)
+	sendmsg hButton, $F1, setting(0, 0)
+	objprm id_chkosoi, setting(1, 0)
+	objprm id_chkfutu, setting(2, 0)
+	objprm id_chkhaya, setting(3, 0)
 	gsel ID_WIN_OPEN, -1
-	gsel ID_WIN_MAIN, 1 : objprm layid0, "ƒ[ƒh"
+	gsel ID_WIN_MAIN, 1 : objprm layid0, "ãƒ­ãƒ¼ãƒ‰"
 	gsel ID_TAB_LOG, 0 : objprm id_logmoni, logmoni
 	gsel ID_WIN_MAIN
 	return
 
-//======================================İ’èƒ^ƒuˆ—
+//======================================è¨­å®šã‚¿ãƒ–å‡¦ç†
 
 *tekiou
-	sendmsg hChkbox1, $F0 : opt(1, 0) = stat
-	sendmsg hChkbox2, $F0 : opt(2, 0) = stat
-	sendmsg hChkbox3, $F0 : opt(3, 0) = stat
+	sendmsg hChkbox1, $F0 : setting(1, 0) = stat
+	sendmsg hChkbox2, $F0 : setting(2, 0) = stat
+	sendmsg hChkbox3, $F0 : setting(3, 0) = stat
 
-	if opt(1, 0) == 1 {
-		opt(4, 0) = 30
-		string2 = " ƒQ[ƒ€‘¬“x[’x  ‚ß]"
+	if setting(1, 0) == 1 {
+		setting(4, 0) = 30
+		string2 = " ã‚²ãƒ¼ãƒ é€Ÿåº¦[é…  ã‚]"
 	}
-	if opt(2, 0) == 1 {
-		opt(4, 0) = 6
-		string2 = " ƒQ[ƒ€‘¬“x[‚Ó‚Â‚¤]"
+	if setting(2, 0) == 1 {
+		setting(4, 0) = 6
+		string2 = " ã‚²ãƒ¼ãƒ é€Ÿåº¦[ãµã¤ã†]"
 	}
-	if opt(3, 0) == 1 {
-		opt(4, 0) = 3
-		string2 = " ƒQ[ƒ€‘¬“x[‘  ‚ß]"
+	if setting(3, 0) == 1 {
+		setting(4, 0) = 3
+		string2 = " ã‚²ãƒ¼ãƒ é€Ÿåº¦[æ—©  ã‚]"
 	}
 	gsel ID_WIN_MAIN : objprm layid0, "auto_chk"
 	gsel ID_TAB_LOG, 0 : objprm id_logmoni, logmoni
 	gsel ID_WIN_MAIN
 	return
 
-//î•ñƒEƒBƒ“ƒhƒE‚ğ•Â‚¶‚éƒ{ƒ^ƒ“
+//æƒ…å ±ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚’é–‰ã˜ã‚‹ãƒœã‚¿ãƒ³
 *subw_exi
 	gsel ID_WIN_INFO, -1
 	return
 
-//I—¹‚Ìˆ—
+//çµ‚äº†ã®å‡¦ç†
 *exit
-	opt(5, 0) = -1
+	setting(5, 0) = -1
 	winID = wparam
 	switch winID
-		//------------------------------ƒƒCƒ“ƒEƒBƒ“ƒhƒE[winID=0]
+		//------------------------------ãƒ¡ã‚¤ãƒ³ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦[winID=0]
 		case ID_WIN_MAIN
 			exist fname
 			if strsize == -1 {
 				fname = savedir + "\\autosave.var"
 			}
-			mysave u, st, gt, opt, motimono, fname
+			mysave u, st, gt, setting, motimono, fname
 			oncmd 0
 			end
 			swbreak
-		//------------------------------î•ñƒEƒBƒ“ƒhƒE[winID=1]
+		//------------------------------æƒ…å ±ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦[winID=1]
 		case ID_WIN_INFO
 			gsel ID_WIN_INFO, -1
 			swbreak
-		//------------------------------ƒI[ƒvƒjƒ“ƒO‰æ–Ê
+		//------------------------------ã‚ªãƒ¼ãƒ—ãƒ‹ãƒ³ã‚°ç”»é¢
 		case ID_WIN_OPEN
 			oncmd 0
 			end

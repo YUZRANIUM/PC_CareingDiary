@@ -1,28 +1,28 @@
-//					<<  ���얽�ߥ�֐��̍쐬  >>
+//					<<  自作命令･関数の作成  >>
 
-;TCS_BUTTONS�Ƃ̑g�ݍ��킹�ŕ���ȃ{�^����\������
-;TCS_BUTTONS�ȊO�̑g�ݍ��킹�ɂ���Ă͕\���̋������ςɂȂ�܂��B
+//TCS_BUTTONSとの組み合わせで平らなボタンを表示する
+//TCS_BUTTONS以外の組み合わせによっては表示の挙動が変になります。
 #define global TCS_FLATBUTTONS $8
-;TCS_FLATBUTTONS��TCS_BUTTONS�̑g�ݍ��킹�Ń}�E�X�J�[�\�����̃{�^�����n�C���C�g�\������悤�ɂ��܂�
+//TCS_FLATBUTTONSとTCS_BUTTONSの組み合わせでマウスカーソル下のボタンをハイライト表示するようにします
 #define global TCS_HOTTRACK $40
-;�^�u�̂܂݂��{�^���`���ŕ\�����܂��B
+//タブのつまみをボタン形式で表示します。
 #define global TCS_BUTTONS $100
-;�^�u���ڂ̕�����̒����Ɋւ�炸�A�^�u�܂݂̉��������ׂē����T�C�Y�ɂ��܂�
+//タブ項目の文字列の長さに関わらず、タブつまみの横幅をすべて同じサイズにします
 #define global TCS_FIXEDWIDTH $400
-;�^�u�܂݂Ƀt�H�[�J�X���󂯎��Ȃ��悤�ɂ��܂��B
+//タブつまみにフォーカスを受け取らないようにします。
 #define TCS_FOCUSNEVER $8000
 
-//�X�^�e�B�b�N�e�L�X�g
-//winobj "static", "�\���������", <�g���E�B���h�E�X�^�C��>, <�E�B���h�E�X�^�C��>, X�T�C�Y, Y�T�C�Y
-//<�g���E�B���h�E�X�^�C��> : �[������
+//スタティックテキスト
+//winobj "static", "表示するもの", <拡張ウィンドウスタイル>, <ウィンドウスタイル>, Xサイズ, Yサイズ
+//<拡張ウィンドウスタイル> : 深い凹み
 #define global WS_EX_WINDOWEDGE $200
-//<�E�B���h�E�X�^�C��>
-#define global WS_BORDER        $800000		//���E�g��
-#define global WS_DISABLED      $8000000	//����
-#define global WS_DLGFRAME      $400000		//�c���
-#define global SS_CENTER        $1			//��������
-#define global SS_RIGHT         $2			//�E����
-#define global SS_SUNKEN        $1000		//�󂢉���
+//<ウィンドウスタイル>
+#define global WS_BORDER        $800000		//境界枠線
+#define global WS_DISABLED      $8000000	//無効
+#define global WS_DLGFRAME      $400000		//膨らみ
+#define global SS_CENTER        $1			//中央揃え
+#define global SS_RIGHT         $2			//右揃え
+#define global SS_SUNKEN        $1000		//浅い凹み
 
 /*******************************************************************************/
 #module
@@ -45,10 +45,10 @@
 #global
 /******************************************************************************/
 #module
-//vsave�Z�k
+//vsave短縮
 //%1,%2,%3,%4,%5,%6
-//%1�`%5:�ۑ��������z��ϐ�
-//%6:�t�@�C����
+//%1～%5:保存したい配列変数
+//%6:ファイル名
 #define global mysave(%1,%2,%3,%4,%5,%6)\
 	vsave_start\
 	: vsave_put %1\
@@ -70,11 +70,11 @@
 #uselib "gdi32"
 #cfunc GetStockObject "GetStockObject" int
 
-;	CreateTab p1, p2, p3, p4
-;	�^�u�R���g���[����ݒu���܂��Bstat�Ƀ^�u�R���g���[���̃n���h�����Ԃ�܂��B
-;	p1�`p2=�^�u�R���g���[����X/Y�����̃T�C�Y
-;	p3 : �^�u�R���g���[���̃n���h�����󂯎��ϐ�
-;	p4=�^�u�R���g���[���̒ǉ��E�B���h�E�X�^�C��
+//CreateTab p1, p2, p3, p4
+//タブコントロールを設置します。statにタブコントロールのハンドルが返ります。
+//p1～p2=タブコントロールのX/Y方向のサイズ
+//p3 : タブコントロールのハンドルを受け取る変数
+//p4=タブコントロールの追加ウィンドウスタイル
 #deffunc CreateTab int p1, int p2, var p3, int p4
 	winobj "systabcontrol32", "", , $52000000 | p4, p1, p2
 	p3 = objinfo(stat, 2)
@@ -84,20 +84,20 @@
 /*******************************************************************************/
 
 //CreateTab p1, p2, p3, p4
-//�^�u�R���g���[����ݒu���܂��B
-//p1�`p2=�^�u�R���g���[����X/Y�����̃T�C�Y
-//p3 : �^�u�R���g���[���̃n���h�����󂯎��ϐ�
-//p4($400) : �^�u�R���g���[���̒ǉ��E�B���h�E�X�^�C��
+//タブコントロールを設置します。
+//p1～p2=タブコントロールのX/Y方向のサイズ
+//p3 : タブコントロールのハンドルを受け取る変数
+//p4($400) : タブコントロールの追加ウィンドウスタイル
 #define global My_CreateTab(%1, %2, %3, %4 = $400) CreateTab %1,%2,%3,%4
 /*******************************************************************************/
 
 
 //InsertTab p1,p2,index,p3
-//�^�u�R���g���[���ɍ��ڂ�ǉ����܂��B
-//p1 : "�^�u�܂ݕ����̕�����"
-//p2 : �^�u�̍��ڂƂ��ē\��t����bgscr���߂̃E�B���h�EID�l
-//index = 0�` : �^�u�̏���
-//p4 : �^�u�R���g���[���̃I�u�W�F�N�g�n���h��
+//タブコントロールに項目を追加します。
+//p1 : "タブつまみ部分の文字列"
+//p2 : タブの項目として貼り付けるbgscr命令のウィンドウID値
+//index = 0～ : タブの序列
+//p4 : タブコントロールのオブジェクトハンドル
 #deffunc InsertTab str p1, int p2, int index, var p3
 	pszText = p1 : tcitem = 1, 0, 0, varptr(pszText)
 	sendmsg p3, $1307, index, varptr(tcitem)
@@ -112,9 +112,9 @@
 
 
 //ChangeTab p1,
-//�^�u�؂�ւ������p
-//p1 : �^�u�̍��ڂƂ��ē\��t����bgscr���߂̏���E�B���h�EID�l
-//p2 : �^�u�R���g���[���̃I�u�W�F�N�g�n���h��
+//タブ切り替え処理用
+//p1 : タブの項目として貼り付けるbgscr命令の初回ウィンドウID値
+//p2 : タブコントロールのオブジェクトハンドル
 #deffunc ChangeTab int p1, var p2
 	gsel wID + p1, -1
 	sendmsg p2, $130B
@@ -124,10 +124,10 @@
 /*******************************************************************************/
 
 //My_ChangeTab %1,%2,%3
-//�^�u�؂�ւ������p
-//%1 : �^�u�̍��ڂƂ��ē\��t����bgscr���߂̏���E�B���h�EID�l
-//%2 : �^�u�R���g���[���̃I�u�W�F�N�g�n���h��
-//%3 : �^�u���ݒu����Ă���E�B���h�EID
+//タブ切り替え処理用
+//%1 : タブの項目として貼り付けるbgscr命令の初回ウィンドウID値
+//%2 : タブコントロールのオブジェクトハンドル
+//%3 : タブが設置されているウィンドウID
 #define global My_ChangeTab(%1,%2,%3)\
 		dupptr nmhdr, lparam, 12, 4\
 		: if nmhdr(0) = %2 & nmhdr(2) = -551 {\
@@ -137,10 +137,10 @@
 /*******************************************************************************/
 #global
 
-;�yHSP3.x �ڐA�Łz
-;�wHSP�̗��Z�x���X�g�r���[���쐬���Ă݂� ACT-1
+;【HSP3.x 移植版】
+;『HSPの裏技』リストビューを作成してみる ACT-1
 ; http://chokuto.ifdef.jp/urawaza/listview1.html
-;============= ���X�g�r���[���샂�W���[�� ===============
+;============= リストビュー操作モジュール ===============
 #module
 #uselib "comctl32.dll"
 #func InitCommonControlsEx "InitCommonControlsEx" int
@@ -172,7 +172,7 @@
 #define LVCF_SUBITEM    0x0008
 
 #define LVIF_TEXT       0x0001
-; (�O������Q�Ƃł���悤�� global �w��)
+; (外部から参照できるように global 指定)
 #define global LVCFMT_LEFT      0x0000
 #define global LVCFMT_RIGHT     0x0001
 #define global LVCFMT_CENTER    0x0002
@@ -181,22 +181,22 @@
 #define global LVN_COLUMNCLICK   $FFFFFF94
 #define global LVM_SORTITEMSEX   $00001051
 
-; ���X�g�r���[�쐬
+; リストビュー作成
 #deffunc CreateListView int sx, int sy
-	; �R�����R���g���[�����C�u�����̏�����
+	; コモンコントロールライブラリの初期化
 	initinfo = 8, ICC_LISTVIEW_CLASSES
 	InitCommonControlsEx varptr(initinfo)
-	; ���X�g�r���[�̍쐬
+	; リストビューの作成
 	styleFlags = WS_CHILD | WS_VISIBLE | LVS_REPORT// | WS_CAPTION
 	winobj "SysListView32", "", , styleFlags, sx, sy
 	return
 /*******************************************************************************/
 
-//���X�g�r���[�ݒu
+//リストビュー設置
 //%1,%2,%3,%4
-//%1,%2 : X�T�C�Y,Y�T�C�Y
-//%3 : �I�u�W�F�N�gID���󂯎��ϐ�
-//%4 : �I�u�W�F�N�g�n���h�����󂯎��ϐ�
+//%1,%2 : Xサイズ,Yサイズ
+//%3 : オブジェクトIDを受け取る変数
+//%4 : オブジェクトハンドルを受け取る変数
 #define global My_CreateListView(%1,%2,%3,%4)\
 		CreateListView %1, %2\
 		: %3 = stat\
@@ -204,60 +204,60 @@
 		: sendmsg %4, 0x1036, , 0x00000020 | 0x00000010 | 1 | 4
 /*******************************************************************************/
 
-; ���X�g�r���[�ɗ��ǉ�
+; リストビューに列を追加
 #deffunc InsertListViewColumn int objID, int index, var v1, int align, int pixels
-	; LVCOLUMN �\���̂��Z�b�g
+	; LVCOLUMN 構造体をセット
 	dim lvcolumn, 8
 	lvcolumn(0) = LVCF_FMT | LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM
 	lvcolumn(1) = align
 	lvcolumn(2) = pixels
 	lvcolumn(3) = varptr(v1)
-	; LVM_INSERTCOLUMN ���b�Z�[�W���M
+	; LVM_INSERTCOLUMN メッセージ送信
 	sendmsg objinfo_hwnd(objID), LVM_INSERTCOLUMN, index, varptr(lvcolumn)
 	return
 /*******************************************************************************/
 
-//���X�g�r���[�̃J�����ǉ�  %1,%2,%3,%4,%5
-//%1 : �ݒu�������X�g�r���[�̃I�u�W�F�N�gID
-//%2 : �J�������i�[�����z��ϐ�
-//%3 : �J�����̐�
-//%4 : �J�����̕�
-//%5 : 0=������ / 1=�E���� / 2=��������
+//リストビューのカラム追加  %1,%2,%3,%4,%5
+//%1 : 設置したリストビューのオブジェクトID
+//%2 : カラムを格納した配列変数
+//%3 : カラムの数
+//%4 : カラムの幅
+//%5 : 0=左揃え / 1=右揃え / 2=中央揃え
 #define global My_InsertColumn(%1,%2,%3,%4,%5 = 0)\
 		repeat %3\
 		: InsertListViewColumn %1, cnt, %2(cnt), %5, %4(cnt)\
 		: loop
 /*******************************************************************************/
 
-; ���X�g�r���[�ɍ��ڒǉ�
+; リストビューに項目追加
 #deffunc InsertListViewItem int objID, int index, var v2
-	; LVITEM �\���̂��Z�b�g
+	; LVITEM 構造体をセット
 	dim lvitem, 13
 	lvitem(0) = LVIF_TEXT
 	lvitem(1) = index
 	lvitem(5) = varptr(v2)
-	; LVM_INSERTITEM ���b�Z�[�W���M
+	; LVM_INSERTITEM メッセージ送信
 	sendmsg objinfo_hwnd(objID), LVM_INSERTITEM, 0, varptr(lvitem)
 	return
 
-; ���X�g�r���[�̍��ڂ܂��̓T�u���ڃe�L�X�g�ݒ�
+; リストビューの項目またはサブ項目テキスト設定
 #deffunc SetListViewItemText int objID, int index, int subitem, var v3
-	; LVITEM �\���̂��Z�b�g
+	; LVITEM 構造体をセット
 	dim lvitem, 13
 	lvitem(0) = LVIF_TEXT
 	lvitem(1) = index
 	lvitem(2) = subitem
 	lvitem(5) = varptr(v3)
-	; LVM_SETITEM ���b�Z�[�W���M
+	; LVM_SETITEM メッセージ送信
 	sendmsg objinfo_hwnd(objID), LVM_SETITEM, 0, varptr(lvitem)
 	return
 /*******************************************************************************/
 
-//���X�g�r���[�̃��R�[�h��ǉ�  %1,%2,%3,%4
-//%1 : �ݒu�������X�g�r���[�̃I�u�W�F�N�gID
-//%2 : ���R�[�h���i�[�����z��ϐ�
-//%3 : ���R�[�h�̐�
-//%4 : �J�����̐�
+//リストビューのレコードを追加  %1,%2,%3,%4
+//%1 : 設置したリストビューのオブジェクトID
+//%2 : レコードを格納した配列変数
+//%3 : レコードの数
+//%4 : カラムの数
 #define global My_InsertChItem(%1,%2,%3,%4)\
 		i = 0\
 		: repeat %3\
@@ -270,21 +270,21 @@
 /*******************************************************************************/
 #global
 #module
-//���X�g�r���[�A�C�e���̍폜
-//h1 : ���X�g�r���[�̃I�u�W�F�N�gID
-//index : �A�C�e���̃C���f�b�N�X
+//リストビューアイテムの削除
+//h1 : リストビューのオブジェクトID
+//index : アイテムのインデックス
 #deffunc DelListItem int h1, int pp
 	sendmsg objinfo(h1, 2), 0x1009, pp, 0
 	return
 #global
 
 #module
-//���X�g�r���[�A�C�e���̕�����擾
-// p1 : ���X�g�r���[�̃I�u�W�F�N�gID
-// p2 : �A�C�e���̃C���f�b�N�X
-// p3 : �T�u�A�C�e���̃C���f�b�N�X
-// p4 : �擾��������i�[���镶����^�ϐ�
-// p5 : �o�b�t�@�T�C�Y
+//リストビューアイテムの文字列取得
+// p1 : リストビューのオブジェクトID
+// p2 : アイテムのインデックス
+// p3 : サブアイテムのインデックス
+// p4 : 取得文字列を格納する文字列型変数
+// p5 : バッファサイズ
 #deffunc GetListItem int p1, int p2, int p3, var p4, int p5
 	dim lvitem, 13
 	lvitem(0) = 0x0001
@@ -298,18 +298,18 @@
 
 #module
 //CL_GetCheckState p1, p2
-//p1 = ���X�g�r���[�̃I�u�W�F�N�gID
-//p2 = ���ڂ̃C���f�b�N�X�ԍ�(0�`)
-//�`�F�b�N�{�b�N�X�̏�Ԃ��擾���܂��B��Ԃ��擾���������ڂ̃C���f�b�N�X�ԍ�(0�`)���w�肵�Ă��������Bstat��0(�`�F�b�N�Ȃ�)�A1(�`�F�b�N����)���Ԃ�܂��B
+//p1 = リストビューのオブジェクトID
+//p2 = 項目のインデックス番号(0～)
+//チェックボックスの状態を取得します。状態を取得したい項目のインデックス番号(0～)を指定してください。statに0(チェックなし)、1(チェックあり)が返ります。
 #deffunc CL_GetCheckState int p1, int p2
 	sendmsg objinfo(p1, 2), $102C, p2, $F000
 	return (stat >> 12) - 1
 #global
 
 #module
-//p1 : ���X�g�r���[�̃I�u�W�F�N�gID
-//p2 : �J�����̐�
-//p3 : �擾��������i�[���镶����^�ϐ�
+//p1 : リストビューのオブジェクトID
+//p2 : カラムの数
+//p3 : 取得文字列を格納する文字列型変数
 #deffunc My_GetListItem int p1, int p2, var v
 	i = -1 : sdim v2
 	repeat
@@ -327,11 +327,11 @@
 #global
 
 #module
-//SQL�̃f�[�^�𕶎���^�z��ϐ��ɕϊ����i�[����
-//p1 : ���R�[�h�̐�
-//p2 : �J�����̐�
-//p3 : �J�������i�[����������^�z��ϐ�
-//p4 : ���R�[�h���󂯎�镶����^�z��ϐ�
+//SQLのデータを文字列型配列変数に変換し格納する
+//p1 : レコードの数
+//p2 : カラムの数
+//p3 : カラムを格納した文字列型配列変数
+//p4 : レコードを受け取る文字列型配列変数
 #define global Datainput(%1,%2,%3,%4)\
 	repeat %1\
 	: j = 0\
@@ -346,27 +346,27 @@
 
 /*******************************************************************************/
 //#module
-//�n�C�p�[�����N��ݒu���閽��
+//ハイパーリンクを設置する命令
 //p1,p2,p3,p4,p5,p6
-//p1=������ : �\�����镶����
-//p2=������ : �����N���https�`
-//p3=0: �}�E�X����������͈�. X�T�C�Y
-//p4=0: �}�E�X����������͈�. Y�T�C�Y*/
-//gdi32.as �� user32.as ���C���N���[�h���Ă�������.
+//p1=文字列 : 表示する文字列
+//p2=文字列 : リンク先のhttps～
+//p3=0: マウスが反応する範囲. Xサイズ
+//p4=0: マウスが反応する範囲. Yサイズ*/
+//gdi32.as と user32.as をインクルードしてください.
 /*
 #deffunc hyperlink str p1, str p2, int p3, int p4
 	#define ctype RGB(%1,%2,%3) (%1 | %2 << 8 | %3 << 16)
-	//RECT�\���̗p
+	//RECT構造体用
 	dim RECT, 4
 	winobj "static", p1, , $50000001 | $100, p3, p4
 	hStatic = objinfo(stat, 2)
 	mref BMSCR, 67
 	sendmsg hStatic, $30, BMSCR.38
-	LoadCursor 0, 32649     //�X�^�e�B�b�N�e�L�X�g��̃J�[�\�����n���h�J�[�\���ɕύX
+	LoadCursor 0, 32649     //スタティックテキスト上のカーソルをハンドカーソルに変更
 	SetClassLong hStatic, -12, stat
-	//�X�^�e�B�b�N�e�L�X�g���`�悳��Ă���Ƃ��ɑ����Ă���E�B���h�E���b�Z�[�W
+	//スタティックテキストが描画されているときに送られてくるウィンドウメッセージ
 	oncmd gosub *ctlcolorstatic, $138
-	oncmd gosub *command, $111      //�}�E�X�N���b�N���̃E�B���h�E���b�Z�[�W
+	oncmd gosub *command, $111      //マウスクリック時のウィンドウメッセージ
 	oncmd gosub *wmsetcursor, $20   //WM_SETCURSOR
 	stop
 
@@ -388,9 +388,9 @@
 
 *wmsetcursor
 	if (lparam & $FFFF) != 1 : return
-		// �I�u�W�F�N�g�̍���XY�A�E��XY�̍��W�ʒu���擾
+		// オブジェクトの左上XY、右下XYの座標位置を取得
 	GetWindowRect hStatic, varptr(RECT)
-		// �擾�����I�u�W�F�N�g�̍��W�ʒu�ƃJ�[�\���̍��W�ʒu���r
+		// 取得したオブジェクトの座標位置とカーソルの座標位置を比較
 	PtInRect varptr(RECT), ginfo(0), ginfo(1)
 	if stat {
 		if oncursor : return
