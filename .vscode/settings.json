@@ -142,7 +142,7 @@
 	"files.watcherInclude": [
 		"\"C:\\HSP.git\\hsp36\\common\""
 	],
-	"explorer.excludeGitIgnore": true,
+	"explorer.excludeGitIgnore": false,
 	"search.useIgnoreFiles": true,
 	"scm.providerCountBadge": "visible",
 	"scm.defaultViewMode": "tree",
@@ -151,9 +151,13 @@
 	"files.exclude": {
 		"**/*.as": true,
 		"**/*.ax": true,
-		"**/packfile": true,
+		"**/*.hs": true,
 		"**/hsptmp": true,
 		"**/obj": true,
+		"**/packfile": true,
+		"hsp36": true,
+		"Project": true,
+		"SQL": true
 	},
 	"editor.smartSelect.selectLeadingAndTrailingWhitespace": false,
 	"editor.suggest.showWords": false,

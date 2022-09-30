@@ -2,6 +2,12 @@
 	"folders": [
 		{
 			"path": "."
+		},
+		{
+			"path": "hsp36/common"
+		},
+		{
+			"path": "hsp36/hsphelp"
 		}
 	],
 	"settings": {
