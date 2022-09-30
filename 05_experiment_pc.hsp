@@ -1,15 +1,15 @@
-//                              ì—pƒtƒ@ƒCƒ‹
+//                              è©¦ä½œç”¨ãƒ•ã‚¡ã‚¤ãƒ«
 
 #define SW1
 #define SW2
 #ifdef SW1
 	#ifdef SW2
-	//#include "hsp3utf.as"
+	#include "hsp3utf.as"
 	#include "user32.as"
 	#include "gdi32.as"
 	#include "sqlele.hsp"
 	#include "00_module_pc.hsp"
-	screen 0, 1200, 900, 0 : font "ƒƒCƒŠƒI", 16 : objmode 2, 1
+	screen 0, 1200, 900, 0 : font "ãƒ¡ã‚¤ãƒªã‚ª", 16 : objmode 2, 1
 	mref BMSCRn, 67 : hFontn = BMSCRn.38
 	sdim all, 2048 : sdim all_clum, 64
 	sdim cpu, 2048 : sdim data_cpu, 1024 : sdim cpu_culm, 64 : dim c_culm_num
@@ -29,7 +29,7 @@
 	sql_q "BEGIN;"
 
 	sql_q "SELECT * FROM MyAll;"
-	//ƒŒƒR[ƒh‚Ì”
+	//ãƒ¬ã‚³ãƒ¼ãƒ‰ã®æ•°
 	cunt = stat
 	all_clum_num = length(tmparr)
 	all_clum = sql_collist() : split all_clum, ",", all_clum
@@ -37,21 +37,21 @@
 	moni1 += "" + moni0 : sdim moni0
 
 	sql_q "SELECT * FROM MyCPU;"
-	//ƒŒƒR[ƒh‚Ì”
+	//ãƒ¬ã‚³ãƒ¼ãƒ‰ã®æ•°
 	cpu_cunt = stat
 	c_culm_num = length(tmparr)
 	cpu_culm = sql_collist() : split cpu_culm, ",", cpu_culm
 	Datainput cpu_cunt, c_culm_num, cpu_culm, cpu
 
 	sql_q "SELECT * FROM MyGPU;"
-	//ƒŒƒR[ƒh‚Ì”
+	//ãƒ¬ã‚³ãƒ¼ãƒ‰ã®æ•°
 	gpu_cunt = stat
 	gpu_culm = sql_collist() : split gpu_culm, ",", gpu_culm
 	g_culm_num = length(tmparr)
 	Datainput gpu_cunt, g_culm_num, gpu_culm, gpu
 
 	sql_q "SELECT * FROM MyROM;"
-	//ƒŒƒR[ƒh‚Ì”
+	//ãƒ¬ã‚³ãƒ¼ãƒ‰ã®æ•°
 	rom_cunt = stat
 	rom_culm = sql_collist() : split rom_culm, ",", rom_culm
 	r_culm_num = length(tmparr)
@@ -67,30 +67,30 @@
 	id_butget = stat
 	hButget = objinfo_hwnd(id_butget)
 
-	font "ƒƒCƒŠƒI", 12
+	font "ãƒ¡ã‚¤ãƒªã‚ª", 12
 	mref BMSCRn1, 67 : hFontn1 = BMSCRn1.38
 
 	pos 420, 30
-	/***ƒŠƒXƒgƒrƒ…[‚Ìİ’u***/
+	/***ãƒªã‚¹ãƒˆãƒ“ãƒ¥ãƒ¼ã®è¨­ç½®***/
 	My_CreateListView 710, 280, id_cpumoni, hLVcsouko
 	My_InsertColumn id_cpumoni, cpu_culm, c_culm_num, c_clum_w
 	My_InsertChItem id_cpumoni, cpu, cpu_cunt, c_culm_num
 
 	pos 420, 320
-	/***ƒŠƒXƒgƒrƒ…[‚Ìİ’u***/
+	/***ãƒªã‚¹ãƒˆãƒ“ãƒ¥ãƒ¼ã®è¨­ç½®***/
 	My_CreateListView 710, 280, id_gpumoni, hLVgsouko
 	My_InsertColumn id_gpumoni, gpu_culm, g_culm_num, g_clum_w
 	My_InsertChItem id_gpumoni, gpu, gpu_cunt, g_culm_num
 
 	pos 420, 610
-	/***ƒŠƒXƒgƒrƒ…[‚Ìİ’u***/
+	/***ãƒªã‚¹ãƒˆãƒ“ãƒ¥ãƒ¼ã®è¨­ç½®***/
 	My_CreateListView 710, 280, id_rommoni, hLVrsouko
 	My_InsertColumn id_rommoni, rom_culm, r_culm_num, r_clum_w
 	My_InsertChItem id_rommoni, rom, rom_cunt, r_culm_num
 
 	objprm id_moni1, moni1
 
-	/******ƒtƒHƒ“ƒg‚Ì”½‰f******/
+	/******ãƒ•ã‚©ãƒ³ãƒˆã®åæ˜ ******/
 	sendmsg hLVcsouko, $30, , hFontn1
 	sendmsg hLVgsouko, $30, , hFontn1
 	sendmsg hLVrsouko, $30, , hFontn1
@@ -99,23 +99,23 @@
 	onexit gosub *Owari
 	stop
 
-//‘I‘ğ‚µ‚½ƒŠƒXƒgƒAƒCƒeƒ€‚Ìæ“¾
+//é¸æŠã—ãŸãƒªã‚¹ãƒˆã‚¢ã‚¤ãƒ†ãƒ ã®å–å¾—
 *getitem
 	sdim infonoteC, 1024 : sdim infonoteG, 1024 : sdim infonoteR, 1024 : sdim infotext, 1024
 	My_GetListItem id_cpumoni, 6, infonoteC
 	My_GetListItem id_gpumoni, 6, infonoteG
 	My_GetListItem id_rommoni, 6, infonoteR
 	infotext += "---CPU---" + infonoteC + "\n---GPU---" + infonoteG + "\n---ROM---" + infonoteR
-	dialog "w“üƒŠƒXƒg\n-----------------\n" + infotext + "\n\n\t\tˆÈã‚ğw“ü‚µ‚Ü‚·‚©?", 0, "w“üŠm”F"
+	dialog "è³¼å…¥ãƒªã‚¹ãƒˆ\n-----------------\n" + infotext + "\n\n\t\tä»¥ä¸Šã‚’è³¼å…¥ã—ã¾ã™ã‹?", 0, "è³¼å…¥ç¢ºèª"
 	return
 
-//•À‚×‘Ö‚¦
+//ä¸¦ã¹æ›¿ãˆ
 *listnotify
 	dupptr nmhdr, lparam, 12, 4 : id = nmhdr(0)
 	if (nmhdr(2) = LVN_COLUMNCLICK) {
 		dupptr nmlv, lparam, 40, 4 : inde = nmlv(4)
 		switch id
-			/***CPU‚Ìˆ—***/
+			/***CPUã®å‡¦ç†***/
 			case hLVcsouko
 				sdim cpu, 2048 : sdim data_cpu, 1024
 				Tyuc = Tyuc * -1
@@ -125,7 +125,7 @@
 				else {
 					sql_q "SELECT * FROM MyCPU ORDER BY " + cpu_culm(inde) + " ASC;"
 				}
-				/***¡‚ ‚éƒŠƒXƒgƒAƒCƒeƒ€‚Ìíœ***/
+				/***ä»Šã‚ã‚‹ãƒªã‚¹ãƒˆã‚¢ã‚¤ãƒ†ãƒ ã®å‰Šé™¤***/
 				DelListItem id_cpumoni, 0
 				cpu_culm = sql_collist() : split cpu_culm, ",", cpu_culm
 				Datainput cpu_cunt, c_culm_num, cpu_culm, cpu
@@ -182,7 +182,7 @@
 	#include "sqlele.hsp"
 	#include "00_module_pc.hsp"
 	screen 0, 1250, 450, 2 : title "SQLite DB Table Schema Information for HSP" + strf("%.3f", double(strf("%4x", __hspver__)) / 1000) + " (SQLele)"
-	font "ƒƒCƒŠƒI", 12 : mref BMSCR, 67 : hFont = BMSCR(38) : objmode 2, 1
+	font "ãƒ¡ã‚¤ãƒªã‚ª", 12 : mref BMSCR, 67 : hFont = BMSCR(38) : objmode 2, 1
 
 	sdim tz1, 2048 : sdim tz2, 2048 : sdim tz3, 512
 	tzw = 50, 90, 89, 75, 920 : sdim f
@@ -216,7 +216,7 @@
 
 	sql_close
 
-	/***ƒtƒHƒ“ƒg‚Ì“K—p***/
+	/***ãƒ•ã‚©ãƒ³ãƒˆã®é©ç”¨***/
 	sendmsg objinfo(id_dbinfo, 2), $30, hFont
 	gsel 0, 1
 	stop

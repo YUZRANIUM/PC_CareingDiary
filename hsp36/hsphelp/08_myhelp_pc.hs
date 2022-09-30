@@ -1,39 +1,39 @@
 ;
-;	my_func.hsp�p HELP�\�[�X�t�@�C��
-;	�����	: 2022/09/19
-;	�����	: �䂸��ɂ���
+;	00_module_pc.hsp用 HELPソースファイル
+;	制作日	: 2022/09/30
+;	製作者	: ゆずらにうむ
 ;	Twitter	: https://twitter.com/YUZRANIUM
 ;
 
 %date
-2022/09/19
+2022/09/30
 %author
-�䂸��ɂ���
+ゆずらにうむ
 %url
 https://twitter.com/YUZRANIUM
 %dll
-my_func.hsp
+00_module_pc.hsp
 user32.as
 %type
-���[�U�[��`����
+ユーザー定義命令
 %ver
 1.0
 %port
 Win
 %note
-my_func.hsp��user32.as���C���N���[�h���邱��
+00_module_pc.hspとuser32.asをインクルードすること
 
 
 %index
 My_COLORREF
-�J���[�ϊ�
+カラー変換
 %group
-��ʐ��䖽��
+画面制御命令
 %prm
 p1,p2,p3
-p1,p2,p3=R�l,G�l,B�l
+p1,p2,p3=R値,G値,B値
 %inst
-RGB�̐F�f�[�^��COLORREF�^�̃f�[�^�ɕϊ����܂��B
+RGBの色データをCOLORREF型のデータに変換します。
 %href
 SetColorRef
 
@@ -41,26 +41,26 @@ SetColorRef
 
 %index
 mycolor
-�J���[�ݒ�
+カラー設定
 %group
-��ʐ��䖽��/�I�u�W�F�N�g���䖽��
+画面制御命令/オブジェクト制御命令
 %prm
 p1,p2,p3,p4
-p1,p2,p3=0�`1	: �F�R�[�h�iR,G,B�̋P�x�j
-p4 = 0,1,2	: ���[�h�؂�ւ�
+p1,p2,p3=0～1	: 色コード（R,G,Bの輝度）
+p4 = 0,1,2	: モード切り替え
 %inst
-���b�Z�[�W�\���A�`��Ȃǂ̐F�A�܂��̓I�u�W�F�N�g���g�p����F���w�肵���l�ɐݒ肵�܂��B
-p1,p2,p3�����ꂼ��AR,G,B�̋P�x�ɂȂ�܂��B
+メッセージ表示、描画などの色、またはオブジェクトが使用する色を指定した値に設定します。
+p1,p2,p3がそれぞれ、R,G,Bの輝度になります。
 ^
-�F�R�[�h��0����1�̊ԂŎw�肵�܂��B0���ł��Â��A1���ł����邭�Ȃ�܂��B
+色コードを0から1の間で指定します。0が最も暗く、1が最も明るくなります。
 ^
-�W����color���߂�objcolor���߂̗��������˔����Ă���p4�p�����[�^�łǂ��炩�̐؂�ւ��A�܂��͗����g�p���邱�Ƃ��ł��܂��B
+標準のcolor命令とobjcolor命令の両方を兼ね備えておりp4パラメータでどちらかの切り替え、または両方使用することができます。
 ^
-	�l : ����
+	値 : 動作
 	----------------
-	 0 : color����
-	 1 : objcolor����
-	 2 : ����
+	 0 : color命令
+	 1 : objcolor命令
+	 2 : 両方
 
 %href
 color
@@ -69,38 +69,38 @@ objcolor
 
 %index
 SetToolTips
-�c�[���`�b�v�R���g���[��
+ツールチップコントロール
 %group
-�g���I�u�W�F�N�g���䖽��
+拡張オブジェクト制御命令
 %prm
 p1
-p1=�X�^�C���̎w��
+p1=スタイルの指定
 %inst
-�c�[���`�b�v�R���g���[�����쐬���܂��B�ŏ���1�x�����Ă�ł��������B
-stat�ɂ́A�c�[���`�b�v�R���g���[���̃I�u�W�F�N�gID���Ԃ�܂��B
-p1�̓X�^�C���̎w��ł��B���ׂẴc�[���`�b�v�ɓK�p�����`�ɂȂ�܂��B
-�ȉ��̐��l��g�ݍ��킹�Ă��������B���w��̏ꍇ�͕��ʂ̃c�[���`�b�v���\������܂��B
+ツールチップコントロールを作成します。最初に1度だけ呼んでください。
+statには、ツールチップコントロールのオブジェクトIDが返ります。
+p1はスタイルの指定です。すべてのツールチップに適用される形になります。
+以下の数値を組み合わせてください。無指定の場合は普通のツールチップが表示されます。
 ^
-	�l  : ����
+	値  : 動作
 	----------------
-	$1  : ���E�B���h�E���A�N�e�B�u�ɂȂ��Ă��Ȃ��ꍇ�ł���Ƀc�[���`�b�v��\��.
-	$40 : �c�[���`�b�v���o���[���^�C�v�ŕ\��.�i�vIE5�ȍ~�j
+	$1  : 自ウィンドウがアクティブになっていない場合でも常にツールチップを表示.
+	$40 : ツールチップをバルーンタイプで表示.（要IE5以降）
 
 %href
 AddToolTips
 
 %index
 AddToolTips
-�c�[���`�b�v�̓o�^
+ツールチップの登録
 %group
-�g���I�u�W�F�N�g���䖽��
+拡張オブジェクト制御命令
 %prm
-p1,"������",p2
-p1=�c�[���`�b�v��\������I�u�W�F�N�gID
-"������"=�c�[���`�b�v�ɕ\�������镶����.
-p2=�c�[���`�b�v���I�u�W�F�N�g�̐^���ɕ\��.�i$2���w��j
+p1,"文字列",p2
+p1=ツールチップを表示するオブジェクトID
+"文字列"=ツールチップに表示させる文字列.
+p2=ツールチップをオブジェクトの真下に表示.（$2を指定）
 %inst
-�c�[���`�b�v�R���g���[���ɕ\���������o�^���܂��B
-�w�肵���I�u�W�F�N�g�Ƀc�[���`�b�v���\������܂��B�������64�o�C�g���̗̈���ꉞ�p�ӂ��Ă��܂��B
+ツールチップコントロールに表示文字列を登録します。
+指定したオブジェクトにツールチップが表示されます。文字列は64バイト分の領域を一応用意しています。
 %href
 SetToolTips
