@@ -16,7 +16,6 @@
 	if int(gt(6, 0)) > 5000 : gt(6, 0) = "1"
 
 	gtcontrol = int(gt(6, 0)) \ setting(4, 0)
-
 	if gtcontrol == 0 {
 		gt(5, 0) = strf("%02d", int(gt(5, 0)) + 1)
 		st(2, 0) = str(double(st(2, 0)) + 0.07)
@@ -60,7 +59,7 @@
 		//ファイル(F) >> 開く
 		case CMD_OPEN
 			setting(5, 0) = -1
-			dialog "var", 16, "セーブデータ"
+			dialog "var", 16, "SaveData"
 			if stat = 0 : return
 			fname = refstr
 			vload fname
@@ -73,7 +72,7 @@
 			objprm id_chkosoi, setting(1, 0)
 			objprm id_chkfutu, setting(2, 0)
 			objprm id_chkhaya, setting(3, 0)
-			gsel ID_WIN_MAIN, 0 : objprm layid0, "ロード"
+			gsel ID_WIN_MAIN, 0 : objprm layid0, "load"
 			gsel ID_TAB_LOG, 0 : objprm id_logmoni, logmoni
 			gsel ID_WIN_MAIN
 			swbreak
@@ -81,14 +80,14 @@
 		//ファイル(F) >> 保存
 		case CMD_SAVE
 			setting(5, 0) = -1
-			dialog "var", 17, "セーブデータ"
+			dialog "var", 17, "SaveData"
 			if stat = 0 : return
 			fname = refstr
 			//拡張子
 			exname = getpath(fname, 2)
 			if exname = "" : fname += ".var"
 			mysave u, st, gt, setting, motimono, fname
-			gsel ID_WIN_MAIN, 0 : objprm layid0, "セーブ"
+			gsel ID_WIN_MAIN, 0 : objprm layid0, "Save"
 			gsel ID_TAB_LOG, 0 : objprm id_logmoni, logmoni
 			gsel ID_WIN_MAIN
 			swbreak
@@ -101,6 +100,9 @@
 				fname = savedir + "\\autosave.var"
 			}
 			mysave u, st, gt, setting, motimono, fname
+
+			//sql_q "COMMIT;"
+			//sql_close
 			oncmd 0
 			end
 			swbreak
@@ -121,7 +123,7 @@
 	gsel ID_WIN_MAIN
 	return
 
-//タブ項目切り替え処理部分です。
+//タブコントロールの処理
 *notify
 	dupptr nmhdr, lparam, 12, 4 : tabhwnd = nmhdr(0)
 	/***タブコントロール切り替え処理***/
@@ -153,9 +155,9 @@
 	gsel ID_WIN_MAIN, 1
 	return
 
-*OPロード
+*OPload
 	setting(5, 0) = -1
-	dialog "var", 16, "セーブデータ"
+	dialog "var", 16, "SaveData"
 	if stat = 0 : return
 	fname = refstr
 	vload fname
@@ -168,7 +170,7 @@
 	objprm id_chkfutu, setting(2, 0)
 	objprm id_chkhaya, setting(3, 0)
 	gsel ID_WIN_OPEN, -1
-	gsel ID_WIN_MAIN, 1 : objprm layid0, "ロード"
+	gsel ID_WIN_MAIN, 1 : objprm layid0, "load"
 	gsel ID_TAB_LOG, 0 : objprm id_logmoni, logmoni
 	gsel ID_WIN_MAIN
 	return
@@ -182,15 +184,15 @@
 
 	if setting(1, 0) == 1 {
 		setting(4, 0) = 30
-		string2 = " ゲーム速度[遅  め]"
+		string2 = " GameSpeed [Slowest]"
 	}
 	if setting(2, 0) == 1 {
 		setting(4, 0) = 6
-		string2 = " ゲーム速度[ふつう]"
+		string2 = " GameSpeed [Normal]"
 	}
 	if setting(3, 0) == 1 {
 		setting(4, 0) = 3
-		string2 = " ゲーム速度[早  め]"
+		string2 = " GameSpeed [Fastest]"
 	}
 	gsel ID_WIN_MAIN : objprm layid0, "auto_chk"
 	gsel ID_TAB_LOG, 0 : objprm id_logmoni, logmoni
@@ -215,6 +217,8 @@
 			}
 			mysave u, st, gt, setting, motimono, fname
 			oncmd 0
+			//sql_q "COMMIT;"
+			//sql_close
 			end
 			swbreak
 		//------------------------------情報ウィンドウ[winID=1]
@@ -224,6 +228,8 @@
 		//------------------------------オープニング画面
 		case ID_WIN_OPEN
 			oncmd 0
+			//sql_q "COMMIT;"
+			//sql_close
 			end
 			swbreak
 	swend
