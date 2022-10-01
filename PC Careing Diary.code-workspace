@@ -39,7 +39,7 @@
 		"editor.inlayHints.fontFamily": "MyricaM M",
 		"editor.inlayHints.padding": true,
 		"editor.letterSpacing": 1,
-		"editor.lineHeight": 23,
+		"editor.lineHeight": 24,
 		"editor.maxTokenizationLineLength": 6000000,
 		"editor.mouseWheelZoom": true,
 		"editor.parameterHints.cycle": true,
@@ -197,6 +197,7 @@
 		"typescript.format.insertSpaceAfterOpeningAndBeforeClosingNonemptyBrackets": true,
 		"typescript.format.insertSpaceAfterOpeningAndBeforeClosingNonemptyParenthesis": true,
 		"typescript.format.insertSpaceAfterOpeningAndBeforeClosingTemplateStringBraces": true,
-		"typescript.tsserver.useSyntaxServer": "never"
+		"typescript.tsserver.useSyntaxServer": "never",
+		"editor.tabSize": 4
 	}
 }

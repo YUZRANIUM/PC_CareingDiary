@@ -1,19 +1,20 @@
-#packopt name "PC育成日記実行ファイル"
-// #packopt type 0
+#packopt name "PC_Careing Diary"
+#packopt type 0
+#packopt runtime "hsp3utf.hrt"
 // #packopt hide 1
 /*********************layerobjの処理************************/
-	#include "hsp3utf.as"
-	#include "user32.as"
-	#include "gdi32.as"
-	#include "hsp3util.as"
-	#include "mod_menu.as"
-	#include "hspda.as"	//vsave系
-	#include "sqlele.hsp"
+#include "hsp3utf.as"
+#include "user32.as"
+#include "gdi32.as"
+#include "hsp3util.as"
+#include "mod_menu.as"
+#include "hspda.as"	//vsave系
+#include "sqlele.hsp"
 
-	#include "00_module_pc.hsp"
-	#include "01_Constants_pc.hsp"
-	#include "02_UI_pc.hsp"
-	#include "03_Process1_pc.hsp"
+#include "00_module_pc.hsp"
+#include "01_Constants_pc.hsp"
+#include "02_UI_pc.hsp"
+#include "03_Process1_pc.hsp"
 
 //ゲーム内時間とステータス
 *lay
@@ -41,45 +42,45 @@
 			//ログ表示用の時間
 			time = "" + gettime(1) + "/" + gettime(3) + " " + gettime(4) + ":" + gettime(5) + ":" + gettime(6)
 			notesel logmoni
+			noteadd "\n", 1, 0
 			if string == "asc" {
 				//notesel logmoni
-				noteadd "\n", 1, 0
 				noteadd time + " : AutoSave Successed! " + fname, 1, 0
 				noteunsel
 				gsel ID_TAB_LOG : objprm id_logmoni, logmoni : gsel ID_WIN_MAIN
 			}
 			if string == "auto_chk" {
 				//notesel logmoni
-				noteadd "\n", 1, 0
-				noteadd time + " : 設定変更 " + savebut_text(setting(0, 0)) + string2, 1, 0
+				//noteadd "\n", 1, 0
+				noteadd time + " : Settings Change " + savebut_text(setting(0, 0)) + string2, 1, 0
 				noteunsel
 			}
-			if string == "ロード" {
+			if string == "load" {
 				//notesel logmoni
-				noteadd "\n", 1, 0
-				noteadd time + " : ロード完了 " + fname, 1, 0
+				//noteadd "\n", 1, 0
+				noteadd time + " : load Successed! " + fname, 1, 0
 				noteunsel
 				gsel ID_TAB_LOG : objprm id_logmoni, logmoni : gsel ID_WIN_MAIN
 			}
-			if string == "セーブ" {
+			if string == "Save" {
 				//notesel logmoni
-				noteadd "\n", 1, 0
-				noteadd time + " : セーブ完了 " + fname, 1, 0
+				//noteadd "\n", 1, 0
+				noteadd time + " : Save Successed! " + fname, 1, 0
 				noteunsel
 				gsel ID_TAB_LOG : objprm id_logmoni, logmoni : gsel ID_WIN_MAIN
 			}
 			if string == "dd" {
 				//notesel logmoni
-				noteadd "\n", 1, 0
+				//noteadd "\n", 1, 0
 				noteadd "------------------------------------------------------------------------------------", 1, 0
-				noteadd time + " : ゲーム内 " + gt(2, 0) + "/" + gt(3, 0) + " になりました.", 1, 0
+				noteadd time + " : Game times " + gt(2, 0) + "/" + gt(3, 0) + " になりました.", 1, 0
 				noteunsel
 				gsel ID_TAB_LOG : objprm id_logmoni, logmoni : gsel ID_WIN_MAIN
 			}
 			if string == "yy" {
 				//notesel logmoni
-				noteadd "\n", 1, 0
-				noteadd time + " : ゲーム内 新年を迎えました.", 1, 0
+				//noteadd "\n", 1, 0
+				noteadd time + " : Happy New Year!!", 1, 0
 				noteunsel
 				gsel ID_TAB_LOG : objprm id_logmoni, logmoni : gsel ID_WIN_MAIN
 			}

@@ -23,7 +23,6 @@
 #define global SS_CENTER        $1			//中央揃え
 #define global SS_RIGHT         $2			//右揃え
 #define global SS_SUNKEN        $1000		//浅い凹み
-
 /*******************************************************************************/
 #module
 #deffunc mycolor double p1, double p2, double p3, int p4
@@ -60,7 +59,6 @@
 #global
 
 /******************************************************************************/
-
 #module
 #uselib "user32"
 #func GetClientRect "GetClientRect" int, int
@@ -90,7 +88,6 @@
 //p4($400) : タブコントロールの追加ウィンドウスタイル
 #define global My_CreateTab(%1, %2, %3, %4 = $400) CreateTab %1,%2,%3,%4
 /*******************************************************************************/
-
 
 //InsertTab p1,p2,index,p3
 //タブコントロールに項目を追加します。
@@ -137,10 +134,10 @@
 /*******************************************************************************/
 #global
 
-;【HSP3.x 移植版】
-;『HSPの裏技』リストビューを作成してみる ACT-1
-; http://chokuto.ifdef.jp/urawaza/listview1.html
-;============= リストビュー操作モジュール ===============
+//【HSP3.x 移植版】
+//『HSPの裏技』リストビューを作成してみる ACT-1
+// http://chokuto.ifdef.jp/urawaza/listview1.html
+//============= リストビュー操作モジュール ===============
 #module
 #uselib "comctl32.dll"
 #func InitCommonControlsEx "InitCommonControlsEx" int
@@ -172,7 +169,6 @@
 #define LVCF_SUBITEM    0x0008
 
 #define LVIF_TEXT       0x0001
-; (外部から参照できるように global 指定)
 #define global LVCFMT_LEFT      0x0000
 #define global LVCFMT_RIGHT     0x0001
 #define global LVCFMT_CENTER    0x0002
@@ -181,12 +177,10 @@
 #define global LVN_COLUMNCLICK   $FFFFFF94
 #define global LVM_SORTITEMSEX   $00001051
 
-; リストビュー作成
+// リストビュー作成
 #deffunc CreateListView int sx, int sy
-	; コモンコントロールライブラリの初期化
 	initinfo = 8, ICC_LISTVIEW_CLASSES
 	InitCommonControlsEx varptr(initinfo)
-	; リストビューの作成
 	styleFlags = WS_CHILD | WS_VISIBLE | LVS_REPORT// | WS_CAPTION
 	winobj "SysListView32", "", , styleFlags, sx, sy
 	return
@@ -201,18 +195,16 @@
 		CreateListView %1, %2\
 		: %3 = stat\
 		: %4 = objinfo(%3, 2)\
-		: sendmsg %4, 0x1036, , 0x00000020 | 0x00000010 | 1 | 4
+		: sendmsg %4, 0x1036, , 0x00000020 | 0x00000010 | 1// | 4
 /*******************************************************************************/
 
 ; リストビューに列を追加
 #deffunc InsertListViewColumn int objID, int index, var v1, int align, int pixels
-	; LVCOLUMN 構造体をセット
 	dim lvcolumn, 8
 	lvcolumn(0) = LVCF_FMT | LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM
 	lvcolumn(1) = align
 	lvcolumn(2) = pixels
 	lvcolumn(3) = varptr(v1)
-	; LVM_INSERTCOLUMN メッセージ送信
 	sendmsg objinfo_hwnd(objID), LVM_INSERTCOLUMN, index, varptr(lvcolumn)
 	return
 /*******************************************************************************/
@@ -229,26 +221,22 @@
 		: loop
 /*******************************************************************************/
 
-; リストビューに項目追加
+// リストビューに項目追加
 #deffunc InsertListViewItem int objID, int index, var v2
-	; LVITEM 構造体をセット
 	dim lvitem, 13
 	lvitem(0) = LVIF_TEXT
 	lvitem(1) = index
 	lvitem(5) = varptr(v2)
-	; LVM_INSERTITEM メッセージ送信
 	sendmsg objinfo_hwnd(objID), LVM_INSERTITEM, 0, varptr(lvitem)
 	return
 
-; リストビューの項目またはサブ項目テキスト設定
+// リストビューの項目またはサブ項目テキスト設定
 #deffunc SetListViewItemText int objID, int index, int subitem, var v3
-	; LVITEM 構造体をセット
 	dim lvitem, 13
 	lvitem(0) = LVIF_TEXT
 	lvitem(1) = index
 	lvitem(2) = subitem
 	lvitem(5) = varptr(v3)
-	; LVM_SETITEM メッセージ送信
 	sendmsg objinfo_hwnd(objID), LVM_SETITEM, 0, varptr(lvitem)
 	return
 /*******************************************************************************/
@@ -355,13 +343,11 @@
 //gdi32.as と user32.as をインクルードしてください.
 /*
 #deffunc hyperlink str p1, str p2, int p3, int p4
-	#define ctype RGB(%1,%2,%3) (%1 | %2 << 8 | %3 << 16)
-	//RECT構造体用
 	dim RECT, 4
 	winobj "static", p1, , $50000001 | $100, p3, p4
-	hStatic = objinfo(stat, 2)
+		hStatic = objinfo(stat, 2)
 	mref BMSCR, 67
-	sendmsg hStatic, $30, BMSCR.38
+		sendmsg hStatic, $30, BMSCR.38
 	LoadCursor 0, 32649     //スタティックテキスト上のカーソルをハンドカーソルに変更
 	SetClassLong hStatic, -12, stat
 	//スタティックテキストが描画されているときに送られてくるウィンドウメッセージ
