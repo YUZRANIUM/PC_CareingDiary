@@ -177,7 +177,7 @@
 /*******************************************************************************
 		SQLite DB Table Schema Infomation for HSP3.6 (SQLele)
 ********************************************************************************/
-	//#include "hsp3utf.as"
+	#include "hsp3utf.as"
 	#include "hsp3util.as"
 	#include "sqlele.hsp"
 	#include "00_module_pc.hsp"
