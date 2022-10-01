@@ -131,18 +131,49 @@
 		switch tabhwnd
 			/***メインのタブコントロール***/
 			case hTab_main
-				//ChangeTab ID_TAB_MOTI, hTab_main
-				gsel wID + ID_TAB_MOTI, -1
-				sendmsg hTab_main, $130B
-				wID = stat
-				gsel wID + ID_TAB_MOTI, 1
-
-				gsel ID_WIN_MAIN
+				My_ChangeTab ID_TAB_MOTI, hTab_main, ID_WIN_MAIN
+				//gsel wID + ID_TAB_MOTI, -1
+				//sendmsg hTab_main, $130B
+				//wID = stat
+				//gsel wID + ID_TAB_MOTI, 1
+				//gsel ID_WIN_MAIN
 				swbreak
 			/***入れ子のタブコントロール***/
 			case hTabOMI
+				setting(5, 0) = -1
 				ChangeTab ID_OMTAB_CPU, hTabOMI
 				gsel ID_TAB_OMISE
+				swbreak
+		swend
+	}
+	if (nmhdr(2) == LVN_COLUMNCLICK) {
+		dupptr nmlv, lparam, 40, 4 : index = nmlv(4)
+		setting(5, 0) = -1
+		switch tabhwnd
+			/***CPU***/
+			case hLVCPU
+				sql_open db
+				sql_q "BEGIN;"
+				sdim cpu, 2048
+				swc = swc * -1
+				if swc == -1 {
+					sql_q "SELECT * FROM MyCPU ORDER BY " + col_clis(index) + " DESC;"
+				}
+				else {
+					sql_q "SELECT * FROM MyCPU ORDER BY " + col_clis(index) + " ASC;"
+				}
+				DelListItem id_LVCPU, 0
+				col_clis = sql_collist() : split col_clis, ",", col_clis
+				Datainput rec_cnum, col_cnum, col_clis, cpu
+				gsel ID_OMTAB_CPU
+				My_InsertChItem id_LVCPU, cpu, rec_cnum, col_cnum
+				sql_q "COMMIT;"
+				sql_close
+				gsel ID_WIN_MAIN
+				swbreak
+			case hLVGPU
+				swbreak
+			case hLVROM
 				swbreak
 		swend
 	}
