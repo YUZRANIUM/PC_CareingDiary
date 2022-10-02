@@ -93,7 +93,7 @@
 //p1 : "タブつまみ部分の文字列"
 //p2 : タブの項目として貼り付けるbgscr命令のウィンドウID値
 //index = 0～ : タブの序列
-//p4 : タブコントロールのオブジェクトハンドル
+//p3 : タブコントロールのオブジェクトハンドル
 #deffunc InsertTab str p1, int p2, int index, var p3
 	pszText = p1 : tcitem = 1, 0, 0, varptr(pszText)
 	sendmsg p3, $1307, index, varptr(tcitem)
