@@ -198,6 +198,12 @@
 		"typescript.format.insertSpaceAfterOpeningAndBeforeClosingNonemptyParenthesis": true,
 		"typescript.format.insertSpaceAfterOpeningAndBeforeClosingTemplateStringBraces": true,
 		"typescript.tsserver.useSyntaxServer": "never",
-		"editor.tabSize": 4
+		"editor.tabSize": 4,
+		"commentAnchors.tagHighlights.enabled": true,
+	},
+	"extensions": {
+		"recommendations": [
+			"ExodiusStudios.comment-anchors"
+		]
 	}
 }
