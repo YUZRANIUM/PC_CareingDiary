@@ -1,9 +1,10 @@
 //					<<  変数の定義  >>
 
 	//各ウィンドウID
-	#enum ID_WIN_MAIN = 0	//メインウィンドウ
-	#enum ID_WIN_INFO		//情報ウィンドウ
+	#enum ID_WIN_MASTER = 0
 	#enum ID_WIN_OPEN		//OPウィンドウ
+	#enum ID_WIN_MAIN		//メインウィンドウ
+	#enum ID_WIN_INFO		//情報ウィンドウ
 	//bgscr命令のウィンドウID
 	#enum ID_TAB_MOTI		//タブid持ち物
 	#enum ID_TAB_SOUKO		//タブid倉庫
@@ -71,6 +72,8 @@
 	fname = ""
 	//設定変更時のゲーム速度
 	string2 = ""
+	//ログ表示用の時間
+	time = "" + gettime(1) + "/" + gettime(3) + " " + gettime(4) + ":" + gettime(5) + ":" + gettime(6)
 
 	//単位変換
 	//u(0):rom変換カウンタ u(1):ssd変換カウンタ
@@ -140,37 +143,39 @@
 	//商品データ
 	sdim cpu, 2048 : sdim gpu, 2048 : sdim rom, 2048 : sdim ssd, 2048
 	//レコードの数
-	dim rec_cnum      : dim rec_gnum      : dim rec_rnum      : dim rec_s
+	dim rec_cnum   : dim rec_gnum   : dim rec_rnum   : dim rec_snum
 	//カラムの数
-	dim col_cnum     : dim col_gnum     : dim col_rnum     : dim col_si
+	dim col_cnu    : dim col_gnum   : dim col_rnum   : dim col_snum
 	//カラムリスト
-	sdim col_clis, 64 : sdim col_glis, 64 : sdim col_rlis, 64 : sdim col_s, 64
+	sdim col_clis, 64 : sdim col_glis, 64 : sdim col_rlis, 64 : sdim col_slis, 64
 	//カラムの幅
 	column_w = 60, 60, 110, 85, 80, 80
+	//昇降順切り替え
+	swc = 1 : swg = 1 : swr = 1 : sws = 1
 
 	/***SQL***/
 	sql_open db
 	sql_q "BEGIN;"
 
-		/***CPU***/
+	/***CPU***/
 	sql_q "SELECT * FROM MyCPU;"
-			//レコードの数
+	//レコードの数
 	rec_cnum = stat
-			//カラムの数
+	//カラムの数
 	col_cnum = length(tmparr)
-			//カラムリスト
+	//カラムリスト
 	col_clis = sql_collist() : split col_clis, ",", col_clis
-			//データのインプット
+	//データのインプット
 	Datainput rec_cnum, col_cnum, col_clis, cpu
 
-		/***GPU***/
+	/***GPU***/
 	sql_q "SELECT * FROM MyGPU;"
 	rec_gnum = stat
 	col_gnum = length(tmparr)
 	col_glis = sql_collist() : split col_glis, ",", col_glis
 	Datainput rec_gnum, col_gnum, col_glis, gpu
 
-		/***ROM***/
+	/***ROM***/
 	sql_q "SELECT * FROM MyROM;"
 	rec_rnum = stat
 	col_rnum = length(tmparr)

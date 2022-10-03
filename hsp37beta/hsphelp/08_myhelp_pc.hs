@@ -6,13 +6,13 @@
 ;
 
 %date
-2022/09/30
+2022/10/03
 %author
 ゆずらにうむ
 %url
 https://twitter.com/YUZRANIUM
 %dll
-00_module_pc.hsp
+00_module_pc
 user32.as
 %type
 ユーザー定義命令

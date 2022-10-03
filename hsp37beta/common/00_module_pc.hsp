@@ -80,7 +80,6 @@
 	dim rect, 4
 	return p3
 /*******************************************************************************/
-
 //CreateTab p1, p2, p3, p4
 //タブコントロールを設置します。
 //p1～p2=タブコントロールのX/Y方向のサイズ
@@ -94,7 +93,7 @@
 //p1 : "タブつまみ部分の文字列"
 //p2 : タブの項目として貼り付けるbgscr命令のウィンドウID値
 //index = 0～ : タブの序列
-//p4 : タブコントロールのオブジェクトハンドル
+//p3 : タブコントロールのオブジェクトハンドル
 #deffunc InsertTab str p1, int p2, int index, var p3
 	pszText = p1 : tcitem = 1, 0, 0, varptr(pszText)
 	sendmsg p3, $1307, index, varptr(tcitem)
@@ -106,8 +105,9 @@
 	SetWindowLong hwnd, -16, $40000000
 	SetParent hwnd, p3
 	return
+#global
 
-
+#module
 //ChangeTab p1,
 //タブ切り替え処理用
 //p1 : タブの項目として貼り付けるbgscr命令の初回ウィンドウID値
@@ -118,21 +118,22 @@
 	wID = stat
 	gsel wID + p1, 1
 	return
+#global
 /*******************************************************************************/
-
+#module
 //My_ChangeTab %1,%2,%3
 //タブ切り替え処理用
 //%1 : タブの項目として貼り付けるbgscr命令の初回ウィンドウID値
 //%2 : タブコントロールのオブジェクトハンドル
 //%3 : タブが設置されているウィンドウID
 #define global My_ChangeTab(%1,%2,%3)\
-		dupptr nmhdr, lparam, 12, 4\
-		: if nmhdr(0) = %2 & nmhdr(2) = -551 {\
-		:	ChangeTab %1,%2\
-		:	gsel %3\
-		:}
-/*******************************************************************************/
+		gsel wID + %1, -1\
+		: sendmsg %2, $130B\
+		: wID = stat\
+		: gsel wID + %1, 1\
+		: gsel %3
 #global
+/*******************************************************************************/
 
 //【HSP3.x 移植版】
 //『HSPの裏技』リストビューを作成してみる ACT-1
@@ -260,9 +261,8 @@
 #module
 //リストビューアイテムの削除
 //h1 : リストビューのオブジェクトID
-//index : アイテムのインデックス
-#deffunc DelListItem int h1, int pp
-	sendmsg objinfo(h1, 2), 0x1009, pp, 0
+#deffunc DelListItem int h1
+	sendmsg objinfo(h1, 2), 0x1009, 0, 0
 	return
 #global
 

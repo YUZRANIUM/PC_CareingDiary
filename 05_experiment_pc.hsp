@@ -1,5 +1,5 @@
 //                              試作用ファイル
-
+#packopt runtime "hsp3utf.hrt"
 #define SW1
 #define SW2
 #ifdef SW1
@@ -9,32 +9,24 @@
 	#include "gdi32.as"
 	#include "sqlele.hsp"
 	#include "00_module_pc.hsp"
-	screen 0, 1200, 900, 0 : font "メイリオ", 16 : objmode 2, 1
+
+	screen 0, 1100, 650, 2 : font "メイリオ", 16 : objmode 2, 1
+	hwindow = hwnd
 	mref BMSCRn, 67 : hFontn = BMSCRn.38
-	sdim all, 2048 : sdim all_clum, 64
+
 	sdim cpu, 2048 : sdim data_cpu, 1024 : sdim cpu_culm, 64 : dim c_culm_num
 	sdim gpu, 2048 : sdim data_gpu, 1024 : sdim gpu_culm, 64 : dim g_culm_num
 	sdim rom, 2048 : sdim data_rom, 1024 : sdim rom_culm, 64 : dim r_culm_num
 	cpu_culm = "" : gpu_culm = "" : rom_culm = "" : all_clum = ""
 
-	sdim moni0, 2048 : sdim moni1, 2048
 	Tyuc = 1 : Tyug = 1 : Tyur = 1
-	clum_w = 60, 60, 110, 85, 80, 80, 80, 80
-	c_clum_w = 60, 60, 110, 85, 80, 80
-	g_clum_w = 60, 60, 110, 85, 80, 80
-	r_clum_w = 60, 60, 110, 85, 80, 80
+	c_clum_w = 50, 55, 75, 80, 80, 80
+	g_clum_w = 50, 55, 75, 80, 80, 80
+	r_clum_w = 50, 55, 75, 80, 80, 80
 	dim cnum : f = "Syouhin.db"
 
 	sql_open f
 	sql_q "BEGIN;"
-
-	sql_q "SELECT * FROM MyAll;"
-	//レコードの数
-	cunt = stat
-	all_clum_num = length(tmparr)
-	all_clum = sql_collist() : split all_clum, ",", all_clum
-	Datainput cunt, all_clum_num, all_clum, all
-	moni1 += "" + moni0 : sdim moni0
 
 	sql_q "SELECT * FROM MyCPU;"
 	//レコードの数
@@ -57,50 +49,97 @@
 	r_culm_num = length(tmparr)
 	Datainput rom_cunt, r_culm_num, rom_culm, rom
 
-	pos 10, 0 : mes f
-	x = ginfo(14)
+	sql_q "COMMIT;"
+	sql_close
 
-	pos 10, 30 : mesbox moni1, 400, 400, 4 : id_moni1 = stat
+/*******************************************************************************
+								専用画面1
+********************************************************************************/
 
+	bgscr 1, 1100, 625
+	//SECTION bgscr命令について
+	//NOTE 親子関係
+	SetWindowLong hwnd, -16, $40000000
+	SetParent hwnd, hwindow
+
+	font "メイリオ", 20 : objmode 2, 0
+	pos 20, 0
+	mes "bgscr命令による専用画面遷移動作実験", 1
+	x1 = ginfo(14)
+
+	objsize 100, 25 : pos x1 + 30
+	button gosub "Return", *newwin
+
+	gsel 1, -1
+
+/*******************************************************************************
+								専用画面2
+********************************************************************************/
+	bgscr 2, 1100, 625, 2
+	SetWindowLong hwnd, -16, $40000000
+	SetParent hwnd, hwindow
+
+	font "メイリオ", 16 : objmode 2, 0
+	pos 10, 0 : mes f : x = ginfo(14)
 	objsize 200, 25 : pos x + 20, 0
+
 	button gosub "Your Get List Items", *getitem
-	id_butget = stat
-	hButget = objinfo_hwnd(id_butget)
+	id_butget = stat:hButget = objinfo_hwnd(id_butget)
 
-	font "メイリオ", 12
-	mref BMSCRn1, 67 : hFontn1 = BMSCRn1.38
+	pos x + 300, 0
+	button gosub "NewWindow", *gowindow
+	id_gowin = stat : hButnew = objinfo_hwnd(id_gowin)
 
-	pos 420, 30
+	pos 20, 30
 	/***リストビューの設置***/
-	My_CreateListView 710, 280, id_cpumoni, hLVcsouko
+	My_CreateListView 500, 280, id_cpumoni, hLVcsouko
 	My_InsertColumn id_cpumoni, cpu_culm, c_culm_num, c_clum_w
 	My_InsertChItem id_cpumoni, cpu, cpu_cunt, c_culm_num
 
-	pos 420, 320
+	pos 550, 30
 	/***リストビューの設置***/
-	My_CreateListView 710, 280, id_gpumoni, hLVgsouko
+	My_CreateListView 500, 280, id_gpumoni, hLVgsouko
 	My_InsertColumn id_gpumoni, gpu_culm, g_culm_num, g_clum_w
 	My_InsertChItem id_gpumoni, gpu, gpu_cunt, g_culm_num
 
-	pos 420, 610
+	pos 20, 320
 	/***リストビューの設置***/
-	My_CreateListView 710, 280, id_rommoni, hLVrsouko
+	My_CreateListView 500, 280, id_rommoni, hLVrsouko
 	My_InsertColumn id_rommoni, rom_culm, r_culm_num, r_clum_w
 	My_InsertChItem id_rommoni, rom, rom_cunt, r_culm_num
 
-	objprm id_moni1, moni1
-
-	/******フォントの反映******/
-	sendmsg hLVcsouko, $30, , hFontn1
-	sendmsg hLVgsouko, $30, , hFontn1
-	sendmsg hLVrsouko, $30, , hFontn1
-
 	oncmd gosub *listnotify, WM_NOTIFY
+	/******フォントの反映******/
+	sendmsg hLVcsouko, $30, , hFontn
+	sendmsg hLVgsouko, $30, , hFontn
+	sendmsg hLVrsouko, $30, , hFontn
+
+	gsel 0, 1
+	gsel 1, 1
 	onexit gosub *Owari
 	stop
 
+*newwin
+	gsel 1, -1
+	gsel 2, 1
+	/* NOTE bg画面からメイン画面に戻る際の注意
+	描画、操作先ウィンドウを一度親玉に戻さないと
+	その後の分ジェクトの更新でエラーになる
+	描画･操作先の管理は意識して*/
+	return
+
+*gowindow
+	gsel 2, -1
+	gsel 1, 1
+	//NOTE メイン画面からbg画面に遷移する際の注意
+	//メイン画面を gsel 0, -1 としてはダメ
+	return
+
+
+
 //選択したリストアイテムの取得
 *getitem
+	gsel 2
 	sdim infonoteC, 1024 : sdim infonoteG, 1024 : sdim infonoteR, 1024 : sdim infotext, 1024
 	My_GetListItem id_cpumoni, 6, infonoteC
 	My_GetListItem id_gpumoni, 6, infonoteG
@@ -111,6 +150,8 @@
 
 //並べ替え
 *listnotify
+	sql_open f
+	sql_q "BEGIN;"
 	dupptr nmhdr, lparam, 12, 4 : id = nmhdr(0)
 	if (nmhdr(2) = LVN_COLUMNCLICK) {
 		dupptr nmlv, lparam, 40, 4 : inde = nmlv(4)
@@ -126,7 +167,8 @@
 					sql_q "SELECT * FROM MyCPU ORDER BY " + cpu_culm(inde) + " ASC;"
 				}
 				/***今あるリストアイテムの削除***/
-				DelListItem id_cpumoni, 0
+				gsel 2
+				DelListItem id_cpumoni
 				cpu_culm = sql_collist() : split cpu_culm, ",", cpu_culm
 				Datainput cpu_cunt, c_culm_num, cpu_culm, cpu
 				My_InsertChItem id_cpumoni, cpu, cpu_cunt, c_culm_num
@@ -142,7 +184,8 @@
 				else {
 					sql_q "SELECT * FROM MyGPU ORDER BY " + gpu_culm(inde) + " ASC;"
 				}
-				DelListItem id_gpumoni, 0
+				gsel 2
+				DelListItem id_gpumoni
 				gpu_culm = sql_collist() : split gpu_culm, ",", gpu_culm
 				Datainput gpu_cunt, g_culm_num, gpu_culm, gpu
 				My_InsertChItem id_gpumoni, gpu, gpu_cunt, g_culm_num
@@ -158,19 +201,23 @@
 				else {
 					sql_q "SELECT * FROM MyROM ORDER BY " + rom_culm(inde) + " ASC;"
 				}
-				DelListItem id_rommoni, 0
+				gsel 2
+				DelListItem id_rommoni
 				rom_culm = sql_collist() : split rom_culm, ",", rom_culm
 				Datainput rom_cunt, r_culm_num, rom_culm, rom
 				My_InsertChItem id_rommoni, rom, rom_cunt, r_culm_num
 				swbreak
 		swend
+		//gsel 2
+		sql_q "COMMIT;"
+		sql_close
 	}
 	return
 
-
 *Owari
-	sql_q "COMMIT;"
-	sql_close
+	//gsel 2
+	//sql_q "COMMIT;"
+	//sql_close
 	end
 	return
 #else

@@ -6,6 +6,7 @@
 	"editor.insertSpaces": false,
 	"files.exclude": {
 		"hsp36": true,
+		"hsp37beta": true,
 		"hsptmp": true,
 		"obj": true,
 		"Project": true,
@@ -88,17 +89,17 @@
 	"git-graph.fileEncoding": "UTF-8",
 	"gitHistory.includeRemoteBranches": true,
 	"language-hsp3.choiceWorkDirCur": true,
-	"language-hsp3.compiler": "\"C:\\HSP.git\\hsp36\\hspc.exe\"",
+	"language-hsp3.compiler": "C:/HSP.git/hsp37beta/hspc.exe/",
 	"language-hsp3.encoding": "UTF-8",
 	"language-hsp3.executor.enable": true,
-	"language-hsp3.executor.index": "3.6",
+	"language-hsp3.executor.index": "3.7",
 	"language-hsp3.executor.paths": {
-		"3.6": {
+		"3.7": {
 			"hide": false,
-			"path": "C:\\HSP.git\\hsp36\\hspc.exe",
+			"path": "C:/HSP.git/hsp37beta/hspc.exe/",
 			"encoding": "UTF-8",
 			"buffer": 204800,
-			"helpman": "C:\\HSP.git\\hsp36\\helphsp\\helpman.exe",
+			"helpman": "C:/HSP.git/hsp37beta/helphsp/helpman.exe/",
 			"commands": {
 				"run": [
 					"-dwCra",
@@ -111,7 +112,7 @@
 			}
 		}
 	},
-	"language-hsp3.helpman.path.local": "\"C:\\HSP.git\\hsp36\\hsphelp\\helpman.exe\"",
+	"language-hsp3.helpman.path.local": "C:/HSP.git/hsp37beta/hsphelp/helpman.exe/",
 	"language-hsp3.helpman.path.online": "https://docs.hsp.moe/3.6/?q=%s",
 	"html.format.templating": true,
 	"markdown.experimental.validate.enabled": true,
@@ -130,5 +131,10 @@
 	"typescript.format.insertSpaceAfterTypeAssertion": true,
 	"typescript.format.insertSpaceBeforeFunctionParenthesis": true,
 	"editor.autoIndent": "full",
-	"editor.tabSize": 4
+	"editor.tabSize": 4,
+	"[hsp3]": {
+		"editor.defaultFormatter": "vain0x.hsp3-analyzer-mini"
+	},
+	"language-hsp3.helpman.enable": "online",
+	"explorer.excludeGitIgnore": false
 }
