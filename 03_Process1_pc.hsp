@@ -4,28 +4,34 @@
 	//ループ制御ボタンの表示切り替え
 	if setting(5, 0) == -1 {
 		gsel ID_WIN_MAIN : objprm id_opebut, opebut_text(0)
-		wait 10
+		wait 32
 		goto *main
 	}
 	else {
 		gsel ID_WIN_MAIN : objprm id_opebut, opebut_text(1)
 	}
+
 	/***変数処理と描画***/
-	redraw 0, 0, 0, 800, 200
+	redraw 0
+
 	gt(6, 0) = str(int(gt(6, 0)) + 1) //ゲーム内時間カウンタ
 	if int(gt(6, 0)) > 5000 : gt(6, 0) = "1"
 
+	//カウンター変速機
 	gtcontrol = int(gt(6, 0)) \ setting(4, 0)
+
 	if gtcontrol == 0 {
 		gt(5, 0) = strf("%02d", int(gt(5, 0)) + 1)
 		st(2, 0) = str(double(st(2, 0)) + 0.07)
 		st(3, 0) = str(double(st(3, 0)) + 0.1)
 		st(6, 0) = str(double(st(6, 0)) - 0.01)
 	}
+
 	/***単位変換チェック***/
 	if int(st(2, 0)) > 1023 : objprm layid0, 0
 	if int(st(3, 0)) > 1023 : objprm layid0, 1
-	await 32 : redraw 1, 0, 0, 800, 200
+
+	await 32 : redraw 1
 	/***オートセーブ***/
 	gosub *chautosave
 	goto *main
@@ -63,7 +69,6 @@
 			if stat = 0 : return
 			fname = refstr
 			vload fname
-
 			//メインウィンドウ更新
 			gsel ID_WIN_MAIN, 0 : redraw 0 : redraw 1
 			gsel ID_TAB_MOTI, 0 : objprm id_motimono, motimono
@@ -100,7 +105,6 @@
 				fname = savedir + "\\autosave.var"
 			}
 			mysave u, st, gt, setting, motimono, fname
-
 			//sql_q "COMMIT;"
 			//sql_close
 			oncmd 0
@@ -111,6 +115,17 @@
 		case CMD_INFO
 			setting(5, 0) = -1
 			gsel ID_WIN_INFO, 1
+			swbreak
+
+		case CMD_START
+			setting(5, 0) = -1
+			exist fname
+			if strsize == -1 {
+				fname = savedir + "\\autosave.var"
+			}
+			mysave u, st, gt, setting, motimono, fname
+			gsel ID_WIN_MAIN, -1
+			gsel ID_WIN_OPEN, 1
 			swbreak
 	swend
 	return
@@ -131,7 +146,6 @@
 		switch tabhwnd
 			/***メインのタブコントロール***/
 			case hTab_main
-				//My_ChangeTab ID_TAB_MOTI, hTab_main, ID_WIN_MAIN
 				gsel wID + ID_TAB_MOTI, -1
 				sendmsg hTab_main, $130B
 				wID = stat
@@ -162,20 +176,20 @@
 				else {
 					sql_q "SELECT * FROM MyCPU ORDER BY " + col_clis(index) + " ASC;"
 				}
-				DelListItem id_LVCPU, 0
 				col_clis = sql_collist() : split col_clis, ",", col_clis
 				Datainput rec_cnum, col_cnum, col_clis, cpu
 				gsel ID_OMTAB_CPU
+				DelListItem id_LVCPU
 				My_InsertChItem id_LVCPU, cpu, rec_cnum, col_cnum
-				gsel ID_WIN_MAIN
 				swbreak
 			case hLVGPU
 				swbreak
 			case hLVROM
 				swbreak
-				sql_q "COMMIT;"
-				sql_close
 		swend
+		gsel ID_WIN_MAIN
+		sql_q "COMMIT;"
+		sql_close
 	}
 	return
 
@@ -201,9 +215,8 @@
 	objprm id_chkfutu, setting(2, 0)
 	objprm id_chkhaya, setting(3, 0)
 	gsel ID_WIN_OPEN, -1
-	gsel ID_WIN_MAIN, 1 : objprm layid0, "load"
 	gsel ID_TAB_LOG, 0 : objprm id_logmoni, logmoni
-	gsel ID_WIN_MAIN
+	gsel ID_WIN_MAIN, 1 : objprm layid0, "load"
 	return
 
 //======================================設定タブ処理
@@ -240,8 +253,8 @@
 	setting(5, 0) = -1
 	winID = wparam
 	switch winID
-		//------------------------------メインウィンドウ[winID=0]
-		case ID_WIN_MAIN
+		//------------------------------Master Window
+		case ID_WIN_MASTER
 			exist fname
 			if strsize == -1 {
 				fname = savedir + "\\autosave.var"
@@ -252,16 +265,9 @@
 			//sql_close
 			end
 			swbreak
-		//------------------------------情報ウィンドウ[winID=1]
+		//------------------------------情報ウィンドウ
 		case ID_WIN_INFO
 			gsel ID_WIN_INFO, -1
-			swbreak
-		//------------------------------オープニング画面
-		case ID_WIN_OPEN
-			oncmd 0
-			//sql_q "COMMIT;"
-			//sql_close
-			end
 			swbreak
 	swend
 	return

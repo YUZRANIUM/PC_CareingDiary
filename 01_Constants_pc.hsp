@@ -1,9 +1,10 @@
 //					<<  変数の定義  >>
 
 	//各ウィンドウID
-	#enum ID_WIN_MAIN = 0	//メインウィンドウ
-	#enum ID_WIN_INFO		//情報ウィンドウ
+	#enum ID_WIN_MASTER = 0
 	#enum ID_WIN_OPEN		//OPウィンドウ
+	#enum ID_WIN_MAIN		//メインウィンドウ
+	#enum ID_WIN_INFO		//情報ウィンドウ
 	//bgscr命令のウィンドウID
 	#enum ID_TAB_MOTI		//タブid持ち物
 	#enum ID_TAB_SOUKO		//タブid倉庫
@@ -71,6 +72,8 @@
 	fname = ""
 	//設定変更時のゲーム速度
 	string2 = ""
+	//ログ表示用の時間
+	time = "" + gettime(1) + "/" + gettime(3) + " " + gettime(4) + ":" + gettime(5) + ":" + gettime(6)
 
 	//単位変換
 	//u(0):rom変換カウンタ u(1):ssd変換カウンタ
@@ -140,11 +143,11 @@
 	//商品データ
 	sdim cpu, 2048 : sdim gpu, 2048 : sdim rom, 2048 : sdim ssd, 2048
 	//レコードの数
-	dim rec_cnum   : dim rec_gnum   : dim rec_rnum   : dim rec_s
+	dim rec_cnum   : dim rec_gnum   : dim rec_rnum   : dim rec_snum
 	//カラムの数
-	dim col_cnu    : dim col_gnum   : dim col_rnum   : dim col_si
+	dim col_cnu    : dim col_gnum   : dim col_rnum   : dim col_snum
 	//カラムリスト
-	sdim col_clis, 64 : sdim col_glis, 64 : sdim col_rlis, 64 : sdim col_s, 64
+	sdim col_clis, 64 : sdim col_glis, 64 : sdim col_rlis, 64 : sdim col_slis, 64
 	//カラムの幅
 	column_w = 60, 60, 110, 85, 80, 80
 	//昇降順切り替え
