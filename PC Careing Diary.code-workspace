@@ -201,7 +201,6 @@
 		"editor.tabSize": 4,
 		"commentAnchors.tagHighlights.enabled": true,
 		"files.exclude": {
-			"**/[A-Z]*": true,
 			"**/*.pdf": true
 		},
 		"language-hsp3.helpman.enable": "online",
@@ -226,6 +225,12 @@
 				"patterns": []
 			}
 		},
+		"markdown.experimental.updateLinksOnFileMove.enabled": "always",
+		"markdown.preview.scrollPreviewWithEditor": false,
+		"markdown.preview.scrollEditorWithPreview": false,
+		"markdown.extension.list.indentationSize": "inherit",
+		"markdown.extension.toc.unorderedList.marker": "*",
+		"explorer.sortOrderLexicographicOptions": "default",
 	},
 	"extensions": {
 		"recommendations": [

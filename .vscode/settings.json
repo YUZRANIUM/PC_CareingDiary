@@ -5,6 +5,7 @@
 	"editor.multiCursorModifier": "ctrlCmd",
 	"editor.insertSpaces": false,
 	"files.exclude": {
+		"{!/*.db,!/*.sql}": true,
 		"hsp36": true,
 		"hsp37beta": true,
 		"hsptmp": true,
@@ -136,5 +137,8 @@
 		"editor.defaultFormatter": "vain0x.hsp3-analyzer-mini"
 	},
 	"language-hsp3.helpman.enable": "online",
-	"explorer.excludeGitIgnore": false
+	"explorer.excludeGitIgnore": false,
+	"[markdown]": {
+		"editor.defaultFormatter": "yzhang.markdown-all-in-one"
+	}
 }

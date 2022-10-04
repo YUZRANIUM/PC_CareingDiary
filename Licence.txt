@@ -1,11 +1,18 @@
-
-
-
-
+hsp37beta/common/
+    + user32.as
+    + gdi32.as
+    + hsp3utf.as
+    + hsp3util.as
+    + hspda.as
+    + mod_menu.as
++ hsprt
++ hsp3utf.hrt
++ hspcmp.dll
++ hspda.dll
+----------------------------------------
 Hot Soup Processor (HSP)
 Copyright (C) 1997-2021, Onion Software/onitama, all rights reserved.
 Made with base technology of OpenHSP.
-
 
 OpenHSP
 Copyright (C) 1997-2021, Onion Software/onitama.
@@ -29,7 +36,9 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 
 
-  sqlite3.dll
+hsp37beta/common/
+    + sqlele.hsp
++ sqlite3.dll
 ----------------------------------------
 
   All of the code and documentation in SQLite has been dedicated to the public domain by the authors.
@@ -41,7 +50,16 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 
 
-
+hsp37beta/
+    + common/00_module_pc.hsp
+    + hsphelp/08_myhelp_pc.hs
++ 01_Constants_pc.hsp
++ 02_UI_pc.hsp
++ 03_Process1_pc.hsp
++ 04_Process2_pc.hsp
++ 05_experiment_pc.hsp
++ 09_ChangeLog_pc.txt
++ readme.md
 ----------------------------------------
   MIT License
 
