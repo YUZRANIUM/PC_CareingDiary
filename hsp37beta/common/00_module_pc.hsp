@@ -1,16 +1,7 @@
 //					<<  自作命令･関数の作成  >>
 
-//TCS_BUTTONSとの組み合わせで平らなボタンを表示する
-//TCS_BUTTONS以外の組み合わせによっては表示の挙動が変になります。
-#define global TCS_FLATBUTTONS $8
-//TCS_FLATBUTTONSとTCS_BUTTONSの組み合わせでマウスカーソル下のボタンをハイライト表示するようにします
-#define global TCS_HOTTRACK $40
-//タブのつまみをボタン形式で表示します。
-#define global TCS_BUTTONS $100
-//タブ項目の文字列の長さに関わらず、タブつまみの横幅をすべて同じサイズにします
+//タブ項目の文字列の長さに関わらずタブつまみの横幅をすべて同じサイズにします
 #define global TCS_FIXEDWIDTH $400
-//タブつまみにフォーカスを受け取らないようにします。
-#define TCS_FOCUSNEVER $8000
 
 //スタティックテキスト
 //winobj "static", "表示するもの", <拡張ウィンドウスタイル>, <ウィンドウスタイル>, Xサイズ, Yサイズ
@@ -64,7 +55,6 @@
 #func GetClientRect "GetClientRect" int, int
 #func SetWindowLong "SetWindowLongA" int, int, int
 #func SetParent "SetParent" int, int
-
 #uselib "gdi32"
 #cfunc GetStockObject "GetStockObject" int
 
@@ -97,7 +87,6 @@
 #deffunc InsertTab str p1, int p2, int index, var p3
 	pszText = p1 : tcitem = 1, 0, 0, varptr(pszText)
 	sendmsg p3, $1307, index, varptr(tcitem)
-
 	GetClientRect p3, varptr(rect)
 	sendmsg p3, $1328, , varptr(rect)
 
@@ -345,9 +334,9 @@
 #deffunc hyperlink str p1, str p2, int p3, int p4
 	dim RECT, 4
 	winobj "static", p1, , $50000001 | $100, p3, p4
-		hStatic = objinfo(stat, 2)
+	hStatic = objinfo(stat, 2)
 	mref BMSCR, 67
-		sendmsg hStatic, $30, BMSCR.38
+	sendmsg hStatic, $30, BMSCR.38
 	LoadCursor 0, 32649     //スタティックテキスト上のカーソルをハンドカーソルに変更
 	SetClassLong hStatic, -12, stat
 	//スタティックテキストが描画されているときに送られてくるウィンドウメッセージ
@@ -374,9 +363,9 @@
 
 *wmsetcursor
 	if (lparam & $FFFF) != 1 : return
-		// オブジェクトの左上XY、右下XYの座標位置を取得
+	// オブジェクトの左上XY右下XYの座標位置を取得
 	GetWindowRect hStatic, varptr(RECT)
-		// 取得したオブジェクトの座標位置とカーソルの座標位置を比較
+	// 取得したオブジェクトの座標位置とカーソルの座標位置を比較
 	PtInRect varptr(RECT), ginfo(0), ginfo(1)
 	if stat {
 		if oncursor : return
