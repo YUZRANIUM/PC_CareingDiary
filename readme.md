@@ -61,17 +61,17 @@ PC（自作パソコン）を作って育成していく育成･放置系ゲー
 <br>
 <br>
 
+* hsp37beta/common/
+	* user32.as
+	* gdi32.as
+	* hsp3utf.as
+	* hsp3util.as
+	* hspda.as
+	* mod_menu.as
 * hsprt
 * hsp3utf.hrt
 * hspcmp.dll
 * hspda.dll
-* hsp37beta/common/
-	* user32.as
-	* gdi32.as
-	* kernel32.as
-	* hsp3utf.as
-	* hsp3util.as
-	* mod_menu.as
 ***
 Hot Soup Processor (HSP)
 Copyright (C) 1997-2021, Onion Software/onitama, all rights reserved.
@@ -102,9 +102,9 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 <br />
 <br />
 
-* sqlite3.dll
 * hsp37beta/common/
 	* sqlele.hsp
+* sqlite3.dll
 ***
 All of the code and documentation in SQLite has been dedicated to the public domain by the authors.
 
@@ -121,9 +121,7 @@ Anyone is free to copy, modify, publish, use, compile, sell, or distribute the o
 * hsp37beta/
 	* common / 00_module_pc.hsp
 	* hsphelp / 08_myhelp_pc.hs
-<br />
-<!--  -->
-
+<br /><!--  -->
 * 01_Constants_pc.hsp
 * 02_UI_pc.hsp
 * 03_Process1_pc.hsp
