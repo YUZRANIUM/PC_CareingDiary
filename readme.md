@@ -62,7 +62,6 @@ PC（自作パソコン）を作って育成していく育成･放置系ゲー
 <br />
 
 ## その他
-
 ### 使用言語 (Codeing Language)
 
 - [Hot Soup Processor (HSP3)](https://hsp.tv/)
@@ -74,6 +73,10 @@ PC（自作パソコン）を作って育成していく育成･放置系ゲー
 
 # Licence
 
+* hsprt
+* hsp3utf.hrt
+* hspcmp.dll
+* hspda.dll
 * hsp37beta/common/
 	* user32.as
 	* gdi32.as
@@ -81,12 +84,6 @@ PC（自作パソコン）を作って育成していく育成･放置系ゲー
 	* hsp3utf.as
 	* hsp3util.as
 	* mod_menu.as
-<!--  -->
-* hsprt
-* hsp3utf.hrt
-* hspcmp.dll
-* hspda.dll
-
 ***
 Hot Soup Processor (HSP)
 
@@ -115,7 +112,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 本ソフトウェアは、著作権者およびコントリビューターによって「現状のまま」提供されており、明示黙示を問わず、商業的な使用可能性、および特定の目的に対する適合性に関する暗黙の保証も含め、またそれに限定されない、いかなる保証もありません。著作権者もコントリビューターも、事由のいかんを問わず、 損害発生の原因いかんを問わず、かつ責任の根拠が契約であるか厳格責任であるか（過失その他の）不法行為であるかを問わず、仮にそのような損害が発生する可能性を知らされていたとしても、本ソフトウェアの使用によって発生した（代替品または代用サービスの調達、使用の喪失、データの喪失、利益の喪失、業務の中断も含め、またそれに限定されない）直接損害、間接損害、偶発的な損害、特別損害、懲罰的損害、または結果損害について、一切責任を負わないものとします。
 ***
 <br />
-<br />
+
 
 * sqlite3.dll
 * hsp37beta/common/
@@ -129,12 +126,13 @@ Anyone is free to copy, modify, publish, use, compile, sell, or distribute the o
 *ソース、コード形式またはコンパイルされたバイナリとして、目的、商用または非商用、手段を問わず、誰でもオリジナルの SQLiteコードを自由にコピー、変更、公開、使用、コンパイル、販売、配布することができます。*-->
 ***
 <br />
-<br />
 
 * hsp37beta/
 	* common / 00_module_pc.hsp
 	* hsphelp / 08_myhelp_pc.hs
 <br />
+<!--  -->
+
 * 01_Constants_pc.hsp
 * 02_UI_pc.hsp
 * 03_Process1_pc.hsp
@@ -143,7 +141,7 @@ Anyone is free to copy, modify, publish, use, compile, sell, or distribute the o
 * 09_ChangeLog_pc.txt
 * readme.md
 ***
-MIT License
+### MIT License
 
 Copyright (c) 2022 YUZURANIUM
 
