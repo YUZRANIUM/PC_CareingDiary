@@ -72,12 +72,12 @@ PC（自作パソコン）を作って育成していく育成･放置系ゲー
 * hsp3utf.hrt
 * hspcmp.dll
 * hspda.dll
-***
-Hot Soup Processor (HSP)
+
+### Hot Soup Processor (HSP)
 Copyright (C) 1997-2021, Onion Software/onitama, all rights reserved.
 Made with base technology of OpenHSP.
 
-OpenHSP
+### OpenHSP
 Copyright (C) 1997-2021, Onion Software/onitama.
 All rights reserved.
 
@@ -105,7 +105,8 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 * hsp37beta/common/
 	* sqlele.hsp
 * sqlite3.dll
-***
+
+## Public Domain
 All of the code and documentation in SQLite has been dedicated to the public domain by the authors.
 
 Anyone is free to copy, modify, publish, use, compile, sell, or distribute the original SQLite code, either in source code form or as a compiled binary, for any purpose, commercial or non-commercial, and by any means.
@@ -129,8 +130,8 @@ Anyone is free to copy, modify, publish, use, compile, sell, or distribute the o
 * 05_experiment_pc.hsp
 * 09_ChangeLog_pc.txt
 * readme.md
-***
-### MIT License
+
+## MIT License
 Copyright (c) 2022 YUZURANIUM
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
