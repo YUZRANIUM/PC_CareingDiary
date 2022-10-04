@@ -11,45 +11,45 @@ PC（自作パソコン）を作って育成していく育成･放置系ゲー
 <br />
 
 ## ファイルについて
-***
-1.  00_module_pc.hsp
-	- ユーザー定義命令･関数、Win32API定数のマクロ登録、その他外部から導入したモジュールなどをまとめたファイル.
 
-2.  01_Constants_pc.hsp
+1. 00_module_pc.hsp
+	- ユーザー定義命令･関数、一部のWin32API定数のマクロ登録、その他外部から導入したモジュールなどをまとめたファイル.
+<br />
+
+1. 01_Constants_pc.hsp
 	- 以下のスクリプト内で使用するほぼ全ての変数をここで定義･管理しています.
 	- ウィンドウIDに関してはマクロ名定数列挙にてこちらで管理.
-	- ファイル名が "Constants" -定数　となっているのは誤りです.
+	- ファイル名が "Constants" -定数  となっているのは誤りです.
+<br />
 
-
-3.  02_UI_pc.hsp
+1. 02_UI_pc.hsp
 	- メニューバーやボタン、タブコントロール、リストビューといったウィンドウオブジェクトをまとめています.
 	- 同時に必要なウィンドウメッセージ、及び各種割り込み設定もこちらで扱っています.
+<br />
 
-
-4.  03_Process1_pc.hsp
+1. 03_Process1_pc.hsp
 	- メインループの他、上記 03_UI_pc.hsp からのルーチンジャンプ後の処理は原則全てこちらで扱っています.
+<br />
 
-
-5.  04_Process2_pc.hsp
+1. 04_Process2_pc.hsp
 	- 描画に関するルーチンジャンプ処理のみこちらで管理しています.
 	- 今後、ゲーム内のアイテムなどを管理しているSQLの処理部分を追加していく予定.
+<br />
 
-
-6.  05_experiment_pc.hsp
+1. 05_experiment_pc.hsp
 	- 上記6つのスクリプトに変更を加える前にこちらで、加える変更箇所の動作確認や部分的な仮構築などを行います.
 	- その他、思いつきや実験的な取り組みなどが中心でプロジェクトとはさほど関係ありません.
+<br />
 
-
-7. 08_myhelp_pc.hs
+1. 08_myhelp_pc.hs
 	- 本プロジェクトとは関係ないが、00_module_pc内で定義してある自作命令やマクロについてののヘルプファイルです。現段階ではまだ不十分。
+<br />
 
+1. 09_ChangeLog_pc.txt
+	- 更新履歴です. ゲーム内で表示可能
+<br />
 
-8.  09_ChangeLog_pc.txt
-	- 更新履歴です.ゲーム内で表示可能
-
-
-
-9.  Syouhin.db
+1. Syouhin.db
 	- ゲーム内で扱うアイテムを管理しているデータベースファイルです.
 	- ゲーム内で用いられる名称、価格、レアリティーの他、性能値や補正値といったスクリプト内でのみ扱う、いわゆる一般的にマスクデータと呼ばれるデータが混在しているため、チートなどに対抗できず大きな脆弱性の一つとなっています.将来的に完全分離、個別管理･操作を実現させたい.   使用言語 : SQLite
 
@@ -66,16 +66,27 @@ PC（自作パソコン）を作って育成していく育成･放置系ゲー
 - Visual Studio Code
 <br />
 
-
 # Licence
+<br>
 
+* hsp37beta/common/
+	* user32.as
+	* gdi32.as
+	* kernel32.as
+	* hsp3utf.as
+	* hsp3util.as
+	* mod_menu.as
 
+* dir/
+	* hsprt
+	* hsp3utf.hrt
+	* hspcmp.dll
+	* hspda.dll
 
-
+***
 Hot Soup Processor (HSP)
 Copyright (C) 1997-2021, Onion Software/onitama, all rights reserved.
 Made with base technology of OpenHSP.
-
 
 OpenHSP
 Copyright (C) 1997-2021, Onion Software/onitama.
@@ -96,10 +107,14 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 *書面による特別の許可なしに、本ソフトウェアから派生した製品の宣伝または販売促進に、Onion Softwareの名前またはコントリビューターの名前を使用してはならない。*
 
 *本ソフトウェアは、著作権者およびコントリビューターによって「現状のまま」提供されており、明示黙示を問わず、商業的な使用可能性、および特定の目的に対する適合性に関する暗黙の保証も含め、またそれに限定されない、いかなる保証もありません。著作権者もコントリビューターも、事由のいかんを問わず、 損害発生の原因いかんを問わず、かつ責任の根拠が契約であるか厳格責任であるか（過失その他の）不法行為であるかを問わず、仮にそのような損害が発生する可能性を知らされていたとしても、本ソフトウェアの使用によって発生した（代替品または代用サービスの調達、使用の喪失、データの喪失、利益の喪失、業務の中断も含め、またそれに限定されない）直接損害、間接損害、偶発的な損害、特別損害、懲罰的損害、または結果損害について、一切責任を負わないものとします。*-->
+***
 <br />
 <br />
 
-### sqlite3.dll
+* ### hsp37beta/common/
+	* ### sqlele.hsp
+* ### dir/
+	* ### sqlite3.dll
 ***
 All of the code and documentation in SQLite has been dedicated to the public domain by the authors.
 Anyone is free to copy, modify, publish, use, compile, sell, or distribute the original SQLite code, either in source code form or as a compiled binary, for any purpose, commercial or non-commercial, and by any means.
@@ -111,7 +126,19 @@ Anyone is free to copy, modify, publish, use, compile, sell, or distribute the o
 <br />
 <br />
 
-### MIT License
+* hsp37beta/
+	* common / 00_module_pc.hsp
+	* hsphel / 08_myhelp_pc.hs
+* dir/
+	* 01_Constants_pc.hsp
+	* 02_UI_pc.hsp
+	* 03_Process1_pc.hsp
+	* 04_Process2_pc.hsp
+	* 05_experiment_pc.hsp
+	* 09_ChangeLog_pc.txt
+	* readme.md
+***
+MIT License
 
 Copyright (c) 2022 YUZURANIUM
 
