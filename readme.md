@@ -32,7 +32,7 @@ PC（自作パソコン）を作って育成していく育成･放置系ゲー
 	- 上記6つのスクリプトに変更を加える前にこちらで、加える変更箇所の動作確認や部分的な仮構築などを行います.
 	- その他、思いつきや実験的な取り組みなどが中心でプロジェクトとはさほど関係ありません.
 <br /><!--  -->
-	06, 07 欠番
+* 06, 07 欠番
 <br /><!--  -->
 * 08_myhelp_pc.hs
 	- 本プロジェクトとは関係ないが、00_module_pc内で定義してある自作命令やマクロについてののヘルプファイルです。現段階ではまだ不十分。
@@ -58,6 +58,7 @@ PC（自作パソコン）を作って育成していく育成･放置系ゲー
 <br />
 
 # Licence
+<br>
 
 * hsprt
 * hsp3utf.hrt
@@ -71,13 +72,11 @@ PC（自作パソコン）を作って育成していく育成･放置系ゲー
 	* hsp3util.as
 	* mod_menu.as
 ***
-Hot Soup Processor (HSP)
-
+#Hot Soup Processor (HSP)
 Copyright (C) 1997-2021, Onion Software/onitama, all rights reserved.
 Made with base technology of OpenHSP.
 
 OpenHSP
-
 Copyright (C) 1997-2021, Onion Software/onitama.
 All rights reserved.
 
@@ -99,13 +98,13 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 ***
 <br />
 
-
 * sqlite3.dll
 * hsp37beta/common/
 	* sqlele.hsp
 ***
 All of the code and documentation in SQLite has been dedicated to the public domain by the authors.
 Anyone is free to copy, modify, publish, use, compile, sell, or distribute the original SQLite code, either in source code form or as a compiled binary, for any purpose, commercial or non-commercial, and by any means.
+
 [SQLite HP URL](https://www.sqlite.org)
 
 <!--*SQLiteはパブリックドメインです。*
