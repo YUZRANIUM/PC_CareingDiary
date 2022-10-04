@@ -8,7 +8,7 @@ PC（自作パソコン）を作って育成していく育成･放置系ゲー
 - 不定期な更新です。
 
 ## ファイルについて
-<!--  -->
+<br /><!--  -->
 * 00_module_pc.hsp
 	- ユーザー定義命令･関数、一部のWin32API定数のマクロ登録、その他外部から導入したモジュールなどをまとめたファイル.
 <br /><!--  -->
@@ -106,12 +106,12 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 	* sqlele.hsp
 * sqlite3.dll
 
-## Public Domain
+## SQLite & SQlele
 All of the code and documentation in SQLite has been dedicated to the public domain by the authors.
 
 Anyone is free to copy, modify, publish, use, compile, sell, or distribute the original SQLite code, either in source code form or as a compiled binary, for any purpose, commercial or non-commercial, and by any means.
-
-[SQLite HP URL](https://www.sqlite.org)
+* [SQLite HP URL](https://www.sqlite.org)
+* [SQlele URL](http://spn.php.xdomain.jp/hsp_sqlele.htm)
 
 <!--*SQLiteはパブリックドメインです。*
 *ソース、コード形式またはコンパイルされたバイナリとして、目的、商用または非商用、手段を問わず、誰でもオリジナルの SQLiteコードを自由にコピー、変更、公開、使用、コンパイル、販売、配布することができます。*-->
