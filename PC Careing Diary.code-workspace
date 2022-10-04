@@ -226,6 +226,11 @@
 				"patterns": []
 			}
 		},
+		"markdown.experimental.updateLinksOnFileMove.enabled": "always",
+		"markdown.preview.scrollPreviewWithEditor": false,
+		"markdown.preview.scrollEditorWithPreview": false,
+		"markdown.extension.list.indentationSize": "inherit",
+		"markdown.extension.toc.unorderedList.marker": "*",
 	},
 	"extensions": {
 		"recommendations": [

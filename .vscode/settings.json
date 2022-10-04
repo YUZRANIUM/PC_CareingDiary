@@ -136,5 +136,8 @@
 		"editor.defaultFormatter": "vain0x.hsp3-analyzer-mini"
 	},
 	"language-hsp3.helpman.enable": "online",
-	"explorer.excludeGitIgnore": false
+	"explorer.excludeGitIgnore": false,
+	"[markdown]": {
+		"editor.defaultFormatter": "yzhang.markdown-all-in-one"
+	}
 }
