@@ -1,4 +1,7 @@
 
+
+
+
 Hot Soup Processor (HSP)
 Copyright (C) 1997-2021, Onion Software/onitama, all rights reserved.
 Made with base technology of OpenHSP.
@@ -35,6 +38,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
   SQLite はパブリックドメインです。
   ソース コード形式またはコンパイルされたバイナリとして、目的、商用または非商用、手段を問わず、誰でもオリジナルの SQLite コードを自由にコピー、変更、公開、使用、コンパイル、販売、配布することができます。
+
 
 
 
