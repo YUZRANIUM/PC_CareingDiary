@@ -5,6 +5,7 @@
 	"editor.multiCursorModifier": "ctrlCmd",
 	"editor.insertSpaces": false,
 	"files.exclude": {
+		"{!/*.db,!/*.sql}": true,
 		"hsp36": true,
 		"hsp37beta": true,
 		"hsptmp": true,
