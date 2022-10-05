@@ -1,18 +1,46 @@
 //                              試作用ファイル
+
+#packopt name "05_Experiment"
 #packopt runtime "hsp3utf.hrt"
+#packopt type 0
 #define SW1
+
+// デフォルトでは、後半のDBファイルの構造を確認するスクリプト
+// SQLite DB Table Schema Infomation for HSP3.7beta (SQLele) の
+// コンパイル結果が無視されていますが、
+// ↓#define SW2  の一行をコメントアウトすると 切り替え機能実験 のコンパイル結果が無視されます
 #define SW2
+
 #ifdef SW1
 	#ifdef SW2
+
+//                   bgscrの表示・非表示切り替え機能の実験
 	#include "hsp3utf.as"
 	#include "user32.as"
 	#include "gdi32.as"
 	#include "sqlele.hsp"
 	#include "00_module_pc.hsp"
 
-	screen 0, 1100, 650, 2 : font "メイリオ", 16 : objmode 2, 1
+#enum MASTER_ex = 0
+#enum MAIN_ex
+#enum SUB1_ex
+#enum SUB2_ex
+
+#enum tabid1
+#enum tabid2
+#enum tabid3
+#enum tabid4
+#enum tabid5
+/*******************************************************************************
+								MASTER_ex
+********************************************************************************/
+
+	screen MASTER_ex, 1100, 650, 2 : font "メイリオ", 16
 	hwindow = hwnd
 	mref BMSCRn, 67 : hFontn = BMSCRn.38
+
+	sdim tabname, 64
+	tabname = "Tab1", "Tab2", "Tab3", "Tab4", "Tab5"
 
 	sdim cpu, 2048 : sdim data_cpu, 1024 : sdim cpu_culm, 64 : dim c_culm_num
 	sdim gpu, 2048 : sdim data_gpu, 1024 : sdim gpu_culm, 64 : dim g_culm_num
@@ -23,7 +51,8 @@
 	c_clum_w = 50, 55, 75, 80, 80, 80
 	g_clum_w = 50, 55, 75, 80, 80, 80
 	r_clum_w = 50, 55, 75, 80, 80, 80
-	dim cnum : f = "Syouhin.db"
+	//dim cnum
+	f = "Syouhin.db"
 
 	sql_open f
 	sql_q "BEGIN;"
@@ -31,19 +60,19 @@
 	sql_q "SELECT * FROM MyCPU;"
 	//レコードの数
 	cpu_cunt = stat
+	//カラムの数
 	c_culm_num = length(tmparr)
+	//カラムの一覧リスト
 	cpu_culm = sql_collist() : split cpu_culm, ",", cpu_culm
 	Datainput cpu_cunt, c_culm_num, cpu_culm, cpu
 
 	sql_q "SELECT * FROM MyGPU;"
-	//レコードの数
 	gpu_cunt = stat
 	gpu_culm = sql_collist() : split gpu_culm, ",", gpu_culm
 	g_culm_num = length(tmparr)
 	Datainput gpu_cunt, g_culm_num, gpu_culm, gpu
 
 	sql_q "SELECT * FROM MyROM;"
-	//レコードの数
 	rom_cunt = stat
 	rom_culm = sql_collist() : split rom_culm, ",", rom_culm
 	r_culm_num = length(tmparr)
@@ -52,43 +81,33 @@
 	sql_q "COMMIT;"
 	sql_close
 
-/*******************************************************************************
-								専用画面1
-********************************************************************************/
 
-	bgscr 1, 1100, 625
-	//SECTION bgscr命令について
-	//NOTE 親子関係
-	SetWindowLong hwnd, -16, $40000000
-	SetParent hwnd, hwindow
+	/***MASTERここまで***/
+	gsel MASTER_ex, -1
 
-	font "メイリオ", 20 : objmode 2, 0
-	pos 20, 0
-	mes "bgscr命令による専用画面遷移動作実験", 1
-	x1 = ginfo(14)
-
-	objsize 100, 25 : pos x1 + 30
-	button gosub "Return", *newwin
-
-	gsel 1, -1
 
 /*******************************************************************************
-								専用画面2
+								MAIN_ex
 ********************************************************************************/
-	bgscr 2, 1100, 625, 2
+
+	bgscr MAIN_ex, 1100, 625, 2
 	SetWindowLong hwnd, -16, $40000000
 	SetParent hwnd, hwindow
 
 	font "メイリオ", 16 : objmode 2, 0
-	pos 10, 0 : mes f : x = ginfo(14)
-	objsize 200, 25 : pos x + 20, 0
+
+	pos 10, 0 : mes f : x2 = ginfo(14)
+	objsize 150, 25 : pos x2 + 20, 0
 
 	button gosub "Your Get List Items", *getitem
 	id_butget = stat:hButget = objinfo_hwnd(id_butget)
 
-	pos x + 300, 0
-	button gosub "NewWindow", *gowindow
+	pos x2 + 300, 0
+	button gosub "SUB1_exへ", *onsub1
 	id_gowin = stat : hButnew = objinfo_hwnd(id_gowin)
+
+	pos x2 + 300 + 180, 0
+	button gosub "SUB2_exへ", *onsub2
 
 	pos 20, 30
 	/***リストビューの設置***/
@@ -109,37 +128,161 @@
 	My_InsertChItem id_rommoni, rom, rom_cunt, r_culm_num
 
 	oncmd gosub *listnotify, WM_NOTIFY
+
 	/******フォントの反映******/
 	sendmsg hLVcsouko, $30, , hFontn
 	sendmsg hLVgsouko, $30, , hFontn
 	sendmsg hLVrsouko, $30, , hFontn
 
-	gsel 0, 1
-	gsel 1, 1
-	onexit gosub *Owari
+	/***SUB1_exここまで***/
+	gsel MAIN_ex, -1
+
+
+/*******************************************************************************
+								SUB1_ex
+********************************************************************************/
+
+	bgscr SUB1_ex, 1100, 625
+	//S ECTION bgscr命令について
+	//N OTE 親子関係
+	SetWindowLong hwnd, -16, $40000000
+	SetParent hwnd, hwindow
+
+	font "メイリオ", 16 : objmode 2, 0
+
+	pos 20, 0
+	mes "bgscr命令による専用画面遷移動作実験"
+	x1 = ginfo(14)
+	mes "こちらはSUB1_exです。"
+
+	objsize 100, 25
+
+	pos x1 + 30, 0
+	button gosub "MAIN_exへ", *onmain
+
+	pos x1 + 30 + 160, 0
+	button gosub "SUB2_exへ", *onsub2
+
+	/***MAIN_exここまで***/
+	gsel SUB1_ex, -1
+
+
+
+/*******************************************************************************
+								SUB2_ex
+********************************************************************************/
+
+	bgscr SUB2_ex, 1100, 625, 2
+	SetWindowLong hwnd, -16, $40000000
+	SetParent hwnd, hwindow
+
+	font "メイリオ", 16 : objmode 2, 0
+
+	pos 20, 0
+	mes "bgscr命令による専用画面遷移動作実験"
+	x3 = ginfo(14)
+	mes "こちらはSUB2_exです。", 1
+	objsize 100, 25
+
+	pos x3 + 30, 0
+	button gosub "MAIN_exへ", *onmain
+
+	pos x3 + 30 + 160, 0
+	button gosub "SUB1_exへ", *onsub1
+
+
+
+	/***タブコントロール***/
+	pos 50, 100
+	My_CreateTab 600, 300, hTab_ex
+
+	InsertTab tabname(0), tabid1, 0, hTab_ex
+	font "メイリオ", 16
+	pos 20, 20
+	mes "こちらは Tabのつまみ1 です。"
+
+
+	InsertTab tabname(1), tabid2, 1, hTab_ex
+	font "メイリオ", 16
+	pos 20, 20
+	mes "こちらは Tabのつまみ2 です。"
+
+
+	InsertTab tabname(2), tabid3, 2, hTab_ex
+	font "メイリオ", 16
+	pos 20, 20
+	mes "こちらは Tabのつまみ3 です。"
+
+
+	InsertTab tabname(3), tabid4, 3, hTab_ex
+	font "メイリオ", 16
+	pos 20, 20
+	mes "こちらは Tabのつまみ4 です。"
+
+
+	InsertTab tabname(4), tabid5, 4, hTab_ex
+	font "メイリオ", 16
+	pos 20, 20
+	mes "こちらは Tabのつまみ5 です。"
+
+
+	gsel tabid1, 1
+
+	gsel SUB2_ex
+	oncmd gosub *notify_ex, WM_NOTIFY
+
+	/***SUB2_exここまで***/
+	gsel SUB2_ex, -1
+
+
+	gsel MASTER_ex, 1
+	gsel SUB1_ex, 1
 	stop
 
-*newwin
-	gsel 1, -1
-	gsel 2, 1
-	/* NOTE bg画面からメイン画面に戻る際の注意
+//############################## < 以下処理系 > #################################
+
+
+/*********ウィンドウ切り替え処理*********/
+
+*onmain
+	gsel SUB1_ex, -1
+	gsel SUB2_ex, -1
+
+	gsel MAIN_ex, 1
+	//N OTE メイン画面からbg画面に遷移する際の注意
+	//メイン画面を gsel 0, -1 としてはダメ
+	return
+
+*onsub1
+	gsel MAIN_ex, -1
+	gsel SUB2_ex, -1
+
+	gsel SUB1_ex, 1
+	/* N OTE bg画面からメイン画面に戻る際の注意
 	描画、操作先ウィンドウを一度親玉に戻さないと
 	その後の分ジェクトの更新でエラーになる
 	描画･操作先の管理は意識して*/
 	return
 
-*gowindow
-	gsel 2, -1
-	gsel 1, 1
-	//NOTE メイン画面からbg画面に遷移する際の注意
-	//メイン画面を gsel 0, -1 としてはダメ
-	return
+*onsub2
+	gsel SUB1_ex, -1
+	gsel MAIN_ex, -1
 
+	gsel SUB2_ex, 1
+	return
+/******ウィンドウ切り替え処理ここまで*****/
+
+
+
+//タブコントロールの切り替え
+*notify_ex
+	My_ChangeTab tabid1, hTab_ex, SUB2_ex
+	return
 
 
 //選択したリストアイテムの取得
 *getitem
-	gsel 2
+	gsel MAIN_ex
 	sdim infonoteC, 1024 : sdim infonoteG, 1024 : sdim infonoteR, 1024 : sdim infotext, 1024
 	My_GetListItem id_cpumoni, 6, infonoteC
 	My_GetListItem id_gpumoni, 6, infonoteG
@@ -148,8 +291,11 @@
 	dialog "購入リスト\n-----------------\n" + infotext + "\n\n\t\t以上を購入しますか?", 0, "購入確認"
 	return
 
+
 //並べ替え
 *listnotify
+	/***描画先・操作先***/
+	gsel MAIN_ex
 	sql_open f
 	sql_q "BEGIN;"
 	dupptr nmhdr, lparam, 12, 4 : id = nmhdr(0)
@@ -167,7 +313,7 @@
 					sql_q "SELECT * FROM MyCPU ORDER BY " + cpu_culm(inde) + " ASC;"
 				}
 				/***今あるリストアイテムの削除***/
-				gsel 2
+				//gsel MAIN_ex
 				DelListItem id_cpumoni
 				cpu_culm = sql_collist() : split cpu_culm, ",", cpu_culm
 				Datainput cpu_cunt, c_culm_num, cpu_culm, cpu
@@ -184,7 +330,7 @@
 				else {
 					sql_q "SELECT * FROM MyGPU ORDER BY " + gpu_culm(inde) + " ASC;"
 				}
-				gsel 2
+				//gsel MAIN_ex
 				DelListItem id_gpumoni
 				gpu_culm = sql_collist() : split gpu_culm, ",", gpu_culm
 				Datainput gpu_cunt, g_culm_num, gpu_culm, gpu
@@ -201,28 +347,27 @@
 				else {
 					sql_q "SELECT * FROM MyROM ORDER BY " + rom_culm(inde) + " ASC;"
 				}
-				gsel 2
+				//gsel MAIN_ex
 				DelListItem id_rommoni
 				rom_culm = sql_collist() : split rom_culm, ",", rom_culm
 				Datainput rom_cunt, r_culm_num, rom_culm, rom
 				My_InsertChItem id_rommoni, rom, rom_cunt, r_culm_num
 				swbreak
 		swend
-		//gsel 2
+		//gsel MAIN_ex
 		sql_q "COMMIT;"
 		sql_close
 	}
 	return
 
-*Owari
-	//gsel 2
-	//sql_q "COMMIT;"
-	//sql_close
-	end
-	return
 #else
+
+
+
+
 /*******************************************************************************
-		SQLite DB Table Schema Infomation for HSP3.6 (SQLele)
+		SQLite DB Table Schema Infomation for HSP3.7beta (SQLele)
+		対象となるDBファイル内のテーブルスキーマを確認するスクリプト
 ********************************************************************************/
 	#include "hsp3utf.as"
 	#include "hsp3util.as"
@@ -289,7 +434,7 @@
 		tz2 += "" + tmparr(0, cnt) + "|" + tmparr(1, cnt) + "|" + tmparr(2, cnt) + "|" + tmparr(3, cnt) + "|" + tmparr(4, cnt) + "|"
 	loop
 	split tz2, "|", tz2
-	DelListItem id_dbinfo, 0
+	DelListItem id_dbinfo
 	/***Item reload***/
 	My_InsertChItem id_dbinfo, tz2, length2(tmparr) - 1, length(tmparr)
 
