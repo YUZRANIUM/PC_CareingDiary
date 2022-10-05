@@ -152,10 +152,10 @@
 		"language-hsp3.executor.paths": {
 			"3.7": {
 				"hide": false,
-				"path": "C:\\HSP.git\\hsp37beta\\hspc.exe",
+				"path": "C:/HSP.git/hsp37beta/hspc.exe",
 				"encoding": "UTF-8",
 				"buffer": 204800,
-				"helpman": "C:\\HSP.git\\hsp37beta\\helphsp\\helpman.exe",
+				"helpman": "C:/HSP.git/hsp37beta/helphsp/helpman.exe",
 				"commands": {
 					"run": [
 						"-dwCra",
@@ -171,7 +171,6 @@
 		"html.format.templating": true,
 		"language-hsp3.helpman.path.local": "C:/HSP.git/hsp37beta/hsphelp/helpman.exe/",
 		"language-hsp3.helpman.path.online": "https://docs.hsp.moe/3.6/?q=%s",
-		"hsp3-vscode-syntax.line-comment": "//",
 		"hsp3-debug-window-adapter.hsp3-root": "C:/HSP.git/hsp37beta/",
 		"hsp3-analyzer-mini.hsp3-root": "C:/HSP.git/hsp37beta/",
 		"hsp3-analyzer-mini.trace.server": "off",
@@ -206,25 +205,6 @@
 		"language-hsp3.helpman.enable": "online",
 		"workbench.preferredDarkColorTheme": "Default Dark+",
 		"workbench.preferredLightColorTheme": "Default Dark+",
-		"eda.profiles": {
-			"default": {
-				"files": [
-					{
-						"path": "..\\..\\..\\c:\\HSP.git\\hsp37beta\\common\\00_module_pc.hsp",
-						"workspaceFolderName": "common"
-					},
-					{
-						"path": "..\\..\\..\\c:\\HSP.git\\hsp37beta\\common\\sqlele.hsp",
-						"workspaceFolderName": "common"
-					}
-				],
-				"patterns": []
-			},
-			"my_pc": {
-				"files": [],
-				"patterns": []
-			}
-		},
 		"markdown.experimental.updateLinksOnFileMove.enabled": "always",
 		"markdown.preview.scrollPreviewWithEditor": false,
 		"markdown.preview.scrollEditorWithPreview": false,
