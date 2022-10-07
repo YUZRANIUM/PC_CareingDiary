@@ -97,10 +97,10 @@
 	"language-hsp3.executor.paths": {
 		"3.7": {
 			"hide": false,
-			"path": "C:/HSP.git/hsp37beta/hspc.exe/",
+			"path": "C:/HSP.git/hsp37beta/hspc.exe",
 			"encoding": "Shift_JIS",
 			"buffer": 204800,
-			"helpman": "C:/HSP.git/hsp37beta/helphsp/helpman.exe/",
+			"helpman": "C:/HSP.git/hsp37beta/helphsp/helpman.exe",
 			"commands": {
 				"run": [
 					"-dwCra",
@@ -136,10 +136,9 @@
 	"[hsp3]": {
 		"editor.defaultFormatter": "vain0x.hsp3-analyzer-mini"
 	},
-	"language-hsp3.helpman.enable": "online",
+	"language-hsp3.helpman.enable": "local",
 	"explorer.excludeGitIgnore": false,
 	"[markdown]": {
 		"editor.defaultFormatter": "yzhang.markdown-all-in-one"
-	},
-	"files.encoding": "shiftjis"
+	}
 }
