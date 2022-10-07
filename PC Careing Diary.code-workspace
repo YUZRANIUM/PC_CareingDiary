@@ -141,19 +141,19 @@
 		"git.timeline.showUncommitted": true,
 		"git-graph.dialog.addTag.type": "Lightweight",
 		"git-graph.dialog.cherryPick.noCommit": true,
-		"git-graph.fileEncoding": "UTF-8",
+		"git-graph.fileEncoding": "Shift_JIS",
 		"git-graph.repository.useMailmap": true,
 		"gitHistory.alwaysPromptRepositoryPicker": true,
 		"language-hsp3.choiceWorkDirCur": true,
 		"language-hsp3.compiler": "C:/HSP.git/hsp37beta/hspc.exe",
-		"language-hsp3.encoding": "UTF-8",
+		"language-hsp3.encoding": "Shift_JIS",
 		"language-hsp3.executor.enable": true,
 		"language-hsp3.executor.index": "3.7",
 		"language-hsp3.executor.paths": {
 			"3.7": {
 				"hide": false,
 				"path": "C:/HSP.git/hsp37beta/hspc.exe",
-				"encoding": "UTF-8",
+				"encoding": "Shift_JIS",
 				"buffer": 204800,
 				"helpman": "C:/HSP.git/hsp37beta/helphsp/helpman.exe",
 				"commands": {
@@ -211,10 +211,23 @@
 		"markdown.extension.list.indentationSize": "inherit",
 		"markdown.extension.toc.unorderedList.marker": "*",
 		"explorer.sortOrderLexicographicOptions": "default",
+		"files.encoding": "shiftjis",
+		"terminal.integrated.detectLocale": "auto",
 	},
 	"extensions": {
 		"recommendations": [
 			"ExodiusStudios.comment-anchors"
+		]
+	},
+	"launch": {
+		"version": "0.2.0",
+		"configurations": [
+			{
+				"type": "hsp3",
+				"request": "launch",
+				"name": "Run",
+				"utf8Support": "auto"
+			},
 		]
 	}
 }
