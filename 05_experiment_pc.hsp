@@ -1,47 +1,48 @@
-//                              è©¦ä½œç”¨ãƒ•ã‚¡ã‚¤ãƒ«
-
-#packopt name "05_Experiment"
-#packopt runtime "hsp3utf.hrt"
+// INFO ************************************************
+// FileName : 05_experiment_pc.hsp
+//
+// Date   : 2022/10/06
+// Author : YUZURANIUMi‚ä‚¸‚ç‚É‚¤‚Şj
+// URL    : https://twitter.com/YUZRANIUM
+//******************************************************
+#packopt name "05_ver016ex"
 #packopt type 0
-#define SW1
 
-// ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã§ã¯ã€å¾ŒåŠã®DBãƒ•ã‚¡ã‚¤ãƒ«ã®æ§‹é€ ã‚’ç¢ºèªã™ã‚‹ã‚¹ã‚¯ãƒªãƒ—ãƒˆ
-// SQLite DB Table Schema Infomation for HSP3.7beta (SQLele) ã®
-// ã‚³ãƒ³ãƒ‘ã‚¤ãƒ«çµæœãŒç„¡è¦–ã•ã‚Œã¦ã„ã¾ã™ãŒã€
-// â†“#define SW2  ã®ä¸€è¡Œã‚’ã‚³ãƒ¡ãƒ³ãƒˆã‚¢ã‚¦ãƒˆã™ã‚‹ã¨ åˆ‡ã‚Šæ›¿ãˆæ©Ÿèƒ½å®Ÿé¨“ ã®ã‚³ãƒ³ãƒ‘ã‚¤ãƒ«çµæœãŒç„¡è¦–ã•ã‚Œã¾ã™
-#define SW2
+	hspv = strf("%.3f", double(strf("%4x", hspver)) / 1000)
+	title " 05_ver0.1.6experiment  for  HSP " + hspv
+	sdim logfile_ex, 2048
+	notesel logfile_ex
+	noteload "05_experimentÀsƒtƒ@ƒCƒ‹‚É‚Â‚¢‚Ä.txt" : noteunsel
 
-#ifdef SW1
-	#ifdef SW2
-
-//                   bgscrã®è¡¨ç¤ºãƒ»éè¡¨ç¤ºåˆ‡ã‚Šæ›¿ãˆæ©Ÿèƒ½ã®å®Ÿé¨“
-	#include "hsp3utf.as"
+#if 1
+/*##############################################################################
+							‰æ–ÊØ‚è‘Ö‚¦‹@”\ÀŒ±
+###############################################################################*/
 	#include "user32.as"
 	#include "gdi32.as"
 	#include "sqlele.hsp"
 	#include "00_module_pc.hsp"
+	/***ƒEƒBƒ“ƒhƒEID***/
+	#enum MASTER_ex = 0
+	#enum MAIN_ex
+	#enum SUB1_ex
+	#enum SUB2_ex
 
-#enum MASTER_ex = 0
-#enum MAIN_ex
-#enum SUB1_ex
-#enum SUB2_ex
-
-#enum tabid1
-#enum tabid2
-#enum tabid3
-#enum tabid4
-#enum tabid5
+	#enum tabid1
+	#enum tabid2
+	#enum tabid3
+	#enum tabid4
+	#enum tabid5
 /*******************************************************************************
 								MASTER_ex
 ********************************************************************************/
 
-	screen MASTER_ex, 1100, 650, 2 : font "ãƒ¡ã‚¤ãƒªã‚ª", 16
+	screen MASTER_ex, 1100, 650, 2 : font "ƒƒCƒŠƒI", 16
 	hwindow = hwnd
 	mref BMSCRn, 67 : hFontn = BMSCRn.38
 
-	sdim tabname, 64
+	sdim tabname, 64 : sdim mousmoni, 64
 	tabname = "Tab1", "Tab2", "Tab3", "Tab4", "Tab5"
-
 	sdim cpu, 2048 : sdim data_cpu, 1024 : sdim cpu_culm, 64 : dim c_culm_num
 	sdim gpu, 2048 : sdim data_gpu, 1024 : sdim gpu_culm, 64 : dim g_culm_num
 	sdim rom, 2048 : sdim data_rom, 1024 : sdim rom_culm, 64 : dim r_culm_num
@@ -51,19 +52,19 @@
 	c_clum_w = 50, 55, 75, 80, 80, 80
 	g_clum_w = 50, 55, 75, 80, 80, 80
 	r_clum_w = 50, 55, 75, 80, 80, 80
-	//dim cnum
 	f = "Syouhin.db"
 
 	sql_open f
 	sql_q "BEGIN;"
 
 	sql_q "SELECT * FROM MyCPU;"
-	//ãƒ¬ã‚³ãƒ¼ãƒ‰ã®æ•°
+	//ƒŒƒR[ƒh‚Ì”
 	cpu_cunt = stat
-	//ã‚«ãƒ©ãƒ ã®æ•°
+	//ƒJƒ‰ƒ€‚Ì”
 	c_culm_num = length(tmparr)
-	//ã‚«ãƒ©ãƒ ã®ä¸€è¦§ãƒªã‚¹ãƒˆ
+	//ƒJƒ‰ƒ€‚Ìˆê——ƒŠƒXƒg
 	cpu_culm = sql_collist() : split cpu_culm, ",", cpu_culm
+	//DB‚ÌƒŒƒR[ƒh‚ğ•¶š—ñŒ^1ŸŒ³”z—ñ•Ï”‚ÉŠi”[‚·‚é
 	Datainput cpu_cunt, c_culm_num, cpu_culm, cpu
 
 	sql_q "SELECT * FROM MyGPU;"
@@ -81,9 +82,7 @@
 	sql_q "COMMIT;"
 	sql_close
 
-
-	/***MASTERã“ã“ã¾ã§***/
-	gsel MASTER_ex, -1
+	/***MASTER‚±‚±‚Ü‚Å***/
 
 
 /*******************************************************************************
@@ -91,10 +90,10 @@
 ********************************************************************************/
 
 	bgscr MAIN_ex, 1100, 625, 2
-	SetWindowLong hwnd, -16, $40000000
+	SetWindowLong hwnd, -16, WS_CHILD
 	SetParent hwnd, hwindow
 
-	font "ãƒ¡ã‚¤ãƒªã‚ª", 16 : objmode 2, 0
+	font "ƒƒCƒŠƒI", 14 : objmode 2, 0
 
 	pos 10, 0 : mes f : x2 = ginfo(14)
 	objsize 150, 25 : pos x2 + 20, 0
@@ -103,68 +102,70 @@
 	id_butget = stat:hButget = objinfo_hwnd(id_butget)
 
 	pos x2 + 300, 0
-	button gosub "SUB1_exã¸", *onsub1
+	button gosub "SUB1_ex‚Ö", *onsub1
 	id_gowin = stat : hButnew = objinfo_hwnd(id_gowin)
 
 	pos x2 + 300 + 180, 0
-	button gosub "SUB2_exã¸", *onsub2
+	button gosub "SUB2_ex‚Ö", *onsub2
 
 	pos 20, 30
-	/***ãƒªã‚¹ãƒˆãƒ“ãƒ¥ãƒ¼ã®è¨­ç½®***/
-	My_CreateListView 500, 280, id_cpumoni, hLVcsouko
+	/***ƒŠƒXƒgƒrƒ…[‚Ìİ’u***/
+	My_CreateLv 500, 280, id_cpumoni, hLVcsouko
 	My_InsertColumn id_cpumoni, cpu_culm, c_culm_num, c_clum_w
-	My_InsertChItem id_cpumoni, cpu, cpu_cunt, c_culm_num
+	My_InsertLvItem id_cpumoni, cpu, cpu_cunt, c_culm_num
 
 	pos 550, 30
-	/***ãƒªã‚¹ãƒˆãƒ“ãƒ¥ãƒ¼ã®è¨­ç½®***/
-	My_CreateListView 500, 280, id_gpumoni, hLVgsouko
+	/***ƒŠƒXƒgƒrƒ…[‚Ìİ’u***/
+	My_CreateLv 500, 280, id_gpumoni, hLVgsouko
 	My_InsertColumn id_gpumoni, gpu_culm, g_culm_num, g_clum_w
-	My_InsertChItem id_gpumoni, gpu, gpu_cunt, g_culm_num
+	My_InsertLvItem id_gpumoni, gpu, gpu_cunt, g_culm_num
 
 	pos 20, 320
-	/***ãƒªã‚¹ãƒˆãƒ“ãƒ¥ãƒ¼ã®è¨­ç½®***/
-	My_CreateListView 500, 280, id_rommoni, hLVrsouko
+	/***ƒŠƒXƒgƒrƒ…[‚Ìİ’u***/
+	My_CreateLv 500, 280, id_rommoni, hLVrsouko
 	My_InsertColumn id_rommoni, rom_culm, r_culm_num, r_clum_w
-	My_InsertChItem id_rommoni, rom, rom_cunt, r_culm_num
+	My_InsertLvItem id_rommoni, rom, rom_cunt, r_culm_num
 
 	oncmd gosub *listnotify, WM_NOTIFY
 
-	/******ãƒ•ã‚©ãƒ³ãƒˆã®åæ˜ ******/
+	/******ƒtƒHƒ“ƒg‚Ì”½‰f******/
 	sendmsg hLVcsouko, $30, , hFontn
 	sendmsg hLVgsouko, $30, , hFontn
 	sendmsg hLVrsouko, $30, , hFontn
-
-	/***SUB1_exã“ã“ã¾ã§***/
-	gsel MAIN_ex, -1
+	/***SUB1_ex‚±‚±‚Ü‚Å***/
 
 
 /*******************************************************************************
 								SUB1_ex
 ********************************************************************************/
 
-	bgscr SUB1_ex, 1100, 625
-	//S ECTION bgscrå‘½ä»¤ã«ã¤ã„ã¦
-	//N OTE è¦ªå­é–¢ä¿‚
-	SetWindowLong hwnd, -16, $40000000
+	bgscr SUB1_ex, 1100, 625, 2
+	SetWindowLong hwnd, -16, WS_CHILD
 	SetParent hwnd, hwindow
 
-	font "ãƒ¡ã‚¤ãƒªã‚ª", 16 : objmode 2, 0
+	font "ƒƒCƒŠƒI", 16 : objmode 2, 0
 
 	pos 20, 0
-	mes "bgscrå‘½ä»¤ã«ã‚ˆã‚‹å°‚ç”¨ç”»é¢é·ç§»å‹•ä½œå®Ÿé¨“"
+	mes "bgscr–½—ß‚É‚æ‚éê—p‰æ–Ê‘JˆÚ“®ìÀŒ±"
 	x1 = ginfo(14)
-	mes "ã“ã¡ã‚‰ã¯SUB1_exã§ã™ã€‚"
+	mes "‚±‚¿‚ç‚ÍSUB1_ex‚Å‚·B"
 
 	objsize 100, 25
 
 	pos x1 + 30, 0
-	button gosub "MAIN_exã¸", *onmain
+	button gosub "MAIN_ex‚Ö", *onmain
 
 	pos x1 + 30 + 160, 0
-	button gosub "SUB2_exã¸", *onsub2
+	button gosub "SUB2_ex‚Ö", *onsub2
 
-	/***MAIN_exã“ã“ã¾ã§***/
-	gsel SUB1_ex, -1
+	pos 875, 50
+	mesbox mousmoni, 200, 30, 0
+	id_mousmoni = stat
+
+	pos 10, 50
+	font msgothic, 15
+	mesbox logfile_ex, 845, 500, 0
+	/***MAIN_ex‚±‚±‚Ü‚Å***/
 
 
 
@@ -173,84 +174,92 @@
 ********************************************************************************/
 
 	bgscr SUB2_ex, 1100, 625, 2
-	SetWindowLong hwnd, -16, $40000000
+	SetWindowLong hwnd, -16, WS_CHILD
 	SetParent hwnd, hwindow
 
-	font "ãƒ¡ã‚¤ãƒªã‚ª", 16 : objmode 2, 0
+	font "ƒƒCƒŠƒI", 16 : objmode 2, 0
 
 	pos 20, 0
-	mes "bgscrå‘½ä»¤ã«ã‚ˆã‚‹å°‚ç”¨ç”»é¢é·ç§»å‹•ä½œå®Ÿé¨“"
+	mes "bgscr–½—ß‚É‚æ‚éê—p‰æ–Ê‘JˆÚ“®ìÀŒ±"
 	x3 = ginfo(14)
-	mes "ã“ã¡ã‚‰ã¯SUB2_exã§ã™ã€‚", 1
+	mes "‚±‚¿‚ç‚ÍSUB2_ex‚Å‚·B", 1
 	objsize 100, 25
 
 	pos x3 + 30, 0
-	button gosub "MAIN_exã¸", *onmain
+	button gosub "MAIN_ex‚Ö", *onmain
 
 	pos x3 + 30 + 160, 0
-	button gosub "SUB1_exã¸", *onsub1
+	button gosub "SUB1_ex‚Ö", *onsub1
 
 
 
-	/***ã‚¿ãƒ–ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ«***/
+	/***ƒ^ƒuƒRƒ“ƒgƒ[ƒ‹***/
 	pos 50, 100
 	My_CreateTab 600, 300, hTab_ex
 
 	InsertTab tabname(0), tabid1, 0, hTab_ex
-	font "ãƒ¡ã‚¤ãƒªã‚ª", 16
+	font "ƒƒCƒŠƒI", 16
 	pos 20, 20
-	mes "ã“ã¡ã‚‰ã¯ Tabã®ã¤ã¾ã¿1 ã§ã™ã€‚"
+	mes "‚±‚¿‚ç‚Í Tab‚Ì‚Â‚Ü‚İ1 ‚Å‚·B"
 
 
 	InsertTab tabname(1), tabid2, 1, hTab_ex
-	font "ãƒ¡ã‚¤ãƒªã‚ª", 16
+	font "ƒƒCƒŠƒI", 16
 	pos 20, 20
-	mes "ã“ã¡ã‚‰ã¯ Tabã®ã¤ã¾ã¿2 ã§ã™ã€‚"
+	mes "‚±‚¿‚ç‚Í Tab‚Ì‚Â‚Ü‚İ2 ‚Å‚·B"
 
 
 	InsertTab tabname(2), tabid3, 2, hTab_ex
-	font "ãƒ¡ã‚¤ãƒªã‚ª", 16
+	font "ƒƒCƒŠƒI", 16
 	pos 20, 20
-	mes "ã“ã¡ã‚‰ã¯ Tabã®ã¤ã¾ã¿3 ã§ã™ã€‚"
+	mes "‚±‚¿‚ç‚Í Tab‚Ì‚Â‚Ü‚İ3 ‚Å‚·B"
 
 
 	InsertTab tabname(3), tabid4, 3, hTab_ex
-	font "ãƒ¡ã‚¤ãƒªã‚ª", 16
+	font "ƒƒCƒŠƒI", 16
 	pos 20, 20
-	mes "ã“ã¡ã‚‰ã¯ Tabã®ã¤ã¾ã¿4 ã§ã™ã€‚"
+	mes "‚±‚¿‚ç‚Í Tab‚Ì‚Â‚Ü‚İ4 ‚Å‚·B"
 
 
 	InsertTab tabname(4), tabid5, 4, hTab_ex
-	font "ãƒ¡ã‚¤ãƒªã‚ª", 16
+	font "ƒƒCƒŠƒI", 16
 	pos 20, 20
-	mes "ã“ã¡ã‚‰ã¯ Tabã®ã¤ã¾ã¿5 ã§ã™ã€‚"
+	mes "‚±‚¿‚ç‚Í Tab‚Ì‚Â‚Ü‚İ5 ‚Å‚·B"
 
 
 	gsel tabid1, 1
 
 	gsel SUB2_ex
 	oncmd gosub *notify_ex, WM_NOTIFY
-
-	/***SUB2_exã“ã“ã¾ã§***/
-	gsel SUB2_ex, -1
-
+	/***SUB2_ex‚±‚±‚Ü‚Å***/
 
 	gsel MASTER_ex, 1
 	gsel SUB1_ex, 1
-	stop
-
-//############################## < ä»¥ä¸‹å‡¦ç†ç³» > #################################
 
 
-/*********ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦åˆ‡ã‚Šæ›¿ãˆå‡¦ç†*********/
+*maint
+	wait 5
+	//redraw 0
+	gsel SUB1_ex
+	mousmoni = ""
+	mousmoni += " x = " + rmousex() + "  y = " + rmousey()
+	objprm id_mousmoni, mousmoni
+	//redraw 1
+	goto *maint
+
+
+//############################## < ˆÈ‰ºˆ—Œn > #################################
+
+
+/*********ƒEƒBƒ“ƒhƒEØ‚è‘Ö‚¦ˆ—*********/
 
 *onmain
 	gsel SUB1_ex, -1
 	gsel SUB2_ex, -1
 
 	gsel MAIN_ex, 1
-	//N OTE ãƒ¡ã‚¤ãƒ³ç”»é¢ã‹ã‚‰bgç”»é¢ã«é·ç§»ã™ã‚‹éš›ã®æ³¨æ„
-	//ãƒ¡ã‚¤ãƒ³ç”»é¢ã‚’ gsel 0, -1 ã¨ã—ã¦ã¯ãƒ€ãƒ¡
+	//N OTE ƒƒCƒ“‰æ–Ê‚©‚çbg‰æ–Ê‚É‘JˆÚ‚·‚éÛ‚Ì’ˆÓ
+	//ƒƒCƒ“‰æ–Ê‚ğ gsel 0, -1 ‚Æ‚µ‚Ä‚Íƒ_ƒ
 	return
 
 *onsub1
@@ -258,10 +267,10 @@
 	gsel SUB2_ex, -1
 
 	gsel SUB1_ex, 1
-	/* N OTE bgç”»é¢ã‹ã‚‰ãƒ¡ã‚¤ãƒ³ç”»é¢ã«æˆ»ã‚‹éš›ã®æ³¨æ„
-	æç”»ã€æ“ä½œå…ˆã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚’ä¸€åº¦è¦ªç‰ã«æˆ»ã•ãªã„ã¨
-	ãã®å¾Œã®åˆ†ã‚¸ã‚§ã‚¯ãƒˆã®æ›´æ–°ã§ã‚¨ãƒ©ãƒ¼ã«ãªã‚‹
-	æç”»ï½¥æ“ä½œå…ˆã®ç®¡ç†ã¯æ„è­˜ã—ã¦*/
+	/* N OTE bg‰æ–Ê‚©‚çƒƒCƒ“‰æ–Ê‚É–ß‚éÛ‚Ì’ˆÓ
+	•`‰æA‘€ìæƒEƒBƒ“ƒhƒE‚ğˆê“xe‹Ê‚É–ß‚³‚È‚¢‚Æ
+	‚»‚ÌŒã‚Ì•ªƒWƒFƒNƒg‚ÌXV‚ÅƒGƒ‰[‚É‚È‚é
+	•`‰æ¥‘€ìæ‚ÌŠÇ—‚ÍˆÓ¯‚µ‚Ä*/
 	return
 
 *onsub2
@@ -270,39 +279,44 @@
 
 	gsel SUB2_ex, 1
 	return
-/******ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦åˆ‡ã‚Šæ›¿ãˆå‡¦ç†ã“ã“ã¾ã§*****/
+/******ƒEƒBƒ“ƒhƒEØ‚è‘Ö‚¦ˆ—‚±‚±‚Ü‚Å*****/
 
 
 
-//ã‚¿ãƒ–ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ«ã®åˆ‡ã‚Šæ›¿ãˆ
+//ƒ^ƒuƒRƒ“ƒgƒ[ƒ‹‚ÌØ‚è‘Ö‚¦
 *notify_ex
 	My_ChangeTab tabid1, hTab_ex, SUB2_ex
 	return
 
 
-//é¸æŠã—ãŸãƒªã‚¹ãƒˆã‚¢ã‚¤ãƒ†ãƒ ã®å–å¾—
+//‘I‘ğ‚µ‚½ƒŠƒXƒgƒAƒCƒeƒ€‚Ìæ“¾
 *getitem
 	gsel MAIN_ex
 	sdim infonoteC, 1024 : sdim infonoteG, 1024 : sdim infonoteR, 1024 : sdim infotext, 1024
-	My_GetListItem id_cpumoni, 6, infonoteC
-	My_GetListItem id_gpumoni, 6, infonoteG
-	My_GetListItem id_rommoni, 6, infonoteR
+	My_GetLvItem id_cpumoni, 6, infonoteC
+	My_GetLvItem id_gpumoni, 6, infonoteG
+	My_GetLvItem id_rommoni, 6, infonoteR
 	infotext += "---CPU---" + infonoteC + "\n---GPU---" + infonoteG + "\n---ROM---" + infonoteR
-	dialog "è³¼å…¥ãƒªã‚¹ãƒˆ\n-----------------\n" + infotext + "\n\n\t\tä»¥ä¸Šã‚’è³¼å…¥ã—ã¾ã™ã‹?", 0, "è³¼å…¥ç¢ºèª"
+	dialog "w“üƒŠƒXƒg\n-----------------\n" + infotext + "\n\n\t\tˆÈã‚ğw“ü‚µ‚Ü‚·‚©?", 0, "w“üŠm”F"
 	return
 
 
-//ä¸¦ã¹æ›¿ãˆ
+//•À‚×‘Ö‚¦
 *listnotify
-	/***æç”»å…ˆãƒ»æ“ä½œå…ˆ***/
+	/***•`‰ææE‘€ìæ***/
 	gsel MAIN_ex
+
 	sql_open f
 	sql_q "BEGIN;"
+
 	dupptr nmhdr, lparam, 12, 4 : id = nmhdr(0)
 	if (nmhdr(2) = LVN_COLUMNCLICK) {
+
 		dupptr nmlv, lparam, 40, 4 : inde = nmlv(4)
+
 		switch id
-			/***CPUã®å‡¦ç†***/
+
+			/***CPU‚Ìˆ—***/
 			case hLVcsouko
 				sdim cpu, 2048 : sdim data_cpu, 1024
 				Tyuc = Tyuc * -1
@@ -312,12 +326,11 @@
 				else {
 					sql_q "SELECT * FROM MyCPU ORDER BY " + cpu_culm(inde) + " ASC;"
 				}
-				/***ä»Šã‚ã‚‹ãƒªã‚¹ãƒˆã‚¢ã‚¤ãƒ†ãƒ ã®å‰Šé™¤***/
-				//gsel MAIN_ex
+				/***¡‚ ‚éƒŠƒXƒgƒAƒCƒeƒ€‚Ìíœ***/
 				DelListItem id_cpumoni
 				cpu_culm = sql_collist() : split cpu_culm, ",", cpu_culm
 				Datainput cpu_cunt, c_culm_num, cpu_culm, cpu
-				My_InsertChItem id_cpumoni, cpu, cpu_cunt, c_culm_num
+				My_InsertLvItem id_cpumoni, cpu, cpu_cunt, c_culm_num
 				swbreak
 
 			/***GPU***/
@@ -330,11 +343,10 @@
 				else {
 					sql_q "SELECT * FROM MyGPU ORDER BY " + gpu_culm(inde) + " ASC;"
 				}
-				//gsel MAIN_ex
 				DelListItem id_gpumoni
 				gpu_culm = sql_collist() : split gpu_culm, ",", gpu_culm
 				Datainput gpu_cunt, g_culm_num, gpu_culm, gpu
-				My_InsertChItem id_gpumoni, gpu, gpu_cunt, g_culm_num
+				My_InsertLvItem id_gpumoni, gpu, gpu_cunt, g_culm_num
 				swbreak
 
 			/***ROM***/
@@ -347,34 +359,31 @@
 				else {
 					sql_q "SELECT * FROM MyROM ORDER BY " + rom_culm(inde) + " ASC;"
 				}
-				//gsel MAIN_ex
 				DelListItem id_rommoni
 				rom_culm = sql_collist() : split rom_culm, ",", rom_culm
 				Datainput rom_cunt, r_culm_num, rom_culm, rom
-				My_InsertChItem id_rommoni, rom, rom_cunt, r_culm_num
+				My_InsertLvItem id_rommoni, rom, rom_cunt, r_culm_num
 				swbreak
+
 		swend
-		//gsel MAIN_ex
+
 		sql_q "COMMIT;"
 		sql_close
 	}
 	return
-
-#else
-
+#endif
 
 
-
+#if 0
 /*******************************************************************************
 		SQLite DB Table Schema Infomation for HSP3.7beta (SQLele)
-		å¯¾è±¡ã¨ãªã‚‹DBãƒ•ã‚¡ã‚¤ãƒ«å†…ã®ãƒ†ãƒ¼ãƒ–ãƒ«ã‚¹ã‚­ãƒ¼ãƒã‚’ç¢ºèªã™ã‚‹ã‚¹ã‚¯ãƒªãƒ—ãƒˆ
+		‘ÎÛ‚Æ‚È‚éDBƒtƒ@ƒCƒ‹“à‚Ìƒe[ƒuƒ‹ƒXƒL[ƒ}‚ğŠm”F‚·‚éƒXƒNƒŠƒvƒg
 ********************************************************************************/
-	#include "hsp3utf.as"
 	#include "hsp3util.as"
 	#include "sqlele.hsp"
 	#include "00_module_pc.hsp"
-	screen 0, 1250, 450, 2 : title "SQLite DB Table Schema Information for HSP" + strf("%.3f", double(strf("%4x", __hspver__)) / 1000) + " (SQLele)"
-	font "ãƒ¡ã‚¤ãƒªã‚ª", 12 : mref BMSCR, 67 : hFont = BMSCR(38) : objmode 2, 1
+	screen 0, 1250, 450, 2 : title "SQLite DB Table Schema Information for HSP" + strf("%.3f", double(strf("%4x", hspver)) / 1000) + " (SQLele)"
+	font "ƒƒCƒŠƒI", 12 : mref BMSCR, 67 : hFont = BMSCR(38) : objmode 2, 1
 
 	sdim tz1, 2048 : sdim tz2, 2048 : sdim tz3, 512
 	tzw = 50, 90, 89, 75, 920 : sdim f
@@ -391,7 +400,7 @@
 	id_butop = stat : hButop = objinfo(id_butop, 2)
 
 	pos 10, 50
-	My_CreateListView 1230, 300, id_dbinfo, hLVdbinfo
+	My_CreateLv 1230, 300, id_dbinfo, hLVdbinfo
 	sendmsg hLVdbinfo, 0x1036, , 0x00000020 | 0x00000010
 
 	/***Create Dummy DB***/
@@ -408,7 +417,7 @@
 
 	sql_close
 
-	/***ãƒ•ã‚©ãƒ³ãƒˆã®é©ç”¨***/
+	/***ƒtƒHƒ“ƒg‚Ì“K—p***/
 	sendmsg objinfo(id_dbinfo, 2), $30, hFont
 	gsel 0, 1
 	stop
@@ -436,7 +445,7 @@
 	split tz2, "|", tz2
 	DelListItem id_dbinfo
 	/***Item reload***/
-	My_InsertChItem id_dbinfo, tz2, length2(tmparr) - 1, length(tmparr)
+	My_InsertLvItem id_dbinfo, tz2, length2(tmparr) - 1, length(tmparr)
 
 	sql_q "COMMIT;"
 
@@ -444,4 +453,53 @@
 	/*** DB CLOSE ***/
 
 	return
+#endif
+
+#if 0
+/*##############################################################################
+								ƒ}ƒEƒXÀ•W‚Ìæ“¾
+###############################################################################*/
+	#include "user32.as"
+	//#include "00_module_pc.hsp"
+
+#module
+#deffunc rm_init
+	WakuSize = (ginfo(10) - ginfo(12)) / 2
+	TabSize = ginfo(11) - ginfo(13) - WakuSize
+	return
+
+#defcfunc rmousex
+	x1 = ginfo(0) - ginfo(4) - WakuSize
+	return x1
+
+#defcfunc rmousey
+	y1 = ginfo(1) - ginfo(5) - TabSize
+	return y1
+#global
+	screen 0, 800, 500, 2
+	hwin = hwnd
+	rm_init
+	sdim moni, 512
+
+	bgscr 1, 500, 300, 2, 100, 50
+	SetWindowLong hwnd, -16, WS_CHILD
+	SetParent hwnd, hwin
+
+	color 125, 125, 125
+	boxf
+	font "ƒƒCƒŠƒI", 16
+	pos 50, 50
+	mesbox moni, 200, 150, 1
+	id_moni = stat
+
+	gsel 1, 1
+	gsel 0, 1
+
+*main
+	wait 5
+	redraw 0
+	title " x = " + rmousex() + "  y = " + rmousey()
+	redraw 1
+	goto *main
+
 #endif
