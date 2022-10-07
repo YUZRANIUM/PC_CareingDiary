@@ -1,14 +1,11 @@
 #packopt name "PC_Careing Diary"
 #packopt type 0
-#packopt runtime "hsp3utf.hrt"
-// #packopt hide 1
-/*********************layerobjã®å‡¦ç†************************/
-#include "hsp3utf.as"
+/*********************layerobj‚Ìˆ—************************/
 #include "user32.as"
 #include "gdi32.as"
 #include "hsp3util.as"
 #include "mod_menu.as"
-#include "hspda.as"	//vsaveç³»
+#include "hspda.as"	//vsaveŒn
 #include "sqlele.hsp"
 
 #include "00_module_pc.hsp"
@@ -16,14 +13,14 @@
 #include "02_UI_pc.hsp"
 #include "03_Process1_pc.hsp"
 
-//ã‚²ãƒ¼ãƒ å†…æ™‚é–“ã¨ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹
+//ƒQ[ƒ€“àŠÔ‚ÆƒXƒe[ƒ^ƒX
 *lay
 	layl = lparam
 	switch layl
-		//ãƒ¬ã‚¤ãƒ¤ãƒ¼è¨­ç½®ç›´å¾Œã®å‡¦ç†
+		//ƒŒƒCƒ„[İ’u’¼Œã‚Ìˆ—
 		case objlayer_cmdinit
 			swbreak
-		//intå€¤ã‚’æ¸¡ã•ã‚ŒãŸ
+		//int’l‚ğ“n‚³‚ê‚½
 		case objlayer_cmdprmi
 			layint = iparam
 			switch layint
@@ -35,11 +32,11 @@
 					swbreak
 			swend
 			swbreak
-		//æ–‡å­—åˆ—ã‚’æ¸¡ã•ã‚ŒãŸ
+		//•¶š—ñ‚ğ“n‚³‚ê‚½
 		case objlayer_cmdprms
-			//layerobjã«æ¸¡ã™æ–‡å­—åˆ—
+			//layerobj‚É“n‚·•¶š—ñ
 			string = refstr
-			//ãƒ­ã‚°è¡¨ç¤ºç”¨ã®æ™‚é–“
+			//ƒƒO•\¦—p‚ÌŠÔ
 			//time = "" + gettime(1) + "/" + gettime(3) + " " + gettime(4) + ":" + gettime(5) + ":" + gettime(6)
 			notesel logmoni : noteadd "\n", 1, 0
 			if string == "asc" {
@@ -63,7 +60,7 @@
 			}
 			if string == "dd" {
 				noteadd "------------------------------------------------------------------------------------", 1, 0
-				noteadd time + " : Game times " + gt(2, 0) + "/" + gt(3, 0) + " ã«ãªã‚Šã¾ã—ãŸ.", 1, 0
+				noteadd time + " : Game times " + gt(2, 0) + "/" + gt(3, 0) + " ‚É‚È‚è‚Ü‚µ‚½.", 1, 0
 				noteunsel
 				gsel ID_TAB_LOG : objprm id_logmoni, logmoni : gsel ID_WIN_MAIN
 			}
@@ -73,33 +70,33 @@
 				gsel ID_TAB_LOG : objprm id_logmoni, logmoni : gsel ID_WIN_MAIN
 			}
 			swbreak
-		//redrawå‘½ä»¤ãŒå®Ÿè¡Œã•ã‚ŒãŸã¨ã
+		//redraw–½—ß‚ªÀs‚³‚ê‚½‚Æ‚«
 		case objlayer_cmddraw
 			gosub *hlay_gt
 			swbreak
 	swend
 	return
 
-//ã‚²ãƒ¼ãƒ å†…æ™‚é–“
+//ƒQ[ƒ€“àŠÔ
 *hlay_gt
 	sdim hmoni, 64 : sdim mesmoni, 128
-	//æ™‚é–“
+	//ŠÔ
 	if int(gt(5, 0)) == 59 {
 		gt(5, 0) = "00"
 		gt(4, 0) = strf("%02d", int(gt(4, 0)) + 1)
 	}
-	//æ—¥æ•°
+	//“ú”
 	if int(gt(4, 0)) == 24 {
 		gt(4, 0) = "00"
 		gt(3, 0) = strf("%2d", int(gt(3, 0)) + 1)
 		setting(6, 0) = 1
 	}
-	//æœˆ
+	//Œ
 	if int(gt(3, 0)) > 31 {
 		gt(3, 0) = " 1"
 		gt(2, 0) = strf("%2d", int(gt(2, 0)) + 1)
 	}
-	//å››åŠæœŸ
+	//l”¼Šú
 	switch int(gt(2, 0))
 		case 4
 		case 5
@@ -122,7 +119,7 @@
 			gt(1, 0) = "4th"
 			swbreak
 	swend
-	//å¹´
+	//”N
 	if int(gt(2, 0)) > 12 {
 		gt(2, 0) = " 1"
 		gt(0, 0) = strf("%3d", int(gt(0, 0)) + 1)
@@ -132,14 +129,14 @@
 		hmoni += "" + gt(cnt, 0) + gt(cnt, 1)
 	loop
 
-	//è¡¨ç¤ºæ–‡å­—åˆ—ã®å¤‰æ›´ (WM_SETTEXT)
+	//•\¦•¶š—ñ‚Ì•ÏX (WM_SETTEXT)
 	sendmsg hStatic_h, $C, , hmoni
 
 	if setting(6, 0) == 1 {
 		gsel ID_WIN_MAIN : objprm layid0, "dd"
 		setting(6, 0) = 0
 	}
-//======================================ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹
+//======================================ƒXƒe[ƒ^ƒX
 
 	repeat 5, 2
 		st(cnt, 2) = strf("%.1f", st(cnt, 0))
@@ -149,11 +146,11 @@
 		mesmoni += st(cnt, 2) + "\n"
 	loop
 
-	//è¡¨ç¤ºæ–‡å­—åˆ—ã®å¤‰æ›´ (WM_SETTEXT)
+	//•\¦•¶š—ñ‚Ì•ÏX (WM_SETTEXT)
 	sendmsg hStatic_m, $C, , mesmoni
 	return
 
-//ROM,SSDå˜ä½å¤‰æ›
+//ROM,SSD’PˆÊ•ÏŠ·
 *hlay_u
 	sdim mesmoni_u, 16
 	/***ROM***/

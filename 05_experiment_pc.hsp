@@ -12,7 +12,7 @@
 	title " 05_ver0.1.6experiment  for  HSP " + hspv
 	sdim logfile_ex, 2048
 	notesel logfile_ex
-	noteload "05_experiment実行ファイルについて.txt" : noteunsel
+	noteload "05_verex実行ファイルについて.txt" : noteunsel
 
 #if 1
 /*##############################################################################
