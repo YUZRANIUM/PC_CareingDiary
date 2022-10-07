@@ -1,0 +1,135 @@
+05_ver???exについて
+
+Date   : 2022/10/06
+Author : YUZURANIUM（ゆずらにうむ）
+URL    : https://twitter.com/YUZRANIUM
+
+    参考文献
+    HSPの裏技？？ : http://chokuto.ifdef.jp/urawaza/index.html
+    タブコントロールを作成してみる ACT-2
+    HSP開発wiki : https://wiki.hsp.moe/index2.html
+
+
+    はじめに
+ 05_ver???ex.exe は今後、メインプロジェクトに追加・実装する新たな機能などを試作、仮構築し、
+動作や挙動などを確認するためのスクリプトファイル05_experiment_pc.hspを実行ファイルにしたものです。
+
+ そのため、05_ver???exはメインプロジェクトが進むに連れてその動作や挙動も大きく変化します。
+ 名前の???はメインプロジェクトのバージョンと一致させています。 2022/10/06現在、メインプロジェクトの
+バージョンは0.1.6ですので、このときの名前は05_ver016exとなります。
+
+
+05_ver016ex.exe
+    Date         : 2022/10/06
+    Main Version : 0.1.6
+    File Name    : 05_ver016ex
+    HSP Version  : 3.7beta3
+
+    操作説明
+
+各画面を2つのボタンで切り替えることが出来ます。
+    SUB1_ex画面 : このファイルの表示と、並行してマウスカーソルの座標取得テストも並行しています。
+    SUB2_ex画面 : タブコントロールのテスト稼働です。
+    MAIN_ex画面 : SQLite支援モジュール SQlele を利用したDB操作、及びWin32APIによるリストビューです。
+		選択アイテムの取得、アイテムの各項目による並べ替えを実装しています。
+
+    内容
+
+1. 画面切り替え機能試作
+ screen命令で初期化されたウィンドウに、bgscr命令にて初期化されたウィンドウを複数貼り付け、
+表示・非表示を切り替えることで表示内容を切り替える機能。
+
+    必要なもの
+    ・user32.dll (user32.as をインクルード)
+
+    使用している命令・関数
+    ・SetWindowLong
+    ・SetParent
+
+    解説
+    ・SetWindowLong
+        ・なにこれ?
+            指定したウィンドウの指定した設定項目を指定した値に変更（追加）する命令
+        ・どこで使うの?
+            ウィンドウを初期化（基本的にbgscr命令）した直後あたり
+        ・何が必要なの?
+            ウィンドウの指定→ そいつのウィンドウのハンドル（システム変数hwndで取得可）
+            設定項目の指定  → -16(GWL_STYLE) : ウィンドウスタイル  ※1
+            設定する値の指定→ 0x40000000 : 子供にする設定（雑）  ※2
+    ※1,※2...この他にも値がありますが、ここでは省略します。
+
+	SetWindowLong hwnd, -16, 0x40000000
+
+
+    ・SetParent
+        ・なにこれ?
+            子供にする命令。SetWindowLong は、あくまで設定項目を追加したに過ぎず、
+            肝心な”お前は、こいつの子供な”といった結びつけは行っていない。(※イメージ)
+        ・どこで使うの?
+            SetWindowLong の直後
+        ・何が必要なの?
+            子供にしたいウィンドウのハンドル
+            親にするウィンドウのハンドル
+
+	SetParent hwnd, <親ウィンドウにしたいウィンドウハンドル>
+
+
+### Sample ###
+	#include "user32.as"
+	#define WS_CHILD 0x40000000
+
+	screen 0, 500, 300, 2
+		hWindow = hwnd
+
+		pos 10, 10
+			mes " MAIN "
+
+		pos 10, 40
+			button gosub "SUB1", *SUB1
+		pos 75, 40
+			button gosub "SUB2", *SUB2
+
+
+	bgscr 1, 500, 300, 2
+		SetWindowLong hwnd, -16, WS_CHILD
+		SetParent hwnd, hWindow
+
+		pos 10, 10
+			mes " THERE IS SUB1 "
+
+		pos 10, 40
+			button gosub "MAIN", *MAIN
+		pos 75, 40
+			button gosub "SUB2", *SUB2
+
+
+	bgscr 2, 500, 300, 2
+		SetWindowLong hwnd, -16, WS_CHILD
+		SetParent hwnd, hWindow
+
+		pos 10, 10
+			mes " THERE IS SUB2 "
+
+		pos 10, 40
+			button gosub "MAIN", *MAIN
+		pos 75, 40
+			button gosub "SUB1", *SUB1
+
+	gsel 0, 1
+	stop
+
+*MAIN
+	gsel 1, -1
+	gsel 2, -1
+	return
+
+*SUB1
+	gsel 2, -1
+	gsel 1, 1
+	return
+
+*SUB2
+	gsel 1, -1
+	gsel 2, 1
+	return
+### Sample ###

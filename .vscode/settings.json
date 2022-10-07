@@ -87,18 +87,18 @@
 	"git.supportCancellation": true,
 	"git.suggestSmartCommit": false,
 	"git.useCommitInputAsStashMessage": true,
-	"git-graph.fileEncoding": "UTF-8",
+	"git-graph.fileEncoding": "Shift_JIS",
 	"gitHistory.includeRemoteBranches": true,
 	"language-hsp3.choiceWorkDirCur": true,
-	"language-hsp3.compiler": "C:/HSP.git/hsp37beta/hspc.exe/",
-	"language-hsp3.encoding": "UTF-8",
+	"language-hsp3.compiler": "C:/HSP.git/hsp37beta/hspc.exe",
+	"language-hsp3.encoding": "Shift_JIS",
 	"language-hsp3.executor.enable": true,
 	"language-hsp3.executor.index": "3.7",
 	"language-hsp3.executor.paths": {
 		"3.7": {
 			"hide": false,
 			"path": "C:/HSP.git/hsp37beta/hspc.exe/",
-			"encoding": "UTF-8",
+			"encoding": "Shift_JIS",
 			"buffer": 204800,
 			"helpman": "C:/HSP.git/hsp37beta/helphsp/helpman.exe/",
 			"commands": {
@@ -113,7 +113,7 @@
 			}
 		}
 	},
-	"language-hsp3.helpman.path.local": "C:/HSP.git/hsp37beta/hsphelp/helpman.exe/",
+	"language-hsp3.helpman.path.local": "C:/HSP.git/hsp37beta/hsphelp/helpman.exe",
 	"language-hsp3.helpman.path.online": "https://docs.hsp.moe/3.6/?q=%s",
 	"html.format.templating": true,
 	"markdown.experimental.validate.enabled": true,
@@ -140,5 +140,6 @@
 	"explorer.excludeGitIgnore": false,
 	"[markdown]": {
 		"editor.defaultFormatter": "yzhang.markdown-all-in-one"
-	}
+	},
+	"files.encoding": "shiftjis"
 }
