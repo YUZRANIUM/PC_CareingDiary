@@ -137,6 +137,8 @@ Anyone is free to copy, modify, publish, use, compile, sell, or distribute the o
 * 04_Process2_pc.hsp
 * 05_experiment_pc.hsp
 * 09_ChangeLog_pc.txt
+* 05_ver016ex.exe
+* 05_verex実行ファイルについて.txt
 * readme.md
 
 ## MIT License

@@ -1,50 +1,137 @@
 ;
-;	00_module_pc.hspç”¨ HELPã‚½ãƒ¼ã‚¹ãƒ•ã‚¡ã‚¤ãƒ«
-;	åˆ¶ä½œæ—¥	: 2022/10/05
-;	è£½ä½œè€…	: ã‚†ãšã‚‰ã«ã†ã‚€
+;	00_module_pc.hsp—p HELPƒ\[ƒXƒtƒ@ƒCƒ‹
+;	§ì“ú	: 2022/10/07
+;	»ìŽÒ	: ‚ä‚¸‚ç‚É‚¤‚Þ
 ;	Twitter	: https://twitter.com/YUZRANIUM
 
 %date
-2022/10/03
+2022/10/07
 %author
-ã‚†ãšã‚‰ã«ã†ã‚€
+‚ä‚¸‚ç‚É‚¤‚Þ
 %url
 https://twitter.com/YUZRANIUM
 %dll
 00_module_pc
-user32.as
 %type
-ãƒ¦ãƒ¼ã‚¶ãƒ¼å®šç¾©å‘½ä»¤
+ƒ†[ƒU[’è‹`–½—ß
 %ver
-1.0
+1.2
 %port
 Win
-%note
-00_module_pc.hspã¨user32.asã‚’ã‚¤ãƒ³ã‚¯ãƒ«ãƒ¼ãƒ‰ã™ã‚‹ã“ã¨
 
 %index
-mycolor
-ã‚«ãƒ©ãƒ¼è¨­å®š
+Mycolor
+ƒJƒ‰[Ý’è
 %group
-ç”»é¢åˆ¶å¾¡å‘½ä»¤/ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆåˆ¶å¾¡å‘½ä»¤
+‰æ–Ê§Œä–½—ß/ƒIƒuƒWƒFƒNƒg§Œä–½—ß
 %prm
 p1,p2,p3,p4
-p1,p2,p3=0ï½ž1	: è‰²ã‚³ãƒ¼ãƒ‰ï¼ˆR,G,Bã®è¼åº¦ï¼‰
-p4 = 0,1,2	: ãƒ¢ãƒ¼ãƒ‰åˆ‡ã‚Šæ›¿ãˆ
+p1,p2,p3=0`1	: FƒR[ƒhiR,G,B‚Ì‹P“xj
+p4 = 0,1,2	: ƒ‚[ƒhØ‚è‘Ö‚¦
 %inst
-ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸è¡¨ç¤ºã€æç”»ãªã©ã®è‰²ã€ã¾ãŸã¯ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆãŒä½¿ç”¨ã™ã‚‹è‰²ã‚’æŒ‡å®šã—ãŸå€¤ã«è¨­å®šã—ã¾ã™ã€‚
-p1,p2,p3ãŒãã‚Œãžã‚Œã€R,G,Bã®è¼åº¦ã«ãªã‚Šã¾ã™ã€‚
+ƒƒbƒZ[ƒW•\Ž¦A•`‰æ‚È‚Ç‚ÌFA‚Ü‚½‚ÍƒIƒuƒWƒFƒNƒg‚ªŽg—p‚·‚éF‚ðŽw’è‚µ‚½’l‚ÉÝ’è‚µ‚Ü‚·B
+p1,p2,p3‚ª‚»‚ê‚¼‚êAR,G,B‚Ì‹P“x‚É‚È‚è‚Ü‚·B
 ^
-è‰²ã‚³ãƒ¼ãƒ‰ã‚’0ã‹ã‚‰1ã®é–“ã§æŒ‡å®šã—ã¾ã™ã€‚0ãŒæœ€ã‚‚æš—ãã€1ãŒæœ€ã‚‚æ˜Žã‚‹ããªã‚Šã¾ã™ã€‚
+FƒR[ƒh‚ð0‚©‚ç1‚ÌŠÔ‚ÅŽw’è‚µ‚Ü‚·B0‚ªÅ‚àˆÃ‚­A1‚ªÅ‚à–¾‚é‚­‚È‚è‚Ü‚·B
 ^
-æ¨™æº–ã®colorå‘½ä»¤ã¨objcolorå‘½ä»¤ã®ä¸¡æ–¹ã‚’å…¼ã­å‚™ãˆã¦ãŠã‚Šp4ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ã§ã©ã¡ã‚‰ã‹ã®åˆ‡ã‚Šæ›¿ãˆã€ã¾ãŸã¯ä¸¡æ–¹ä½¿ç”¨ã™ã‚‹ã“ã¨ãŒã§ãã¾ã™ã€‚
+•W€‚Ìcolor–½—ß‚Æobjcolor–½—ß‚Ì—¼•û‚ðŒ“‚Ë”õ‚¦‚Ä‚¨‚èp4ƒpƒ‰ƒ[ƒ^‚Å‚Ç‚¿‚ç‚©‚ÉØ‚è‘Ö‚¦A‚Ü‚½‚Í—¼•ûŽg—p‚·‚é‚±‚Æ‚ª‚Å‚«‚Ü‚·B
 ^
-	å€¤ : å‹•ä½œ
+	’l : “®ì
 	----------------
-	 0 : colorå‘½ä»¤
-	 1 : objcolorå‘½ä»¤
-	 2 : ä¸¡æ–¹
+	 0 : color–½—ß
+	 1 : objcolor–½—ß
+	 2 : —¼•û
 
 %href
 color
 objcolor
+%note
+00_module_pc.hsp‚ðƒCƒ“ƒNƒ‹[ƒh‚·‚é‚±‚Æ
+;
+; ˆÈ‰º‚±‚ÌƒvƒƒWƒFƒNƒg‚Ì‚Ý‚ÌˆêŽž“I‚È‚à‚Ì
+;
+%index
+SetWindowLong
+Žw’è‚³‚ê‚½ƒEƒBƒ“ƒhƒE‚Ì‘®«‚ð•ÏX‚µ‚Ü‚·
+%group
+Win32API
+%prm
+p1,p2,p3
+p1 : ‘®«‚ð•ÏX‚·‚éƒEƒBƒ“ƒhƒE‚Ìƒnƒ“ƒhƒ‹
+p2 : •ÏX‚·‚é‘®«‚ÌŽw’è
+p3 : V‚µ‚¢‘®«‚ÌŽw’è
+%inst
+Œ»Ý‚ÌƒEƒBƒ“ƒhƒE‚Ì‘®«‚ð•ÏX‚µ‚Ü‚·B
+^
+p1‚É‚Í‘®«‚ð•ÏX‚µ‚½‚¢ƒEƒBƒ“ƒhƒE‚ÌƒEƒBƒ“ƒhƒEƒnƒ“ƒhƒ‹‚ðŽw’è‚µ‚Ä‚­‚¾‚³‚¢B’ÊíAhwnd‚ÅŽw’è‚µ‚Ü‚·B
+^
+p2‚É‚ÍˆÈ‰º‚Ì‚¢‚¸‚ê‚©‚ðŽw’è‚µ‚Ä‚­‚¾‚³‚¢B
+		’l			   :		“à—e
+	---------------------------------------------------------
+	  -4(GWL_WNDPROC)	   : ƒEƒBƒ“ƒhƒEƒvƒƒV[ƒWƒƒ‚ÌƒAƒhƒŒƒX
+	  -6(GWL_HINSTANCE)  : ƒAƒvƒŠƒP[ƒVƒ‡ƒ“‚ÌƒCƒ“ƒXƒ^ƒ“ƒXƒnƒ“ƒhƒ‹
+	-16(GWL_STYLE)	   : ƒEƒBƒ“ƒhƒEƒXƒ^ƒCƒ‹
+	-20(GWL_EXSTYLE)	   : Šg’£ƒEƒBƒ“ƒhƒEƒXƒ^ƒCƒ‹
+	-21(GWL_USERDATA)	   : ƒEƒBƒ“ƒhƒE‚ÉŠÖ˜A•t‚¯‚ç‚ê‚½ƒAƒvƒŠƒP[ƒVƒ‡ƒ“’è‹`‚Ì32ƒrƒbƒg’l
+	-12(GWL_ID)		   : ƒEƒBƒ“ƒhƒEID
+^
+Šî–{“I‚É‚Í-16(GWL_STYLE)‚â-20(GWL_EXSTYLE)‚µ‚©Žg‚¢‚Ü‚¹‚ñB‚Ü‚½A‚±‚êˆÈŠO‚Ì’l‚â‰ðà‚ÍÈ—ª‚³‚¹‚Ä’¸‚«‚Ü‚·B
+^
+p3‚É‚ÍV‚µ‚­Ý’è‚·‚é32ƒrƒbƒg’l‚ðŽw’è‚µ‚Ü‚·B
+^
+‚Ü‚½AŽqƒEƒBƒ“ƒhƒE‚ÌeƒEƒBƒ“ƒhƒE‚ð•ÏX‚·‚é SetParentŠÖ”‚Ì‘O‚ÉSetWindowLongŠÖ”‚ð—p‚¢‚ÄAWS_CHILDƒXƒ^ƒCƒ‹‚ð’Ç‰Á‚µ‚È‚­‚Ä‚Í‚È‚è‚Ü‚¹‚ñB
+^
+%sample
+	#include "user32.as"
+	#define WS_CHILD 0x40000000
+
+	screen 0, 500, 300, 2
+	hWindow = hwnd
+
+
+	bgscr 1, 500, 300, 2
+
+	SetWindowLong hwnd, -16, WS_CHILD
+	SetParent hwnd, hWindow
+^
+%href
+hwnd
+SetParent
+%note
+user32.as‚ðƒCƒ“ƒNƒ‹[ƒh‚·‚é‚±‚Æ
+
+
+%index
+SetParent
+Žw’è‚³‚ê‚½ƒEƒBƒ“ƒhƒE‚ÌeƒEƒBƒ“ƒhƒE‚ð•ÏX‚µ‚Ü‚·B
+%group
+Win32API
+%prm
+p1,p2
+p1 : ŽqƒEƒBƒ“ƒhƒE‚Ìƒnƒ“ƒhƒ‹
+p2 : V‚µ‚¢eƒEƒBƒ“ƒhƒE‚Ìƒnƒ“ƒhƒ‹
+%inst
+p1‚ÅŽw’è‚µ‚½ƒEƒBƒ“ƒhƒE‚ðp2‚ÅŽw’è‚µ‚½ƒEƒBƒ“ƒhƒE‚ÌŽqƒEƒBƒ“ƒhƒE‚Æ‚µ‚Ü‚·B
+^
+p1‚É‚ÍŽqƒEƒBƒ“ƒhƒE‚Æ‚·‚éƒEƒBƒ“ƒhƒE‚Ìƒnƒ“ƒhƒ‹‚ðŽw’è‚µ‚Ä‚­‚¾‚³‚¢B
+p2‚ÉeƒEƒBƒ“ƒhƒE‚Æ‚·‚éƒEƒBƒ“ƒhƒE‚Ìƒnƒ“ƒhƒ‹‚ðŽw’è‚µ‚Ü‚·B
+^
+‚Ü‚½AŽqƒEƒBƒ“ƒhƒE‚ÌeƒEƒBƒ“ƒhƒE‚ð•ÏX‚·‚é SetParentŠÖ”‚Ì‘O‚ÉSetWindowLongŠÖ”‚ð—p‚¢‚ÄAWS_CHILDƒXƒ^ƒCƒ‹‚ð’Ç‰Á‚µ‚È‚­‚Ä‚Í‚È‚è‚Ü‚¹‚ñB
+%sample
+	#include "user32.as"
+	#define WS_CHILD 0x40000000
+
+	screen 0, 500, 300, 2
+	hWindow = hwnd			    //eƒEƒBƒ“ƒhƒE‚Æ‚·‚éƒEƒBƒ“ƒhƒE‚Ìƒnƒ“ƒhƒ‹‚ðŽæ“¾
+
+
+	bgscr 1, 500, 300, 2
+
+	SetWindowLong hwnd, -16, WS_CHILD   //ƒEƒBƒ“ƒhƒEƒXƒ^ƒCƒ‹‚ÉWS_CHILD‚ð’Ç‰Á
+	SetParent hwnd, hWindow		    //ŽqƒEƒBƒ“ƒhƒE‚É•ÏX
+^
+%href
+SetWindowLong
+hwnd
+%note
+user32.as‚ðƒCƒ“ƒNƒ‹[ƒh‚·‚é‚±‚Æ

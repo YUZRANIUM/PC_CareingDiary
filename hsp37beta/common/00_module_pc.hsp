@@ -1,22 +1,22 @@
-//					<<  è‡ªä½œå‘½ä»¤ï½¥é–¢æ•°ã®ä½œæˆ  >>
+//					<<  Ž©ì–½—ß¥ŠÖ”‚Ìì¬  >>
 
-//ã‚¿ãƒ–é …ç›®ã®æ–‡å­—åˆ—ã®é•·ã•ã«é–¢ã‚ã‚‰ãšã‚¿ãƒ–ã¤ã¾ã¿ã®æ¨ªå¹…ã‚’ã™ã¹ã¦åŒã˜ã‚µã‚¤ã‚ºã«ã—ã¾ã™
+//ƒ^ƒu€–Ú‚Ì•¶Žš—ñ‚Ì’·‚³‚ÉŠÖ‚í‚ç‚¸ƒ^ƒu‚Â‚Ü‚Ý‚Ì‰¡•‚ð‚·‚×‚Ä“¯‚¶ƒTƒCƒY‚É‚µ‚Ü‚·
 #define global TCS_FIXEDWIDTH $400
 
-//ã‚¹ã‚¿ãƒ†ã‚£ãƒƒã‚¯ãƒ†ã‚­ã‚¹ãƒˆ
-//winobj "static", "è¡¨ç¤ºã™ã‚‹ã‚‚ã®", <æ‹¡å¼µã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚¹ã‚¿ã‚¤ãƒ«>, <ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚¹ã‚¿ã‚¤ãƒ«>, Xã‚µã‚¤ã‚º, Yã‚µã‚¤ã‚º
-//<æ‹¡å¼µã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚¹ã‚¿ã‚¤ãƒ«> : æ·±ã„å‡¹ã¿
+//ƒXƒ^ƒeƒBƒbƒNƒeƒLƒXƒg
+//winobj "static", "•\Ž¦‚·‚é‚à‚Ì", <Šg’£ƒEƒBƒ“ƒhƒEƒXƒ^ƒCƒ‹>, <ƒEƒBƒ“ƒhƒEƒXƒ^ƒCƒ‹>, XƒTƒCƒY, YƒTƒCƒY
+//<Šg’£ƒEƒBƒ“ƒhƒEƒXƒ^ƒCƒ‹> : [‚¢‰š‚Ý
 #define global WS_EX_WINDOWEDGE $200
-//<ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚¹ã‚¿ã‚¤ãƒ«>
-#define global WS_BORDER        $800000		//å¢ƒç•Œæž ç·š
-#define global WS_DISABLED      $8000000	//ç„¡åŠ¹
-#define global WS_DLGFRAME      $400000		//è†¨ã‚‰ã¿
-#define global SS_CENTER        $1			//ä¸­å¤®æƒãˆ
-#define global SS_RIGHT         $2			//å³æƒãˆ
-#define global SS_SUNKEN        $1000		//æµ…ã„å‡¹ã¿
+//<ƒEƒBƒ“ƒhƒEƒXƒ^ƒCƒ‹>
+#define global WS_BORDER        $800000		//‹«ŠE˜gü
+#define global WS_DISABLED      $8000000	//–³Œø
+#define global WS_DLGFRAME      $400000		//–c‚ç‚Ý
+#define global SS_CENTER        $1			//’†‰›‘µ‚¦
+#define global SS_RIGHT         $2			//‰E‘µ‚¦
+#define global SS_SUNKEN        $1000		//ó‚¢‰š‚Ý
 /*******************************************************************************/
 #module
-#deffunc mycolor double p1, double p2, double p3, int p4
+#deffunc Mycolor double p1, double p2, double p3, int p4
 	switch p4
 		case 0
 			color double(p1 * 255), double(p2 * 255), double(p3 * 255)
@@ -35,10 +35,10 @@
 #global
 /******************************************************************************/
 #module
-//vsaveçŸ­ç¸®
+//vsave’Zk
 //%1,%2,%3,%4,%5,%6
-//%1ï½ž%5:ä¿å­˜ã—ãŸã„é…åˆ—å¤‰æ•°
-//%6:ãƒ•ã‚¡ã‚¤ãƒ«å
+//%1`%5:•Û‘¶‚µ‚½‚¢”z—ñ•Ï”
+//%6:ƒtƒ@ƒCƒ‹–¼
 #define global mysave(%1,%2,%3,%4,%5,%6)\
 	vsave_start\
 	: vsave_put %1\
@@ -47,6 +47,21 @@
 	: vsave_put %4\
 	: vsave_put %5\
 	: vsave_end %6
+#global
+
+#module
+#deffunc rm_init
+	WakuSize = (ginfo(10) - ginfo(12)) / 2
+	TabSize = ginfo(11) - ginfo(13) - WakuSize
+	return
+
+#defcfunc rmousex
+	x1 = ginfo(0) - ginfo(4) - WakuSize
+	return x1
+
+#defcfunc rmousey
+	y1 = ginfo(1) - ginfo(5) - TabSize
+	return y1
 #global
 
 /******************************************************************************/
@@ -59,10 +74,10 @@
 #cfunc GetStockObject "GetStockObject" int
 
 //CreateTab p1, p2, p3, p4
-//ã‚¿ãƒ–ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ«ã‚’è¨­ç½®ã—ã¾ã™ã€‚statã«ã‚¿ãƒ–ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ«ã®ãƒãƒ³ãƒ‰ãƒ«ãŒè¿”ã‚Šã¾ã™ã€‚
-//p1ï½žp2=ã‚¿ãƒ–ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ«ã®X/Yæ–¹å‘ã®ã‚µã‚¤ã‚º
-//p3 : ã‚¿ãƒ–ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ«ã®ãƒãƒ³ãƒ‰ãƒ«ã‚’å—ã‘å–ã‚‹å¤‰æ•°
-//p4=ã‚¿ãƒ–ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ«ã®è¿½åŠ ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚¹ã‚¿ã‚¤ãƒ«
+//ƒ^ƒuƒRƒ“ƒgƒ[ƒ‹‚ðÝ’u‚µ‚Ü‚·Bstat‚Éƒ^ƒuƒRƒ“ƒgƒ[ƒ‹‚Ìƒnƒ“ƒhƒ‹‚ª•Ô‚è‚Ü‚·B
+//p1`p2=ƒ^ƒuƒRƒ“ƒgƒ[ƒ‹‚ÌX/Y•ûŒü‚ÌƒTƒCƒY
+//p3 : ƒ^ƒuƒRƒ“ƒgƒ[ƒ‹‚Ìƒnƒ“ƒhƒ‹‚ðŽó‚¯Žæ‚é•Ï”
+//p4=ƒ^ƒuƒRƒ“ƒgƒ[ƒ‹‚Ì’Ç‰ÁƒEƒBƒ“ƒhƒEƒXƒ^ƒCƒ‹
 #deffunc CreateTab int p1, int p2, var p3, int p4
 	winobj "systabcontrol32", "", , $52000000 | p4, p1, p2
 	p3 = objinfo(stat, 2)
@@ -71,19 +86,19 @@
 	return p3
 /*******************************************************************************/
 //CreateTab p1, p2, p3, p4
-//ã‚¿ãƒ–ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ«ã‚’è¨­ç½®ã—ã¾ã™ã€‚
-//p1ï½žp2=ã‚¿ãƒ–ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ«ã®X/Yæ–¹å‘ã®ã‚µã‚¤ã‚º
-//p3 : ã‚¿ãƒ–ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ«ã®ãƒãƒ³ãƒ‰ãƒ«ã‚’å—ã‘å–ã‚‹å¤‰æ•°
-//p4($400) : ã‚¿ãƒ–ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ«ã®è¿½åŠ ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚¹ã‚¿ã‚¤ãƒ«
+//ƒ^ƒuƒRƒ“ƒgƒ[ƒ‹‚ðÝ’u‚µ‚Ü‚·B
+//p1`p2=ƒ^ƒuƒRƒ“ƒgƒ[ƒ‹‚ÌX/Y•ûŒü‚ÌƒTƒCƒY
+//p3 : ƒ^ƒuƒRƒ“ƒgƒ[ƒ‹‚Ìƒnƒ“ƒhƒ‹‚ðŽó‚¯Žæ‚é•Ï”
+//p4($400) : ƒ^ƒuƒRƒ“ƒgƒ[ƒ‹‚Ì’Ç‰ÁƒEƒBƒ“ƒhƒEƒXƒ^ƒCƒ‹
 #define global My_CreateTab(%1, %2, %3, %4 = $400) CreateTab %1,%2,%3,%4
 /*******************************************************************************/
 
 //InsertTab p1,p2,index,p3
-//ã‚¿ãƒ–ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ«ã«é …ç›®ã‚’è¿½åŠ ã—ã¾ã™ã€‚
-//p1 : "ã‚¿ãƒ–ã¤ã¾ã¿éƒ¨åˆ†ã®æ–‡å­—åˆ—"
-//p2 : ã‚¿ãƒ–ã®é …ç›®ã¨ã—ã¦è²¼ã‚Šä»˜ã‘ã‚‹bgscrå‘½ä»¤ã®ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦IDå€¤
-//index = 0ï½ž : ã‚¿ãƒ–ã®åºåˆ—
-//p3 : ã‚¿ãƒ–ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ«ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆãƒãƒ³ãƒ‰ãƒ«
+//ƒ^ƒuƒRƒ“ƒgƒ[ƒ‹‚É€–Ú‚ð’Ç‰Á‚µ‚Ü‚·B
+//p1 : "ƒ^ƒu‚Â‚Ü‚Ý•”•ª‚Ì•¶Žš—ñ"
+//p2 : ƒ^ƒu‚Ì€–Ú‚Æ‚µ‚Ä“\‚è•t‚¯‚ébgscr–½—ß‚ÌƒEƒBƒ“ƒhƒEID’l
+//index = 0` : ƒ^ƒu‚Ì˜—ñ
+//p3 : ƒ^ƒuƒRƒ“ƒgƒ[ƒ‹‚ÌƒIƒuƒWƒFƒNƒgƒnƒ“ƒhƒ‹
 #deffunc InsertTab str p1, int p2, int index, var p3
 	pszText = p1 : tcitem = 1, 0, 0, varptr(pszText)
 	sendmsg p3, $1307, index, varptr(tcitem)
@@ -98,9 +113,9 @@
 
 #module
 //ChangeTab p1,
-//ã‚¿ãƒ–åˆ‡ã‚Šæ›¿ãˆå‡¦ç†ç”¨
-//p1 : ã‚¿ãƒ–ã®é …ç›®ã¨ã—ã¦è²¼ã‚Šä»˜ã‘ã‚‹bgscrå‘½ä»¤ã®åˆå›žã‚¦ã‚£ãƒ³ãƒ‰ã‚¦IDå€¤
-//p2 : ã‚¿ãƒ–ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ«ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆãƒãƒ³ãƒ‰ãƒ«
+//ƒ^ƒuØ‚è‘Ö‚¦ˆ——p
+//p1 : ƒ^ƒu‚Ì€–Ú‚Æ‚µ‚Ä“\‚è•t‚¯‚ébgscr–½—ß‚Ì‰‰ñƒEƒBƒ“ƒhƒEID’l
+//p2 : ƒ^ƒuƒRƒ“ƒgƒ[ƒ‹‚ÌƒIƒuƒWƒFƒNƒgƒnƒ“ƒhƒ‹
 #deffunc ChangeTab int p1, var p2
 	gsel wID + p1, -1
 	sendmsg p2, $130B
@@ -111,10 +126,10 @@
 /*******************************************************************************/
 #module
 //My_ChangeTab %1,%2,%3
-//ã‚¿ãƒ–åˆ‡ã‚Šæ›¿ãˆå‡¦ç†ç”¨
-//%1 : ã‚¿ãƒ–ã®é …ç›®ã¨ã—ã¦è²¼ã‚Šä»˜ã‘ã‚‹bgscrå‘½ä»¤ã®åˆå›žã‚¦ã‚£ãƒ³ãƒ‰ã‚¦IDå€¤
-//%2 : ã‚¿ãƒ–ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ«ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆãƒãƒ³ãƒ‰ãƒ«
-//%3 : ã‚¿ãƒ–ãŒè¨­ç½®ã•ã‚Œã¦ã„ã‚‹ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ID
+//ƒ^ƒuØ‚è‘Ö‚¦ˆ——p
+//%1 : ƒ^ƒu‚Ì€–Ú‚Æ‚µ‚Ä“\‚è•t‚¯‚ébgscr–½—ß‚Ì‰‰ñƒEƒBƒ“ƒhƒEID’l
+//%2 : ƒ^ƒuƒRƒ“ƒgƒ[ƒ‹‚ÌƒIƒuƒWƒFƒNƒgƒnƒ“ƒhƒ‹
+//%3 : ƒ^ƒu‚ªÝ’u‚³‚ê‚Ä‚¢‚éƒEƒBƒ“ƒhƒEID
 #define global My_ChangeTab(%1,%2,%3)\
 		gsel wID + %1, -1\
 		: sendmsg %2, $130B\
@@ -124,17 +139,17 @@
 #global
 /*******************************************************************************/
 
-//ã€HSP3.x ç§»æ¤ç‰ˆã€‘
-//ã€ŽHSPã®è£æŠ€ã€ãƒªã‚¹ãƒˆãƒ“ãƒ¥ãƒ¼ã‚’ä½œæˆã—ã¦ã¿ã‚‹ ACT-1
+//yHSP3.x ˆÚA”Åz
+//wHSP‚Ì— ‹ZxƒŠƒXƒgƒrƒ…[‚ðì¬‚µ‚Ä‚Ý‚é ACT-1
 // http://chokuto.ifdef.jp/urawaza/listview1.html
-//============= ãƒªã‚¹ãƒˆãƒ“ãƒ¥ãƒ¼æ“ä½œãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ« ===============
+//============= ƒŠƒXƒgƒrƒ…[‘€ìƒ‚ƒWƒ…[ƒ‹ ===============
 #module
 #uselib "comctl32.dll"
 #func InitCommonControlsEx "InitCommonControlsEx" int
 
 #define ICC_LISTVIEW_CLASSES    4
 
-#define WS_CHILD    0x40000000
+#define global WS_CHILD    0x40000000
 #define WS_VISIBLE  0x10000000
 #define WS_CAPTION  0x00C00000
 
@@ -167,7 +182,7 @@
 #define global LVN_COLUMNCLICK   $FFFFFF94
 #define global LVM_SORTITEMSEX   $00001051
 
-// ãƒªã‚¹ãƒˆãƒ“ãƒ¥ãƒ¼ä½œæˆ
+// ƒŠƒXƒgƒrƒ…[ì¬
 #deffunc CreateListView int sx, int sy
 	initinfo = 8, ICC_LISTVIEW_CLASSES
 	InitCommonControlsEx varptr(initinfo)
@@ -176,19 +191,19 @@
 	return
 /*******************************************************************************/
 
-//ãƒªã‚¹ãƒˆãƒ“ãƒ¥ãƒ¼è¨­ç½®
+//ƒŠƒXƒgƒrƒ…[Ý’u
 //%1,%2,%3,%4
-//%1,%2 : Xã‚µã‚¤ã‚º,Yã‚µã‚¤ã‚º
-//%3 : ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆIDã‚’å—ã‘å–ã‚‹å¤‰æ•°
-//%4 : ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆãƒãƒ³ãƒ‰ãƒ«ã‚’å—ã‘å–ã‚‹å¤‰æ•°
-#define global My_CreateListView(%1,%2,%3,%4)\
+//%1,%2 : XƒTƒCƒY,YƒTƒCƒY
+//%3 : ƒIƒuƒWƒFƒNƒgID‚ðŽó‚¯Žæ‚é•Ï”
+//%4 : ƒIƒuƒWƒFƒNƒgƒnƒ“ƒhƒ‹‚ðŽó‚¯Žæ‚é•Ï”
+#define global My_CreateLv(%1,%2,%3,%4)\
 		CreateListView %1, %2\
 		: %3 = stat\
 		: %4 = objinfo(%3, 2)\
 		: sendmsg %4, 0x1036, , 0x00000020 | 0x00000010 | 1// | 4
 /*******************************************************************************/
 
-; ãƒªã‚¹ãƒˆãƒ“ãƒ¥ãƒ¼ã«åˆ—ã‚’è¿½åŠ 
+; ƒŠƒXƒgƒrƒ…[‚É—ñ‚ð’Ç‰Á
 #deffunc InsertListViewColumn int objID, int index, var v1, int align, int pixels
 	dim lvcolumn, 8
 	lvcolumn(0) = LVCF_FMT | LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM
@@ -199,19 +214,19 @@
 	return
 /*******************************************************************************/
 
-//ãƒªã‚¹ãƒˆãƒ“ãƒ¥ãƒ¼ã®ã‚«ãƒ©ãƒ è¿½åŠ   %1,%2,%3,%4,%5
-//%1 : è¨­ç½®ã—ãŸãƒªã‚¹ãƒˆãƒ“ãƒ¥ãƒ¼ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆID
-//%2 : ã‚«ãƒ©ãƒ ã‚’æ ¼ç´ã—ãŸé…åˆ—å¤‰æ•°
-//%3 : ã‚«ãƒ©ãƒ ã®æ•°
-//%4 : ã‚«ãƒ©ãƒ ã®å¹…
-//%5 : 0=å·¦æƒãˆ / 1=å³æƒãˆ / 2=ä¸­å¤®æƒãˆ
+//ƒŠƒXƒgƒrƒ…[‚ÌƒJƒ‰ƒ€’Ç‰Á  %1,%2,%3,%4,%5
+//%1 : Ý’u‚µ‚½ƒŠƒXƒgƒrƒ…[‚ÌƒIƒuƒWƒFƒNƒgID
+//%2 : ƒJƒ‰ƒ€‚ðŠi”[‚µ‚½”z—ñ•Ï”
+//%3 : ƒJƒ‰ƒ€‚Ì”
+//%4 : ƒJƒ‰ƒ€‚Ì•
+//%5 : 0=¶‘µ‚¦ / 1=‰E‘µ‚¦ / 2=’†‰›‘µ‚¦
 #define global My_InsertColumn(%1,%2,%3,%4,%5 = 0)\
 		repeat %3\
 		: InsertListViewColumn %1, cnt, %2(cnt), %5, %4(cnt)\
 		: loop
 /*******************************************************************************/
 
-// ãƒªã‚¹ãƒˆãƒ“ãƒ¥ãƒ¼ã«é …ç›®è¿½åŠ 
+// ƒŠƒXƒgƒrƒ…[‚É€–Ú’Ç‰Á
 #deffunc InsertListViewItem int objID, int index, var v2
 	dim lvitem, 13
 	lvitem(0) = LVIF_TEXT
@@ -220,7 +235,7 @@
 	sendmsg objinfo_hwnd(objID), LVM_INSERTITEM, 0, varptr(lvitem)
 	return
 
-// ãƒªã‚¹ãƒˆãƒ“ãƒ¥ãƒ¼ã®é …ç›®ã¾ãŸã¯ã‚µãƒ–é …ç›®ãƒ†ã‚­ã‚¹ãƒˆè¨­å®š
+// ƒŠƒXƒgƒrƒ…[‚Ì€–Ú‚Ü‚½‚ÍƒTƒu€–ÚƒeƒLƒXƒgÝ’è
 #deffunc SetListViewItemText int objID, int index, int subitem, var v3
 	dim lvitem, 13
 	lvitem(0) = LVIF_TEXT
@@ -231,12 +246,12 @@
 	return
 /*******************************************************************************/
 
-//ãƒªã‚¹ãƒˆãƒ“ãƒ¥ãƒ¼ã®ãƒ¬ã‚³ãƒ¼ãƒ‰ã‚’è¿½åŠ   %1,%2,%3,%4
-//%1 : è¨­ç½®ã—ãŸãƒªã‚¹ãƒˆãƒ“ãƒ¥ãƒ¼ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆID
-//%2 : ãƒ¬ã‚³ãƒ¼ãƒ‰ã‚’æ ¼ç´ã—ãŸé…åˆ—å¤‰æ•°
-//%3 : ãƒ¬ã‚³ãƒ¼ãƒ‰ã®æ•°
-//%4 : ã‚«ãƒ©ãƒ ã®æ•°
-#define global My_InsertChItem(%1,%2,%3,%4)\
+//ƒŠƒXƒgƒrƒ…[‚ÌƒŒƒR[ƒh‚ð’Ç‰Á  %1,%2,%3,%4
+//%1 : Ý’u‚µ‚½ƒŠƒXƒgƒrƒ…[‚ÌƒIƒuƒWƒFƒNƒgID
+//%2 : ƒŒƒR[ƒh‚ðŠi”[‚µ‚½”z—ñ•Ï”
+//%3 : ƒŒƒR[ƒh‚Ì”
+//%4 : ƒJƒ‰ƒ€‚Ì”
+#define global My_InsertLvItem(%1,%2,%3,%4)\
 		i = 0\
 		: repeat %3\
 		: InsertListViewItem %1, i, %2(i * %4)\
@@ -248,20 +263,20 @@
 /*******************************************************************************/
 #global
 #module
-//ãƒªã‚¹ãƒˆãƒ“ãƒ¥ãƒ¼ã‚¢ã‚¤ãƒ†ãƒ ã®å‰Šé™¤
-//h1 : ãƒªã‚¹ãƒˆãƒ“ãƒ¥ãƒ¼ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆID
+//ƒŠƒXƒgƒrƒ…[ƒAƒCƒeƒ€‚Ìíœ
+//h1 : ƒŠƒXƒgƒrƒ…[‚ÌƒIƒuƒWƒFƒNƒgID
 #deffunc DelListItem int h1
 	sendmsg objinfo(h1, 2), 0x1009, 0, 0
 	return
 #global
 
 #module
-//ãƒªã‚¹ãƒˆãƒ“ãƒ¥ãƒ¼ã‚¢ã‚¤ãƒ†ãƒ ã®æ–‡å­—åˆ—å–å¾—
-// p1 : ãƒªã‚¹ãƒˆãƒ“ãƒ¥ãƒ¼ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆID
-// p2 : ã‚¢ã‚¤ãƒ†ãƒ ã®ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹
-// p3 : ã‚µãƒ–ã‚¢ã‚¤ãƒ†ãƒ ã®ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹
-// p4 : å–å¾—æ–‡å­—åˆ—ã‚’æ ¼ç´ã™ã‚‹æ–‡å­—åˆ—åž‹å¤‰æ•°
-// p5 : ãƒãƒƒãƒ•ã‚¡ã‚µã‚¤ã‚º
+//ƒŠƒXƒgƒrƒ…[ƒAƒCƒeƒ€‚Ì•¶Žš—ñŽæ“¾
+// p1 : ƒŠƒXƒgƒrƒ…[‚ÌƒIƒuƒWƒFƒNƒgID
+// p2 : ƒAƒCƒeƒ€‚ÌƒCƒ“ƒfƒbƒNƒX
+// p3 : ƒTƒuƒAƒCƒeƒ€‚ÌƒCƒ“ƒfƒbƒNƒX
+// p4 : Žæ“¾•¶Žš—ñ‚ðŠi”[‚·‚é•¶Žš—ñŒ^•Ï”
+// p5 : ƒoƒbƒtƒ@ƒTƒCƒY
 #deffunc GetListItem int p1, int p2, int p3, var p4, int p5
 	dim lvitem, 13
 	lvitem(0) = 0x0001
@@ -274,20 +289,20 @@
 #global
 
 #module
-//CL_GetCheckState p1, p2
-//p1 = ãƒªã‚¹ãƒˆãƒ“ãƒ¥ãƒ¼ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆID
-//p2 = é …ç›®ã®ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ç•ªå·(0ï½ž)
-//ãƒã‚§ãƒƒã‚¯ãƒœãƒƒã‚¯ã‚¹ã®çŠ¶æ…‹ã‚’å–å¾—ã—ã¾ã™ã€‚çŠ¶æ…‹ã‚’å–å¾—ã—ãŸã„é …ç›®ã®ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ç•ªå·(0ï½ž)ã‚’æŒ‡å®šã—ã¦ãã ã•ã„ã€‚statã«0(ãƒã‚§ãƒƒã‚¯ãªã—)ã€1(ãƒã‚§ãƒƒã‚¯ã‚ã‚Š)ãŒè¿”ã‚Šã¾ã™ã€‚
+//ƒ`ƒFƒbƒNƒ{ƒbƒNƒX‚Ìó‘Ô‚ðŽæ“¾‚µ‚Ü‚·B
+//p1 = ƒŠƒXƒgƒrƒ…[‚ÌƒIƒuƒWƒFƒNƒgID
+//p2 = €–Ú‚ÌƒCƒ“ƒfƒbƒNƒX”Ô†(0`)
+//ó‘Ô‚ðŽæ“¾‚µ‚½‚¢€–Ú‚ÌƒCƒ“ƒfƒbƒNƒX”Ô†(0`)‚ðŽw’è‚µ‚Ä‚­‚¾‚³‚¢Bstat‚É0(ƒ`ƒFƒbƒN‚È‚µ)A1(ƒ`ƒFƒbƒN‚ ‚è)‚ª•Ô‚è‚Ü‚·B
 #deffunc CL_GetCheckState int p1, int p2
 	sendmsg objinfo(p1, 2), $102C, p2, $F000
 	return (stat >> 12) - 1
 #global
 
 #module
-//p1 : ãƒªã‚¹ãƒˆãƒ“ãƒ¥ãƒ¼ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆID
-//p2 : ã‚«ãƒ©ãƒ ã®æ•°
-//p3 : å–å¾—æ–‡å­—åˆ—ã‚’æ ¼ç´ã™ã‚‹æ–‡å­—åˆ—åž‹å¤‰æ•°
-#deffunc My_GetListItem int p1, int p2, var v
+//p1 : ƒŠƒXƒgƒrƒ…[‚ÌƒIƒuƒWƒFƒNƒgID
+//p2 : ƒJƒ‰ƒ€‚Ì”
+//p3 : Žæ“¾•¶Žš—ñ‚ðŠi”[‚·‚é•¶Žš—ñŒ^•Ï”
+#deffunc My_GetLvItem int p1, int p2, var v
 	i = -1 : sdim v2
 	repeat
 		sendmsg objinfo(p1, 2), 0x100C, i, 0x0002
@@ -304,11 +319,11 @@
 #global
 
 #module
-//SQLã®ãƒ‡ãƒ¼ã‚¿ã‚’æ–‡å­—åˆ—åž‹é…åˆ—å¤‰æ•°ã«å¤‰æ›ã—æ ¼ç´ã™ã‚‹
-//p1 : ãƒ¬ã‚³ãƒ¼ãƒ‰ã®æ•°
-//p2 : ã‚«ãƒ©ãƒ ã®æ•°
-//p3 : ã‚«ãƒ©ãƒ ã‚’æ ¼ç´ã—ãŸæ–‡å­—åˆ—åž‹é…åˆ—å¤‰æ•°
-//p4 : ãƒ¬ã‚³ãƒ¼ãƒ‰ã‚’å—ã‘å–ã‚‹æ–‡å­—åˆ—åž‹é…åˆ—å¤‰æ•°
+//SQL‚Ìƒf[ƒ^‚ð•¶Žš—ñŒ^1ŽŸŒ³”z—ñ•Ï”‚É•ÏŠ·‚µŠi”[‚·‚é
+//p1 : ƒŒƒR[ƒh‚Ì”
+//p2 : ƒJƒ‰ƒ€‚Ì”
+//p3 : ƒJƒ‰ƒ€‚ðŠi”[‚µ‚½•¶Žš—ñŒ^”z—ñ•Ï”
+//p4 : ƒŒƒR[ƒh‚ðŽó‚¯Žæ‚é•¶Žš—ñŒ^”z—ñ•Ï”
 #define global Datainput(%1,%2,%3,%4)\
 	repeat %1\
 	: j = 0\
@@ -323,17 +338,17 @@
 
 
 /*******************************************************************************
-					2022/10/05ç¾åœ¨ ä»¥ä¸‹èª¿æ•´ä¸­ã®ãŸã‚ä¸€æ™‚ä½¿ç”¨ä¸­æ­¢
+					2022/10/05Œ»Ý ˆÈ‰º’²®’†‚Ì‚½‚ßˆêŽžŽg—p’†Ž~
 ********************************************************************************/
 
 //#module
-//ãƒã‚¤ãƒ‘ãƒ¼ãƒªãƒ³ã‚¯ã‚’è¨­ç½®ã™ã‚‹å‘½ä»¤
+//ƒnƒCƒp[ƒŠƒ“ƒN‚ðÝ’u‚·‚é–½—ß
 //p1,p2,p3,p4,p5,p6
-//p1=æ–‡å­—åˆ— : è¡¨ç¤ºã™ã‚‹æ–‡å­—åˆ—
-//p2=æ–‡å­—åˆ— : ãƒªãƒ³ã‚¯å…ˆã®httpsï½ž
-//p3=0: ãƒžã‚¦ã‚¹ãŒåå¿œã™ã‚‹ç¯„å›². Xã‚µã‚¤ã‚º
-//p4=0: ãƒžã‚¦ã‚¹ãŒåå¿œã™ã‚‹ç¯„å›². Yã‚µã‚¤ã‚º*/
-//gdi32.as ã¨ user32.as ã‚’ã‚¤ãƒ³ã‚¯ãƒ«ãƒ¼ãƒ‰ã—ã¦ãã ã•ã„.
+//p1=•¶Žš—ñ : •\Ž¦‚·‚é•¶Žš—ñ
+//p2=•¶Žš—ñ : ƒŠƒ“ƒNæ‚Ìhttps`
+//p3=0: ƒ}ƒEƒX‚ª”½‰ž‚·‚é”ÍˆÍ. XƒTƒCƒY
+//p4=0: ƒ}ƒEƒX‚ª”½‰ž‚·‚é”ÍˆÍ. YƒTƒCƒY*/
+//gdi32.as ‚Æ user32.as ‚ðƒCƒ“ƒNƒ‹[ƒh‚µ‚Ä‚­‚¾‚³‚¢.
 /*
 #deffunc hyperlink str p1, str p2, int p3, int p4
 	dim RECT, 4
@@ -341,11 +356,11 @@
 	hStatic = objinfo(stat, 2)
 	mref BMSCR, 67
 	sendmsg hStatic, $30, BMSCR.38
-	LoadCursor 0, 32649     //ã‚¹ã‚¿ãƒ†ã‚£ãƒƒã‚¯ãƒ†ã‚­ã‚¹ãƒˆä¸Šã®ã‚«ãƒ¼ã‚½ãƒ«ã‚’ãƒãƒ³ãƒ‰ã‚«ãƒ¼ã‚½ãƒ«ã«å¤‰æ›´
+	LoadCursor 0, 32649     //ƒXƒ^ƒeƒBƒbƒNƒeƒLƒXƒgã‚ÌƒJ[ƒ\ƒ‹‚ðƒnƒ“ƒhƒJ[ƒ\ƒ‹‚É•ÏX
 	SetClassLong hStatic, -12, stat
-	//ã‚¹ã‚¿ãƒ†ã‚£ãƒƒã‚¯ãƒ†ã‚­ã‚¹ãƒˆãŒæç”»ã•ã‚Œã¦ã„ã‚‹ã¨ãã«é€ã‚‰ã‚Œã¦ãã‚‹ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
+	//ƒXƒ^ƒeƒBƒbƒNƒeƒLƒXƒg‚ª•`‰æ‚³‚ê‚Ä‚¢‚é‚Æ‚«‚É‘—‚ç‚ê‚Ä‚­‚éƒEƒBƒ“ƒhƒEƒƒbƒZ[ƒW
 	oncmd gosub *ctlcolorstatic, $138
-	oncmd gosub *command, $111      //ãƒžã‚¦ã‚¹ã‚¯ãƒªãƒƒã‚¯æ™‚ã®ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
+	oncmd gosub *command, $111      //ƒ}ƒEƒXƒNƒŠƒbƒNŽž‚ÌƒEƒBƒ“ƒhƒEƒƒbƒZ[ƒW
 	oncmd gosub *wmsetcursor, $20   //WM_SETCURSOR
 	stop
 
@@ -367,9 +382,9 @@
 
 *wmsetcursor
 	if (lparam & $FFFF) != 1 : return
-	// ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®å·¦ä¸ŠXYå³ä¸‹XYã®åº§æ¨™ä½ç½®ã‚’å–å¾—
+	// ƒIƒuƒWƒFƒNƒg‚Ì¶ãXY‰E‰ºXY‚ÌÀ•WˆÊ’u‚ðŽæ“¾
 	GetWindowRect hStatic, varptr(RECT)
-	// å–å¾—ã—ãŸã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®åº§æ¨™ä½ç½®ã¨ã‚«ãƒ¼ã‚½ãƒ«ã®åº§æ¨™ä½ç½®ã‚’æ¯”è¼ƒ
+	// Žæ“¾‚µ‚½ƒIƒuƒWƒFƒNƒg‚ÌÀ•WˆÊ’u‚ÆƒJ[ƒ\ƒ‹‚ÌÀ•WˆÊ’u‚ð”äŠr
 	PtInRect varptr(RECT), ginfo(0), ginfo(1)
 	if stat {
 		if oncursor : return
