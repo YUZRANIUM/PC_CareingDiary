@@ -59,57 +59,57 @@
 	return
 
 //メニューバー
-*OnCommand
-	cmd = wparam & 0xFFFF
-	switch cmd
-		//ファイル(F) >> 開く
-		case CMD_OPEN
-			setting(5, 0) = -1
-			dialog "var", 16, "SaveData"
-			if stat = 0 : return
-			fname = refstr
-			vload fname
-			//メインウィンドウ更新
-			gsel ID_WIN_MAIN, 0 : redraw 0 : redraw 1
-			gsel ID_TAB_MOTI, 0 : objprm id_motimono, motimono
-			gsel ID_WIN_SETI, 0
-			objprm id_savebut, setting(0, 0)
-			objprm id_chkosoi, setting(1, 0)
-			objprm id_chkfutu, setting(2, 0)
-			objprm id_chkhaya, setting(3, 0)
-			gsel ID_WIN_MAIN, 0 : objprm layid0, "load"
-			gsel ID_TAB_LOG, 0 : objprm id_logmoni, logmoni
-			gsel ID_WIN_MAIN
-			swbreak
+//*OnCommand
+//	cmd = wparam & 0xFFFF
+//	switch cmd
+//		//ファイル(F) >> 開く
+//		case CMD_OPEN
+//			setting(5, 0) = -1
+//			dialog "var", 16, "SaveData"
+//			if stat = 0 : return
+//			fname = refstr
+//			vload fname
+//			//メインウィンドウ更新
+//			gsel ID_WIN_MAIN, 0 : redraw 0 : redraw 1
+//			gsel ID_TAB_MOTI, 0 : objprm id_motimono, motimono
+//			gsel ID_WIN_SETI, 0
+//			objprm id_savebut, setting(0, 0)
+//			objprm id_chkosoi, setting(1, 0)
+//			objprm id_chkfutu, setting(2, 0)
+//			objprm id_chkhaya, setting(3, 0)
+//			gsel ID_WIN_MAIN, 0 : objprm layid0, "load"
+//			gsel ID_TAB_LOG, 0 : objprm id_logmoni, logmoni
+//			gsel ID_WIN_MAIN
+//			swbreak
 
-		//ファイル(F) >> 保存
-		case CMD_SAVE
-			setting(5, 0) = -1
-			dialog "var", 17, "SaveData"
-			if stat = 0 : return
-			fname = refstr
-			//拡張子
-			exname = getpath(fname, 2)
-			if exname = "" : fname += ".var"
-			mysave u, st, gt, setting, motimono, logmoni, fname
-			gsel ID_WIN_MAIN, 0 : objprm layid0, "Save"
-			gsel ID_TAB_LOG, 0 : objprm id_logmoni, logmoni
-			gsel ID_WIN_MAIN
-			swbreak
+//		//ファイル(F) >> 保存
+//		case CMD_SAVE
+//			setting(5, 0) = -1
+//			dialog "var", 17, "SaveData"
+//			if stat = 0 : return
+//			fname = refstr
+//			//拡張子
+//			exname = getpath(fname, 2)
+//			if exname = "" : fname += ".var"
+//			mysave u, st, gt, setting, motimono, logmoni, fname
+//			gsel ID_WIN_MAIN, 0 : objprm layid0, "Save"
+//			gsel ID_TAB_LOG, 0 : objprm id_logmoni, logmoni
+//			gsel ID_WIN_MAIN
+//			swbreak
 
-		//ファイル(F) >> 終了
-		case CMD_QUIT
-			setting(5, 0) = -1
-			exist fname
-			if strsize == -1 {
-				fname = savedir + "\\autosave.var"
-			}
-			mysave u, st, gt, setting, motimono, logmoni, fname
-			oncmd 0
-			end
-			swbreak
-	swend
-	return
+//		//ファイル(F) >> 終了
+//		case CMD_QUIT
+//			setting(5, 0) = -1
+//			exist fname
+//			if strsize == -1 {
+//				fname = savedir + "\\autosave.var"
+//			}
+//			mysave u, st, gt, setting, motimono, logmoni, fname
+//			oncmd 0
+//			end
+//			swbreak
+//	swend
+//	return
 
 //スタート/ストップ
 *ope
@@ -131,38 +131,51 @@
 
 //amazoonリストビュー昇降順の処理
 *notify
-	dupptr nmhdr, lparam, 12, 4 : tabhwnd = nmhdr(0)
-	if (nmhdr(2) == LVN_COLUMNCLICK) {
-		dupptr nmlv, lparam, 40, 4 : index = nmlv(4)
-		setting(5, 0) = -1
-		sql_open db
-		sql_q "BEGIN;"
-		switch tabhwnd
-			/***CPU***/
-			case hLVCPU
-				sdim cpu, 2048
-				swc = swc * -1
-				if swc == -1 {
-					sql_q "SELECT * FROM MyCPU ORDER BY " + col_clis(index) + " DESC;"
-				}
-				else {
-					sql_q "SELECT * FROM MyCPU ORDER BY " + col_clis(index) + " ASC;"
-				}
-				col_clis = sql_collist() : split col_clis, ",", col_clis
-				Datainput rec_cnum, col_cnum, col_clis, cpu
-				gsel ID_OMTAB_CPU
-				DelListItem id_LVCPU
-				My_InsertLvItem id_LVCPU, cpu, rec_cnum, col_cnum
-				swbreak
-			case hLVGPU
-				swbreak
-			case hLVROM
-				swbreak
-		swend
-		//gsel ID_WIN_MAIN
-		sql_q "COMMIT;"
-		sql_close
-	}
+	//dupptr nmhdr, lparam, 12, 4 : tabhwnd = nmhdr(0)
+	//if (nmhdr(2) == LVN_COLUMNCLICK) {
+	setting(5, 0) = -1
+	dupptr nmlv, lparam, 40, 4 : index = nmlv(4)
+	sql_open db
+	sql_q "BEGIN;"
+	switch tabhwnd
+		/***CPU***/
+		case hLVCPU
+			sdim cpu, 2048
+			swc = swc * -1
+			if swc == -1 {
+				sql_q "SELECT * FROM MyCPU ORDER BY " + col_clis(index) + " DESC;"
+			}
+			else {
+				sql_q "SELECT * FROM MyCPU ORDER BY " + col_clis(index) + " ASC;"
+			}
+			col_clis = sql_collist() : split col_clis, ",", col_clis
+			Datainput rec_cnum, col_cnum, col_clis, cpu
+			gsel ID_OMTAB_CPU
+			DelListItem id_LVCPU
+			My_InsertLvItem id_LVCPU, cpu, rec_cnum, col_cnum
+			swbreak
+		/***GPU***/
+		case hLVGPU
+			sdim gpu, 2048
+			swg = swg * -1
+			if swg == -1 {
+				sql_q "SELECT * FROM MyGPU ORDER BY " + col_glis(index) + " DESC;"
+			}
+			else {
+				sql_q "SELECT * FROM MyGPU ORDER BY " + col_glis(index) + " ASC;"
+			}
+			col_glis = sql_collist() : split col_glis, ",", col_glis
+			Datainput rec_gnum, col_gnum, col_glis, gpu
+			gsel ID_OMTAB_GPU
+			DelListItem id_LVGPU
+			My_InsertLvItem id_LVGPU, gpu, rec_gnum, col_gnum
+			swbreak
+		case hLVROM
+			swbreak
+	swend
+	sql_q "COMMIT;"
+	sql_close
+	//}
 	return
 
 //################################################OP画面処理

@@ -4,7 +4,7 @@
 #include "user32.as"
 #include "gdi32.as"
 #include "hsp3util.as"
-#include "mod_menu.as"
+//#include "mod_menu.as"
 #include "hspda.as"	//vsaveån
 #include "sqlele.hsp"
 

@@ -9,20 +9,20 @@
 	mref BMSCR, 67 : hFont = BMSCR.38
 /*************<<  メニューバーの設置  >>*************/
 
-	#define CMD_OPEN 1
-	#define CMD_SAVE 2
-	#define CMD_QUIT 3
+	//#define CMD_OPEN 1
+	//#define CMD_SAVE 2
+	//#define CMD_QUIT 3
 	/******サブメニューの設定******/
 	// メニューバー >> ファイル V
-	newmenu hfilemenu, 1
-	addmenu hfilemenu, "Open(&O)", CMD_OPEN
-	addmenu hfilemenu, "Save(&S)", CMD_SAVE
-	addmenu hfilemenu, "Quit(&Q)", CMD_QUIT
+	//newmenu hfilemenu, 1
+	//addmenu hfilemenu, "Open(&O)", CMD_OPEN
+	//addmenu hfilemenu, "Save(&S)", CMD_SAVE
+	//addmenu hfilemenu, "Quit(&Q)", CMD_QUIT
 	/******メインメニューの設定******/
 	// ファイル(F) | ヘルプ(H)
-	newmenu hmenu, 0
-	addmenu hmenu, "File(&F)", hfilemenu, 0x10
-	applymenu hmenu // 設定したメニューバーを適用
+	//newmenu hmenu, 0
+	//addmenu hmenu, "File(&F)", hfilemenu, 0x10
+	//applymenu hmenu // 設定したメニューバーを適用
 
 
 /*******************************************************************************
@@ -339,11 +339,5 @@
 	gsel ID_WIN_OPEN, 1
 	gsel ID_WIN_MASTER, 1
 	oncmd 1
-	oncmd gosub *OnCommand, WM_COMMAND   //メニューバー
+	//oncmd gosub *OnCommand, WM_COMMAND   //メニューバー
 	onexit gosub *exit	//終了ボタン
-
-	/***デバッグ用***/
-	//gsel ID_WIN_OPEN, 1
-	//gsel ID_WIN_MAIN, 1
-	//gsel ID_WIN_AMAZ, 1
-	//gsel ID_WIN_SETI, 1
