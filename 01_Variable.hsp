@@ -27,7 +27,7 @@
 	//オートセーブ通知"AutoSave Successed!"
 	astip = ""
 	//titleバー
-	titlemes = "PC Careing Diary ver" + ver + " /HSP" + hspv
+	titlemes = "PC CareingDiary ver" + ver + " /HSP" + hspv
 	//バージョン情報
 	infa = "" : sdim infa, 128, 5
 	infa(0) = "PC Careing Diary ver vv"
@@ -39,7 +39,7 @@
 	//更新履歴.txt
 	infa2 = "" : sdim infa2, 4096
 	notesel infa2
-	noteload "09_ChangeLog_pc.txt" : noteunsel
+	noteload "09_changelog.txt" : noteunsel
 
 	//設定項目配列
 	//setting(0, 0):オートセーブON/OFF

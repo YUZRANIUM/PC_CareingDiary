@@ -40,13 +40,13 @@
 	pos 120, 40
 	Mycolor 1, 0.5, 0.75, 1 //輪郭線
 	Mycolor 0.95, 0.95, 0.95, 0 //文字色
-	mes "PC Careing Diary ver" + ver, 4
+	mes "PC CareingDiary ver" + ver, 4
 
 	font "メイリオ", 40, 1, 2
 	pos 120, 40
 	Mycolor 0, 0, 0, 1 //輪郭線
 	Mycolor 0.95, 0.95, 0.95, 0 //文字色
-	mes "PC Careing Diary ver" + ver, 4
+	mes "PC CareingDiary ver" + ver, 4
 
 	pos 300, 200 : objsize 200, 40, 60 : font "けいふぉんと", 16 : objmode 2, 1
 

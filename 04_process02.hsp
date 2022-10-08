@@ -1,4 +1,4 @@
-#packopt name "PC_Careing Diary"
+#packopt name "PC Careing Diary"
 #packopt type 0
 /*********************layerobjの処理************************/
 #include "user32.as"
@@ -9,9 +9,9 @@
 #include "sqlele.hsp"
 
 #include "00_module.hsp"
-#include "01_Variable.hsp"
-#include "02_Interface.hsp"
-#include "03_Process.hsp"
+#include "01_variable.hsp"
+#include "02_interface.hsp"
+#include "03_process01.hsp"
 
 //ゲーム内時間とステータス
 *lay
