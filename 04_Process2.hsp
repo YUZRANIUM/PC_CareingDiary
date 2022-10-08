@@ -8,10 +8,10 @@
 #include "hspda.as"	//vsave系
 #include "sqlele.hsp"
 
-#include "00_module_pc.hsp"
-#include "01_Constants_pc.hsp"
-#include "02_UI_pc.hsp"
-#include "03_Process1_pc.hsp"
+#include "00_module.hsp"
+#include "01_Variable.hsp"
+#include "02_Interface.hsp"
+#include "03_Process.hsp"
 
 //ゲーム内時間とステータス
 *lay
@@ -36,39 +36,40 @@
 		case objlayer_cmdprms
 			//layerobjに渡す文字列
 			string = refstr
-			//ログ表示用の時間
-			//time = "" + gettime(1) + "/" + gettime(3) + " " + gettime(4) + ":" + gettime(5) + ":" + gettime(6)
 			notesel logmoni : noteadd "\n", 1, 0
 			if string == "asc" {
 				noteadd time + " : AutoSave Successed! " + fname, 1, 0
-				noteunsel
-				gsel ID_TAB_LOG : objprm id_logmoni, logmoni : gsel ID_WIN_MAIN
+				//noteunsel
+				//gsel ID_TAB_LOG : objprm id_logmoni, logmoni : gsel ID_WIN_MAIN
 			}
 			if string == "auto_chk" {
 				noteadd time + " : Settings Change " + savebut_text(setting(0, 0)) + string2, 1, 0
-				noteunsel
+				//noteunsel
+				//gsel ID_TAB_LOG : objprm id_logmoni, logmoni : gsel ID_WIN_MAIN
 			}
 			if string == "load" {
 				noteadd time + " : load Successed! " + fname, 1, 0
-				noteunsel
-				gsel ID_TAB_LOG : objprm id_logmoni, logmoni : gsel ID_WIN_MAIN
+				//noteunsel
+				//gsel ID_TAB_LOG : objprm id_logmoni, logmoni : gsel ID_WIN_MAIN
 			}
 			if string == "Save" {
 				noteadd time + " : Save Successed! " + fname, 1, 0
-				noteunsel
-				gsel ID_TAB_LOG : objprm id_logmoni, logmoni : gsel ID_WIN_MAIN
+				//noteunsel
+				//gsel ID_TAB_LOG : objprm id_logmoni, logmoni : gsel ID_WIN_MAIN
 			}
 			if string == "dd" {
 				noteadd "------------------------------------------------------------------------------------", 1, 0
 				noteadd time + " : Game times " + gt(2, 0) + "/" + gt(3, 0) + " になりました.", 1, 0
-				noteunsel
-				gsel ID_TAB_LOG : objprm id_logmoni, logmoni : gsel ID_WIN_MAIN
+				//noteunsel
+				//gsel ID_TAB_LOG : objprm id_logmoni, logmoni : gsel ID_WIN_MAIN
 			}
 			if string == "yy" {
 				noteadd time + " : Happy New Year!!", 1, 0
-				noteunsel
-				gsel ID_TAB_LOG : objprm id_logmoni, logmoni : gsel ID_WIN_MAIN
+				//noteunsel
+				//gsel ID_TAB_LOG : objprm id_logmoni, logmoni : gsel ID_WIN_MAIN
 			}
+			noteunsel
+			gsel ID_TAB_LOG : objprm id_logmoni, logmoni : gsel ID_WIN_MAIN
 			swbreak
 		//redraw命令が実行されたとき
 		case objlayer_cmddraw
@@ -123,7 +124,7 @@
 	if int(gt(2, 0)) > 12 {
 		gt(2, 0) = " 1"
 		gt(0, 0) = strf("%3d", int(gt(0, 0)) + 1)
-		gsel ID_WIN_MAIN : objprm layid0, "yy"
+		setting(7, 0) = 1
 	}
 	repeat 6
 		hmoni += "" + gt(cnt, 0) + gt(cnt, 1)
@@ -131,10 +132,15 @@
 
 	//表示文字列の変更 (WM_SETTEXT)
 	sendmsg hStatic_h, $C, , hmoni
-
+	//day change log
 	if setting(6, 0) == 1 {
 		gsel ID_WIN_MAIN : objprm layid0, "dd"
 		setting(6, 0) = 0
+	}
+	//year change log
+	if setting(7, 0) == 1 {
+		gsel ID_WIN_MAIN : objprm layid0, "yy"
+		setting(7, 0) = 0
 	}
 //======================================ステータス
 

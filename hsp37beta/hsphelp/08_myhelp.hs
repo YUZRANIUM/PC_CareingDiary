@@ -1,5 +1,5 @@
 ;
-;	00_module_pc.hsp用 HELPソースファイル
+;	00_module.hsp用 HELPソースファイル
 ;	制作日	: 2022/10/07
 ;	製作者	: ゆずらにうむ
 ;	Twitter	: https://twitter.com/YUZRANIUM
@@ -11,7 +11,7 @@
 %url
 https://twitter.com/YUZRANIUM
 %dll
-00_module_pc
+00_module
 %type
 ユーザー定義命令
 %ver
@@ -46,7 +46,7 @@ p1,p2,p3がそれぞれ、R,G,Bの輝度になります。
 color
 objcolor
 %note
-00_module_pc.hspをインクルードすること
+00_module.hspをインクルードすること
 ;
 ; 以下このプロジェクトのみの一時的なもの
 ;

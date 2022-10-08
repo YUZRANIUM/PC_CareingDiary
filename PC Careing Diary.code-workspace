@@ -173,7 +173,7 @@
 		"language-hsp3.helpman.path.online": "https://docs.hsp.moe/3.6/?q=%s",
 		"hsp3-debug-window-adapter.hsp3-root": "C:/HSP.git/hsp37beta",
 		"hsp3-analyzer-mini.hsp3-root": "C:/HSP.git/hsp37beta",
-		"hsp3-analyzer-mini.trace.server": "off",
+		"hsp3-analyzer-mini.trace.server": "messages",
 		"markdown.preview.breaks": true,
 		"markdown.experimental.validate.enabled": true,
 		"markdown.preview.fontFamily": "MyricaM M",

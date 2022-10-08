@@ -1,6 +1,6 @@
 /***メインループ***/
 *main
-	gsel ID_TAB_SETTEI : objprm id_savebut, savebut_text(setting(0, 0))
+	gsel ID_WIN_SETI : objprm id_savebut, savebut_text(setting(0, 0))
 	//ループ制御ボタンの表示切り替え
 	if setting(5, 0) == -1 {
 		gsel ID_WIN_MAIN : objprm id_opebut, opebut_text(0)
@@ -48,7 +48,7 @@
 			if strsize == -1 {
 				fname = savedir + "\\autosave.var"
 			}
-			mysave u, st, gt, setting, motimono, fname
+			mysave u, st, gt, setting, motimono, logmoni, fname
 			astip = "asc"
 			objprm layid0, astip
 			gsel ID_TAB_LOG, 0 : objprm id_logmoni, logmoni
@@ -72,7 +72,7 @@
 			//メインウィンドウ更新
 			gsel ID_WIN_MAIN, 0 : redraw 0 : redraw 1
 			gsel ID_TAB_MOTI, 0 : objprm id_motimono, motimono
-			gsel ID_TAB_SETTEI, 0
+			gsel ID_WIN_SETI, 0
 			objprm id_savebut, setting(0, 0)
 			objprm id_chkosoi, setting(1, 0)
 			objprm id_chkfutu, setting(2, 0)
@@ -91,7 +91,7 @@
 			//拡張子
 			exname = getpath(fname, 2)
 			if exname = "" : fname += ".var"
-			mysave u, st, gt, setting, motimono, fname
+			mysave u, st, gt, setting, motimono, logmoni, fname
 			gsel ID_WIN_MAIN, 0 : objprm layid0, "Save"
 			gsel ID_TAB_LOG, 0 : objprm id_logmoni, logmoni
 			gsel ID_WIN_MAIN
@@ -104,28 +104,9 @@
 			if strsize == -1 {
 				fname = savedir + "\\autosave.var"
 			}
-			mysave u, st, gt, setting, motimono, fname
-			//sql_q "COMMIT;"
-			//sql_close
+			mysave u, st, gt, setting, motimono, logmoni, fname
 			oncmd 0
 			end
-			swbreak
-
-		//ヘルプ(H) >> このソフトについて
-		case CMD_INFO
-			setting(5, 0) = -1
-			gsel ID_WIN_INFO, 1
-			swbreak
-
-		case CMD_START
-			setting(5, 0) = -1
-			exist fname
-			if strsize == -1 {
-				fname = savedir + "\\autosave.var"
-			}
-			mysave u, st, gt, setting, motimono, fname
-			gsel ID_WIN_MAIN, -1
-			gsel ID_WIN_OPEN, 1
 			swbreak
 	swend
 	return
@@ -138,28 +119,19 @@
 	gsel ID_WIN_MAIN
 	return
 
-//タブコントロールの処理
+//mainタブコントロールの処理
+*noti_main
+	My_ChangeTab ID_TAB_MOTI, hTab_main, ID_WIN_MAIN
+	return
+
+//amazタブコントロールの処理
+*noti_amaz
+	My_ChangeTab ID_OMTAB_CPU, hTabOMI, ID_WIN_AMAZ
+	return
+
+//amazoonリストビュー昇降順の処理
 *notify
 	dupptr nmhdr, lparam, 12, 4 : tabhwnd = nmhdr(0)
-	/***タブコントロール切り替え処理***/
-	if (nmhdr(2) == -551) {
-		switch tabhwnd
-			/***メインのタブコントロール***/
-			case hTab_main
-				gsel wID + ID_TAB_MOTI, -1
-				sendmsg hTab_main, $130B
-				wID = stat
-				gsel wID + ID_TAB_MOTI, 1
-				gsel ID_WIN_MAIN
-				swbreak
-			/***入れ子のタブコントロール***/
-			case hTabOMI
-				setting(5, 0) = -1
-				ChangeTab ID_OMTAB_CPU, hTabOMI
-				gsel ID_TAB_OMISE
-				swbreak
-		swend
-	}
 	if (nmhdr(2) == LVN_COLUMNCLICK) {
 		dupptr nmlv, lparam, 40, 4 : index = nmlv(4)
 		setting(5, 0) = -1
@@ -187,7 +159,7 @@
 			case hLVROM
 				swbreak
 		swend
-		gsel ID_WIN_MAIN
+		//gsel ID_WIN_MAIN
 		sql_q "COMMIT;"
 		sql_close
 	}
@@ -209,14 +181,57 @@
 	//メインウィンドウ更新
 	gsel ID_WIN_MAIN, 0 : redraw 0 : redraw 1
 	gsel ID_TAB_MOTI, 0 : objprm id_motimono, motimono
-	gsel ID_TAB_SETTEI, 0
+
+	gsel ID_WIN_SETI, 0
 	sendmsg hButton, $F1, setting(0, 0)
 	objprm id_chkosoi, setting(1, 0)
 	objprm id_chkfutu, setting(2, 0)
 	objprm id_chkhaya, setting(3, 0)
+
 	gsel ID_WIN_OPEN, -1
 	gsel ID_TAB_LOG, 0 : objprm id_logmoni, logmoni
 	gsel ID_WIN_MAIN, 1 : objprm layid0, "load"
+	return
+
+//======================================
+
+*amazoon
+	setting(5, 0) = -1
+	gsel ID_WIN_MAIN, -1
+	gsel ID_WIN_AMAZ, 1
+	return
+
+*settei
+	setting(5, 0) = -1
+	gsel ID_WIN_MAIN, -1
+	gsel ID_WIN_SETI, 1
+	return
+
+*infomation
+	gsel ID_WIN_INFO, 1
+	return
+
+*remain
+	gsel ID_WIN_SAVE, -1
+	gsel ID_WIN_AMAZ, -1
+	gsel ID_WIN_MAIN, 1
+	return
+
+*retitle
+	exist fname
+	if strsize == -1 {
+		fname = savedir + "\\autosave.var"
+	}
+	mysave u, st, gt, setting, motimono, logmoni, fname
+	gsel ID_WIN_SAVE, -1
+	gsel ID_WIN_SETI, -1
+	gsel ID_WIN_INFO, -1
+	gsel ID_WIN_OPEN, 1
+	return
+
+*saveload
+	gsel ID_WIN_MAIN, -1
+	gsel ID_WIN_SAVE, 1
 	return
 
 //======================================設定タブ処理
@@ -240,7 +255,8 @@
 	}
 	gsel ID_WIN_MAIN : objprm layid0, "auto_chk"
 	gsel ID_TAB_LOG, 0 : objprm id_logmoni, logmoni
-	gsel ID_WIN_MAIN
+	gsel ID_WIN_SETI, -1
+	gsel ID_WIN_MAIN, 1
 	return
 
 //情報ウィンドウを閉じるボタン
@@ -259,10 +275,8 @@
 			if strsize == -1 {
 				fname = savedir + "\\autosave.var"
 			}
-			mysave u, st, gt, setting, motimono, fname
+			mysave u, st, gt, setting, motimono, logmoni, fname
 			oncmd 0
-			//sql_q "COMMIT;"
-			//sql_close
 			end
 			swbreak
 		//------------------------------情報ウィンドウ

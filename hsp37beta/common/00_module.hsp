@@ -37,16 +37,17 @@
 #module
 //vsave短縮
 //%1,%2,%3,%4,%5,%6
-//%1～%5:保存したい配列変数
-//%6:ファイル名
-#define global mysave(%1,%2,%3,%4,%5,%6)\
+//%1～%6:保存したい配列変数
+//%7:ファイル名
+#define global mysave(%1,%2,%3,%4,%5,%6,%7)\
 	vsave_start\
 	: vsave_put %1\
 	: vsave_put %2\
 	: vsave_put %3\
 	: vsave_put %4\
 	: vsave_put %5\
-	: vsave_end %6
+	: vsave_put %6\
+	: vsave_end %7
 #global
 
 #module

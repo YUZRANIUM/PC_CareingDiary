@@ -21,7 +21,7 @@
 	#include "user32.as"
 	#include "gdi32.as"
 	#include "sqlele.hsp"
-	#include "00_module_pc.hsp"
+	#include "00_module.hsp"
 	/***ウィンドウID***/
 	#enum MASTER_ex = 0
 	#enum MAIN_ex
@@ -381,7 +381,7 @@
 ********************************************************************************/
 	#include "hsp3util.as"
 	#include "sqlele.hsp"
-	#include "00_module_pc.hsp"
+	#include "00_module.hsp"
 	screen 0, 1250, 450, 2 : title "SQLite DB Table Schema Information for HSP" + strf("%.3f", double(strf("%4x", hspver)) / 1000) + " (SQLele)"
 	font "メイリオ", 12 : mref BMSCR, 67 : hFont = BMSCR(38) : objmode 2, 1
 
@@ -460,7 +460,7 @@
 								マウス座標の取得
 ###############################################################################*/
 	#include "user32.as"
-	//#include "00_module_pc.hsp"
+	//#include "00_module.hsp"
 
 #module
 #deffunc rm_init
