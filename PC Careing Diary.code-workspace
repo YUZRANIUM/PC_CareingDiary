@@ -25,7 +25,7 @@
 		"editor.insertSpaces": false,
 		"editor.autoClosingDelete": "always",
 		"editor.autoClosingOvertype": "always",
-		"editor.autoIndent": "full",
+		"editor.autoIndent": "keep",
 		"editor.codeLensFontFamily": "MyricaM M",
 		"editor.comments.insertSpace": false,
 		"editor.defaultFormatter": "honobonosun.language-hsp3",

@@ -128,7 +128,7 @@
 	"typescript.format.insertSpaceAfterOpeningAndBeforeClosingJsxExpressionBraces": true,
 	"typescript.format.insertSpaceAfterTypeAssertion": true,
 	"typescript.format.insertSpaceBeforeFunctionParenthesis": true,
-	"editor.autoIndent": "full",
+	"editor.autoIndent": "keep",
 	"editor.tabSize": 4,
 	"[hsp3]": {
 		"editor.defaultFormatter": "vain0x.hsp3-analyzer-mini"
