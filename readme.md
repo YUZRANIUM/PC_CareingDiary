@@ -1,8 +1,9 @@
 # PC CareingDiary
-PC（自作パソコン）を作って育成していく育成･放置系ゲームです。色々制作中。
-This is an idle desktop game where you build and upgrade your PC.  It's still under development.
+PC（自作パソコン）を作って育成していく育成･放置系ゲームです。色々制作中。  
+This is an idle desktop game where you build and upgrade your PC.  
+It's still under development.
 
-個人制作であると同時に、リポジトリの練習も兼ねています。
+個人制作であると同時に、リポジトリの練習も兼ねています。  
 In this repository, I practice the repository itself while publishing my personal work.
 <br />
 
@@ -12,34 +13,42 @@ In this repository, I practice the repository itself while publishing my persona
 - 不定期な更新です。
 
 ## ファイルについて
-<br /><!--  -->
+
 * 00_module.hsp
 	- ユーザー定義命令･関数、一部のWin32API定数のマクロ登録、その他外部から導入したモジュールなどをまとめたファイル.
-<br /><!--  -->
+<br />
+
 * 01_variable.hsp
 	- 以下のスクリプト内で使用するほぼ全ての変数をここで定義･管理しています.
 	- ウィンドウIDに関してはマクロ名定数列挙にてこちらで管理.
-<br /><!--  -->
+<br />
+
 * 02_interface.hsp
 	- メニューバーやボタン、リストビューといったウィンドウオブジェクトをまとめています.
 	- 同時に必要なウィンドウメッセージ、及び各種割り込み設定もこちらで扱っています.
-<br /><!--  -->
+<br />
+
 * 03_process01.hsp
 	- メインループの他、上記 02_interfaceからのルーチンジャンプ後の処理は原則全てこちらで扱っています.
-<br /><!--  -->
+<br />
+
 * 04_process02.hsp
 	- 描画に関するルーチンジャンプ処理のみこちらで管理しています.
 	- 今後、ゲーム内のアイテムなどを管理しているSQLの処理部分を追加していく予定.
-<br /><!--  -->
+<br />
+
 * 05_experiment.hsp
 	- 上記6つのスクリプトに変更を加える前にこちらで、加える変更箇所の動作確認や部分的な仮構築などを行います.
 	- その他、思いつきや実験的な取り組みなどが中心でプロジェクトとはさほど関係ありません.
-<br /><!--  -->
+<br />
+
 * 06, 07 拡張用のため欠番
-<br /><!--  -->
+<br />
+
 * 08_myhelp.hs
 	- 本プロジェクトとは関係ないが、00_module内で定義してある自作命令やマクロについてののヘルプファイルです。現段階ではまだ不十分。
-<br /><!--  -->
+<br />
+
 * 09_changelog.txt
 	- 更新履歴です. ゲーム内で表示可能
 
