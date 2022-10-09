@@ -1,6 +1,6 @@
 /***メインループ***/
 *main
-	await 32
+	await 512
 	gsel ID_WIN_SETI : objprm id_savebut, savebut_text(setting(0, 0))
 	//ループ制御ボタンの表示切り替え
 	if setting(5, 0) == -1 {
@@ -11,7 +11,7 @@
 		gsel ID_WIN_MAIN : objprm id_opebut, opebut_text(1)
 	}
 	/***変数処理と描画***/
-	redraw 0
+	//redraw 0
 
 	gt(6, 0) = str(int(gt(6, 0)) + 1) //ゲーム内時間カウンタ
 	if int(gt(6, 0)) > 5000 : gt(6, 0) = "1"
@@ -30,7 +30,10 @@
 	if int(st(2, 0)) > 1023 : objprm layid0, 0
 	if int(st(3, 0)) > 1023 : objprm layid0, 1
 
-	redraw 1
+	gsel ID_WIN_MAIN
+	objprm layid0, 2
+
+	//redraw 1
 	/***オートセーブ***/
 	//gosub *chautosave
 	//goto *main
@@ -96,18 +99,6 @@
 //			gsel ID_WIN_MAIN, 0 : objprm layid0, "Save"
 //			gsel ID_TAB_LOG, 0 : objprm id_logmoni, logmoni
 //			gsel ID_WIN_MAIN
-//			swbreak
-
-//		//ファイル(F) >> 終了
-//		case CMD_QUIT
-//			setting(5, 0) = -1
-//			exist fname
-//			if strsize == -1 {
-//				fname = savedir + "\\autosave.var"
-//			}
-//			mysave u, st, gt, setting, motimono, logmoni, fname
-//			oncmd 0
-//			end
 //			swbreak
 //	swend
 //	return
