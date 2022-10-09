@@ -39,7 +39,7 @@
 	//更新履歴.txt
 	infa2 = "" : sdim infa2, 4096
 	notesel infa2
-	noteload "09_changelog.txt" : noteunsel
+	noteload "text/09_changelog.txt" : noteunsel
 
 	//設定項目配列
 	//setting(0, 0):オートセーブON/OFF
