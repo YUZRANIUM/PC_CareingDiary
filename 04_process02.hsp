@@ -1,17 +1,16 @@
 #packopt name "PC Careing Diary"
 #packopt type 0
 /*********************layerobjの処理************************/
-#include "user32.as"
-#include "gdi32.as"
-#include "hsp3util.as"
-//#include "mod_menu.as"
-#include "hspda.as"	//vsave系
-#include "sqlele.hsp"
+	#include "user32.as"
+	#include "gdi32.as"
+	#include "hsp3util.as"
+	#include "hspda.as"	//vsave系
+	#include "sqlele.hsp"
 
-#include "00_module.hsp"
-#include "01_variable.hsp"
-#include "02_interface.hsp"
-#include "03_process01.hsp"
+	#include "00_module.hsp"
+	#include "01_variable.hsp"
+	#include "02_interface.hsp"
+	#include "03_process01.hsp"
 
 //ゲーム内時間とステータス
 *lay
@@ -39,34 +38,22 @@
 			notesel logmoni : noteadd "\n", 1, 0
 			if string == "asc" {
 				noteadd time + " : AutoSave Successed! " + fname, 1, 0
-				//noteunsel
-				//gsel ID_TAB_LOG : objprm id_logmoni, logmoni : gsel ID_WIN_MAIN
 			}
 			if string == "auto_chk" {
 				noteadd time + " : Settings Change " + savebut_text(setting(0, 0)) + string2, 1, 0
-				//noteunsel
-				//gsel ID_TAB_LOG : objprm id_logmoni, logmoni : gsel ID_WIN_MAIN
 			}
 			if string == "load" {
 				noteadd time + " : load Successed! " + fname, 1, 0
-				//noteunsel
-				//gsel ID_TAB_LOG : objprm id_logmoni, logmoni : gsel ID_WIN_MAIN
 			}
 			if string == "Save" {
 				noteadd time + " : Save Successed! " + fname, 1, 0
-				//noteunsel
-				//gsel ID_TAB_LOG : objprm id_logmoni, logmoni : gsel ID_WIN_MAIN
 			}
 			if string == "dd" {
 				noteadd "------------------------------------------------------------------------------------", 1, 0
 				noteadd time + " : Game times " + gt(2, 0) + "/" + gt(3, 0) + " になりました.", 1, 0
-				//noteunsel
-				//gsel ID_TAB_LOG : objprm id_logmoni, logmoni : gsel ID_WIN_MAIN
 			}
 			if string == "yy" {
 				noteadd time + " : Happy New Year!!", 1, 0
-				//noteunsel
-				//gsel ID_TAB_LOG : objprm id_logmoni, logmoni : gsel ID_WIN_MAIN
 			}
 			noteunsel
 			gsel ID_TAB_LOG : objprm id_logmoni, logmoni : gsel ID_WIN_MAIN

@@ -213,6 +213,7 @@
 		"explorer.sortOrderLexicographicOptions": "default",
 		"files.encoding": "shiftjis",
 		"terminal.integrated.detectLocale": "auto",
+		"workbench.editor.scrollToSwitchTabs": true,
 	},
 	"extensions": {
 		"recommendations": [

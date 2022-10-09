@@ -168,21 +168,21 @@
 	//カラムリスト
 	col_clis = sql_collist() : split col_clis, ",", col_clis
 	//データのインプット
-	Datainput rec_cnum, col_cnum, col_clis, cpu
+	myindata rec_cnum, col_cnum, col_clis, cpu
 
 	/***GPU***/
 	sql_q "SELECT * FROM MyGPU;"
 	rec_gnum = stat
 	col_gnum = length(tmparr)
 	col_glis = sql_collist() : split col_glis, ",", col_glis
-	Datainput rec_gnum, col_gnum, col_glis, gpu
+	myindata rec_gnum, col_gnum, col_glis, gpu
 
 	/***ROM***/
 	sql_q "SELECT * FROM MyROM;"
 	rec_rnum = stat
 	col_rnum = length(tmparr)
 	col_rlis = sql_collist() : split col_rlis, ",", col_rlis
-	Datainput rec_rnum, col_rnum, col_rlis, rom
+	myindata rec_rnum, col_rnum, col_rlis, rom
 
 	sql_q "COMMIT;"
 	sql_close

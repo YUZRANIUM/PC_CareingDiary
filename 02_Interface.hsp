@@ -4,25 +4,9 @@
 	screen ID_WIN_MASTER, 800, 500, 2
 	hWin_master = hwnd
 	title titlemes
-	font "メイリオ", 16 : objmode 2, 1 : oncmd 0
+	font "メイリオ", 16 : objmode 2, 1
 	//HSPのBMSCR構造体からフォントハンドルを取得
 	mref BMSCR, 67 : hFont = BMSCR.38
-/*************<<  メニューバーの設置  >>*************/
-
-	//#define CMD_OPEN 1
-	//#define CMD_SAVE 2
-	//#define CMD_QUIT 3
-	/******サブメニューの設定******/
-	// メニューバー >> ファイル V
-	//newmenu hfilemenu, 1
-	//addmenu hfilemenu, "Open(&O)", CMD_OPEN
-	//addmenu hfilemenu, "Save(&S)", CMD_SAVE
-	//addmenu hfilemenu, "Quit(&Q)", CMD_QUIT
-	/******メインメニューの設定******/
-	// ファイル(F) | ヘルプ(H)
-	//newmenu hmenu, 0
-	//addmenu hmenu, "File(&F)", hfilemenu, 0x10
-	//applymenu hmenu // 設定したメニューバーを適用
 
 
 /*******************************************************************************
@@ -61,11 +45,9 @@
 
 
 
-
 /*******************************************************************************
 								Main Window
 ********************************************************************************/
-	//screen ID_WIN_MAIN, 800, 500, 0
 	bgscr ID_WIN_MAIN, 800, 500, 2
 	SetWindowLong hwnd, -16, WS_CHILD
 	SetParent hwnd, hWin_master
@@ -82,22 +64,23 @@
 	/***ステータス項目表示***/
 	mx = 20 : my = 35
 	pos mx, my
-	winobj "static", " C P U\n G P U\n R O M\n S S D\n F a n\n 温 度\n Power", , $50000000 | $800000, 170, 170
+	statictext " C P U\n G P U\n R O M\n S S D\n F a n\n 温 度\n Power", 170, 170
+	//winobj "static", " C P U\n G P U\n R O M\n S S D\n F a n\n 温 度\n Power", , $50000000 | $800000, 170, 170
 	hStatic_i = objinfo(stat, 2)
 
 	/***ステータス数値表示***/
 	pos mx + 58, my + 1
-	winobj "static", "", , $50000000 | $800000 | $2, 70, 169
+	winobj "static", "", , $50000000 | $2, 70, 168
 	hStatic_m = objinfo(stat, 2)
 
 	/***ステータス単位表示(変動用)***/
 	pos mx + 126, my + 50
-	winobj "static", " B\n B", , $50000000 | $800000, 40, 50
+	winobj "static", " B\n B", , $50000000, 40, 50
 	hStatic_u = objinfo(stat, 2)
 
 	/***ステータス単位表示(固定用)***/
 	pos mx + 126, my + 96
-	winobj "static", " rpm\n deg\n %", , $50000000 | $800000, 40, 70
+	winobj "static", " rpm\n deg\n %", , $50000000, 40, 70
 	hStatic_u2 = objinfo(stat, 2)
 
 /*******************************************************************************/
@@ -116,7 +99,7 @@
 //==========================================================
 	InsertTab "Arsenal", ID_TAB_SOUKO, 1, hTab_main
 	pos 5, 0
-	My_CreateLv 794, 210, id_soukomoni, hLVsouko
+	mycrelv 794, 210, id_soukomoni, hLVsouko
 
 //==========================================================
 	InsertTab "Logs", ID_TAB_LOG, 2, hTab_main
@@ -164,7 +147,6 @@
 /*******************************************************************************
 								Amazoon
 ********************************************************************************/
-	//screen ID_WIN_AMAZ, 800, 500, 0
 	bgscr ID_WIN_AMAZ, 800, 500, 2
 	SetWindowLong hwnd, -16, WS_CHILD
 	SetParent hwnd, hWin_master
@@ -174,54 +156,52 @@
 	button gosub "Exit", *remain
 
 	pos 5, 120
-	My_CreateTab 750, 500, hTabOMI
+	My_CreateTab 750, 300, hTabOMI
 	listx = 550
-	listy = 160
+	listy = 280
 
 
 	InsertTab "C P U", ID_OMTAB_CPU, 5, hTabOMI
 	pos 2, 2
-	My_CreateLv listx, listy, id_LVCPU, hLVCPU
-	My_InsertColumn id_LVCPU, col_clis, col_cnum, column_w
-	My_InsertLvItem id_LVCPU, cpu, rec_cnum, col_cnum
+	mycrelv listx, listy, id_LVCPU, hLVCPU
+	myincol id_LVCPU, col_clis, col_cnum, column_w
+	myinitem id_LVCPU, cpu, rec_cnum, col_cnum
 	oncmd gosub *notify, WM_NOTIFY
 
 
 	InsertTab "G P U", ID_OMTAB_GPU, 6, hTabOMI
 	pos 2, 2
-	My_CreateLv listx, listy, id_LVGPU, hLVGPU
-	My_InsertColumn id_LVGPU, col_glis, col_gnum, column_w
-	My_InsertLvItem id_LVGPU, gpu, rec_gnum, col_gnum
+	mycrelv listx, listy, id_LVGPU, hLVGPU
+	myincol id_LVGPU, col_glis, col_gnum, column_w
+	myinitem id_LVGPU, gpu, rec_gnum, col_gnum
 	oncmd gosub *notify, WM_NOTIFY
 
 
 	InsertTab "R O M", ID_OMTAB_ROM, 7, hTabOMI
 	pos 2, 2
-	My_CreateLv listx, listy, id_LVROM, hLVROM
-	My_InsertColumn id_LVROM, col_rlis, col_rnum, column_w
-	My_InsertLvItem id_LVROM, rom, rec_rnum, col_rnum
+	mycrelv listx, listy, id_LVROM, hLVROM
+	myincol id_LVROM, col_rlis, col_rnum, column_w
+	myinitem id_LVROM, rom, rec_rnum, col_rnum
 	oncmd gosub *notify, WM_NOTIFY
 
 	InsertTab "S S D", ID_OMTAB_SSD, 8, hTabOMI
 	pos 2, 2
-	My_CreateLv listx, listy, id_LVSSD, hLVSSD
+	mycrelv listx, listy, id_LVSSD, hLVSSD
 	oncmd gosub *notify, WM_NOTIFY
 
 	InsertTab "F A N", ID_OMTAB_FAN, 9, hTabOMI
 	pos 2, 2
-	My_CreateLv listx, listy, id_LVFAN, hLVFAN
+	mycrelv listx, listy, id_LVFAN, hLVFAN
 	oncmd gosub *notify, WM_NOTIFY
 
 	InsertTab "Power", ID_OMTAB_POW, 10, hTabOMI
 	pos 2, 2
-	My_CreateLv listx, listy, id_LVPOW, hLVPOW
+	mycrelv listx, listy, id_LVPOW, hLVPOW
 	oncmd gosub *notify, WM_NOTIFY
 
 
-
-	gsel ID_OMTAB_CPU, 1
+	gsel ID_OMTAB_CPU, 1 : gsel ID_WIN_AMAZ
 	oncmd gosub *noti_amaz, WM_NOTIFY //タブ項目切り替え処理時のメッセージ
-	gsel ID_WIN_AMAZ
 
 	/******フォントの反映******/
 	sendmsg hTabOMI, $30, hFont3
@@ -263,7 +243,6 @@
 /*******************************************************************************
 								Setting
 ********************************************************************************/
-	//screen ID_WIN_SETI, 800, 500, 0
 	bgscr ID_WIN_SETI, 800, 500, 2
 	SetWindowLong hwnd, -16, WS_CHILD
 	SetParent hwnd, hWin_master
@@ -339,5 +318,4 @@
 	gsel ID_WIN_OPEN, 1
 	gsel ID_WIN_MASTER, 1
 	oncmd 1
-	//oncmd gosub *OnCommand, WM_COMMAND   //メニューバー
 	onexit gosub *exit	//終了ボタン

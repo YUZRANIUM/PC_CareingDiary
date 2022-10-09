@@ -1,6 +1,6 @@
 // INFO ************************************************
 // FileName : 05_experiment.hsp
-// Date   : 2022/10/06
+// Date   : 2022/10/09
 // Author : YUZURANIUM（ゆずらにうむ）
 // URL    : https://twitter.com/YUZRANIUM
 //******************************************************
@@ -21,6 +21,7 @@
 	#include "gdi32.as"
 	#include "sqlele.hsp"
 	#include "00_module.hsp"
+	#include "00_mylv.hsp"
 	/***ウィンドウID***/
 	#enum MASTER_ex = 0
 	#enum MAIN_ex
@@ -64,19 +65,19 @@
 	//カラムの一覧リスト
 	cpu_culm = sql_collist() : split cpu_culm, ",", cpu_culm
 	//DBのレコードを文字列型1次元配列変数に格納する
-	Datainput cpu_cunt, c_culm_num, cpu_culm, cpu
+	myindata cpu_cunt, c_culm_num, cpu_culm, cpu
 
 	sql_q "SELECT * FROM MyGPU;"
 	gpu_cunt = stat
 	gpu_culm = sql_collist() : split gpu_culm, ",", gpu_culm
 	g_culm_num = length(tmparr)
-	Datainput gpu_cunt, g_culm_num, gpu_culm, gpu
+	myindata gpu_cunt, g_culm_num, gpu_culm, gpu
 
 	sql_q "SELECT * FROM MyROM;"
 	rom_cunt = stat
 	rom_culm = sql_collist() : split rom_culm, ",", rom_culm
 	r_culm_num = length(tmparr)
-	Datainput rom_cunt, r_culm_num, rom_culm, rom
+	myindata rom_cunt, r_culm_num, rom_culm, rom
 
 	sql_q "COMMIT;"
 	sql_close
@@ -109,21 +110,21 @@
 
 	pos 20, 30
 	/***リストビューの設置***/
-	My_CreateLv 500, 280, id_cpumoni, hLVcsouko
-	My_InsertColumn id_cpumoni, cpu_culm, c_culm_num, c_clum_w
-	My_InsertLvItem id_cpumoni, cpu, cpu_cunt, c_culm_num
+	mycrelv 500, 280, id_cpumoni, hLVcsouko
+	myincol id_cpumoni, cpu_culm, c_culm_num, c_clum_w
+	myinitem id_cpumoni, cpu, cpu_cunt, c_culm_num
 
 	pos 550, 30
 	/***リストビューの設置***/
-	My_CreateLv 500, 280, id_gpumoni, hLVgsouko
-	My_InsertColumn id_gpumoni, gpu_culm, g_culm_num, g_clum_w
-	My_InsertLvItem id_gpumoni, gpu, gpu_cunt, g_culm_num
+	mycrelv 500, 280, id_gpumoni, hLVgsouko
+	myincol id_gpumoni, gpu_culm, g_culm_num, g_clum_w
+	myinitem id_gpumoni, gpu, gpu_cunt, g_culm_num
 
 	pos 20, 320
 	/***リストビューの設置***/
-	My_CreateLv 500, 280, id_rommoni, hLVrsouko
-	My_InsertColumn id_rommoni, rom_culm, r_culm_num, r_clum_w
-	My_InsertLvItem id_rommoni, rom, rom_cunt, r_culm_num
+	mycrelv 500, 280, id_rommoni, hLVrsouko
+	myincol id_rommoni, rom_culm, r_culm_num, r_clum_w
+	myinitem id_rommoni, rom, rom_cunt, r_culm_num
 
 	oncmd gosub *listnotify, WM_NOTIFY
 
@@ -238,12 +239,10 @@
 
 *maint
 	wait 5
-	//redraw 0
 	gsel SUB1_ex
 	mousmoni = ""
 	mousmoni += " x = " + rmousex() + "  y = " + rmousey()
 	objprm id_mousmoni, mousmoni
-	//redraw 1
 	goto *maint
 
 
@@ -253,65 +252,60 @@
 /*********ウィンドウ切り替え処理*********/
 
 *onmain
-	gsel SUB1_ex, -1
-	gsel SUB2_ex, -1
-
+	gsel SUB1_ex, -1 : gsel SUB2_ex, -1
 	gsel MAIN_ex, 1
-	//N OTE メイン画面からbg画面に遷移する際の注意
-	//メイン画面を gsel 0, -1 としてはダメ
 	return
 
 *onsub1
-	gsel MAIN_ex, -1
-	gsel SUB2_ex, -1
-
+	gsel MAIN_ex, -1 : gsel SUB2_ex, -1
 	gsel SUB1_ex, 1
-	/* N OTE bg画面からメイン画面に戻る際の注意
-	描画、操作先ウィンドウを一度親玉に戻さないと
-	その後の分ジェクトの更新でエラーになる
-	描画･操作先の管理は意識して*/
 	return
 
 *onsub2
-	gsel SUB1_ex, -1
-	gsel MAIN_ex, -1
-
+	gsel SUB1_ex, -1 : gsel MAIN_ex, -1
 	gsel SUB2_ex, 1
 	return
 /******ウィンドウ切り替え処理ここまで*****/
 
-
-
 //タブコントロールの切り替え
 *notify_ex
-	My_ChangeTab tabid1, hTab_ex, SUB2_ex
+	dupptr nmhdr, lparam, 12, 4
+	if (nmhdr(2) == -551) {
+		My_ChangeTab tabid1, hTab_ex, SUB2_ex
+	}
 	return
-
 
 //選択したリストアイテムの取得
 *getitem
 	gsel MAIN_ex
-	sdim infonoteC, 1024 : sdim infonoteG, 1024 : sdim infonoteR, 1024 : sdim infotext, 1024
-	My_GetLvItem id_cpumoni, 6, infonoteC
-	My_GetLvItem id_gpumoni, 6, infonoteG
-	My_GetLvItem id_rommoni, 6, infonoteR
-	infotext += "---CPU---" + infonoteC + "\n---GPU---" + infonoteG + "\n---ROM---" + infonoteR
-	dialog "購入リスト\n-----------------\n" + infotext + "\n\n\t\t以上を購入しますか?", 0, "購入確認"
-	return
+	sdim infonoteC, 1024 : sdim infotext1, 1024
+	sdim infonoteG, 1024 : sdim infotext2, 1024
+	sdim infonoteR, 1024 : sdim infotext3, 1024
 
+	mygetitem id_cpumoni, 6, infonoteC
+	mygetitem id_gpumoni, 6, infonoteG
+	mygetitem id_rommoni, 6, infonoteR
+
+	infotext1 += "\n\n---CPU---" + "\n" + infonoteC
+	infotext2 += "\n\n---GPU---" + "\n" + infonoteG
+	infotext3 += "\n\n---ROM---" + "\n" + infonoteR
+	kounyu = "\n\n\t\t以上を購入しますか?"
+
+	dialog "購入リスト" + infotext1 + infotext2 + infotext3 + kounyu, 0, "購入確認"
+
+	return
 
 //並べ替え
 *listnotify
-	/***描画先・操作先***/
-	gsel MAIN_ex
-
-	sql_open f
-	sql_q "BEGIN;"
 
 	dupptr nmhdr, lparam, 12, 4 : id = nmhdr(0)
 	if (nmhdr(2) = LVN_COLUMNCLICK) {
-
 		dupptr nmlv, lparam, 40, 4 : inde = nmlv(4)
+		/***描画先・操作先***/
+		gsel MAIN_ex
+
+		sql_open f
+		sql_q "BEGIN;"
 
 		switch id
 
@@ -326,10 +320,10 @@
 					sql_q "SELECT * FROM MyCPU ORDER BY " + cpu_culm(inde) + " ASC;"
 				}
 				/***今あるリストアイテムの削除***/
-				DelListItem id_cpumoni
+				mydelitem id_cpumoni
 				cpu_culm = sql_collist() : split cpu_culm, ",", cpu_culm
-				Datainput cpu_cunt, c_culm_num, cpu_culm, cpu
-				My_InsertLvItem id_cpumoni, cpu, cpu_cunt, c_culm_num
+				myindata cpu_cunt, c_culm_num, cpu_culm, cpu
+				myinitem id_cpumoni, cpu, cpu_cunt, c_culm_num
 				swbreak
 
 			/***GPU***/
@@ -342,10 +336,10 @@
 				else {
 					sql_q "SELECT * FROM MyGPU ORDER BY " + gpu_culm(inde) + " ASC;"
 				}
-				DelListItem id_gpumoni
+				mydelitem id_gpumoni
 				gpu_culm = sql_collist() : split gpu_culm, ",", gpu_culm
-				Datainput gpu_cunt, g_culm_num, gpu_culm, gpu
-				My_InsertLvItem id_gpumoni, gpu, gpu_cunt, g_culm_num
+				myindata gpu_cunt, g_culm_num, gpu_culm, gpu
+				myinitem id_gpumoni, gpu, gpu_cunt, g_culm_num
 				swbreak
 
 			/***ROM***/
@@ -358,10 +352,10 @@
 				else {
 					sql_q "SELECT * FROM MyROM ORDER BY " + rom_culm(inde) + " ASC;"
 				}
-				DelListItem id_rommoni
+				mydelitem id_rommoni
 				rom_culm = sql_collist() : split rom_culm, ",", rom_culm
-				Datainput rom_cunt, r_culm_num, rom_culm, rom
-				My_InsertLvItem id_rommoni, rom, rom_cunt, r_culm_num
+				myindata rom_cunt, r_culm_num, rom_culm, rom
+				myinitem id_rommoni, rom, rom_cunt, r_culm_num
 				swbreak
 
 		swend
@@ -399,7 +393,7 @@
 	id_butop = stat : hButop = objinfo(id_butop, 2)
 
 	pos 10, 50
-	My_CreateLv 1230, 300, id_dbinfo, hLVdbinfo
+	mycrelv 1230, 300, id_dbinfo, hLVdbinfo
 	sendmsg hLVdbinfo, 0x1036, , 0x00000020 | 0x00000010
 
 	/***Create Dummy DB***/
@@ -411,7 +405,7 @@
 		tz3 += "" + tmparr(cnt, length2(tmparr) - 1) + ","
 	loop
 	split tz3, ",", tz3
-	My_InsertColumn id_dbinfo, tz3, length(tmparr), tzw, 0
+	myincol id_dbinfo, tz3, length(tmparr), tzw, 0
 	sql_q "COMMIT;"
 
 	sql_close
@@ -442,9 +436,9 @@
 		tz2 += "" + tmparr(0, cnt) + "|" + tmparr(1, cnt) + "|" + tmparr(2, cnt) + "|" + tmparr(3, cnt) + "|" + tmparr(4, cnt) + "|"
 	loop
 	split tz2, "|", tz2
-	DelListItem id_dbinfo
+	mydelitem id_dbinfo
 	/***Item reload***/
-	My_InsertLvItem id_dbinfo, tz2, length2(tmparr) - 1, length(tmparr)
+	myinitem id_dbinfo, tz2, length2(tmparr) - 1, length(tmparr)
 
 	sql_q "COMMIT;"
 
@@ -459,7 +453,6 @@
 								マウス座標の取得
 ###############################################################################*/
 	#include "user32.as"
-	//#include "00_module.hsp"
 
 #module
 #deffunc rm_init
