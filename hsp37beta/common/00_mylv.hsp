@@ -1,0 +1,223 @@
+// INFO ************************************************
+// FileName : 00_mylv.hsp
+// Date   : 2022/10/09
+// Author : YUZURANIUM（ゆずらにうむ）
+// URL    : https://twitter.com/YUZRANIUM
+//
+// Thanks ちょくと様
+//『HSPの裏技』リストビューを作成してみる ACT-1
+// http://chokuto.ifdef.jp/urawaza/listview1.html
+//******************************************************
+
+// ※注意※
+// 一部の命令はsqlele.asをインクルードしなければ使うことが出来ないものがあります。
+// また、リストビュー設置に関してuser32.asをインクルードしてください。
+//
+//******************************************************
+
+
+//p1,p2,p3がそれぞれ、R,G,Bの輝度になります。
+//色コードを0から1の間で指定します。0が最も暗く、1が最も明るくなります。
+//標準のcolor命令とobjcolor命令の両方を兼ね備えておりp4パラメータでどちらかに切り替え、または両方使用することができます。
+#module
+#deffunc Mycolor double p1, double p2, double p3, int p4
+	switch p4
+		case 0
+			color double(p1 * 255), double(p2 * 255), double(p3 * 255)
+			swbreak
+		case 1
+			objcolor double(p1 * 255), double(p2 * 255), double(p3 * 255)
+			swbreak
+		case 2
+			color double(p1 * 255), double(p2 * 255), double(p3 * 255)
+			objcolor double(p1 * 255), double(p2 * 255), double(p3 * 255)
+			swbreak
+		default
+			swbreak
+	swend
+	return
+#global
+
+
+//============= リストビュー操作モジュール ===============
+#module
+#uselib "comctl32.dll"
+#func InitCommonControlsEx "InitCommonControlsEx" int
+
+#define ICC_LISTVIEW_CLASSES    4
+
+#define global WS_CHILD    0x40000000
+#define global WS_VISIBLE  0x10000000
+
+#define LVS_REPORT         0x0001
+
+#define global LVM_GETITEM         0x1005
+#define global LVM_SETITEM         0x1006
+#define global LVM_INSERTITEM      0x1007
+#define global LVM_GETNEXTITEM     0x100C
+#define global LVM_INSERTCOLUMN    0x101B
+
+#define LVCF_FMT        0x0001
+#define LVCF_WIDTH      0x0002
+#define LVCF_TEXT       0x0004
+#define LVCF_SUBITEM    0x0008
+
+#define LVIF_TEXT       0x0001
+
+#define global LVS_EX_GRIDLINES      0x00000001
+#define global LVS_EX_FULLROWSELECT  0x00000020
+#define global LVS_EX_HEADERDRAGDROP 0x00000010
+
+#define global WM_NOTIFY         $0000004E
+#define global LVN_COLUMNCLICK   $FFFFFF94
+
+
+/*******************************************************************************/
+
+// リストビュー作成
+#deffunc CreateListView int sx, int sy
+	initinfo = 8, ICC_LISTVIEW_CLASSES
+	InitCommonControlsEx varptr(initinfo)
+	styleFlags = WS_CHILD | WS_VISIBLE | LVS_REPORT
+	winobj "SysListView32", "", , styleFlags, sx, sy
+	return
+
+
+//リストビュー設置
+//%1,%2,%3,%4
+//%1,%2 : Xサイズ,Yサイズ
+//%3 : オブジェクトIDを受け取る変数
+//%4 : オブジェクトハンドルを受け取る変数
+#define global mycrelv(%1,%2,%3,%4)\
+		CreateListView %1, %2\
+		: %3 = stat\
+		: %4 = objinfo(%3, 2)\
+		: sendmsg %4, 0x1036, , 0x00000020 | 0x00000010 | 1
+/*******************************************************************************/
+
+
+//リストビューに列を追加
+#deffunc InsertListViewColumn int objID, int index, var v1, int align, int pixels
+	dim lvcolumn, 8
+	lvcolumn(0) = LVCF_FMT | LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM
+	lvcolumn(1) = align
+	lvcolumn(2) = pixels
+	lvcolumn(3) = varptr(v1)
+	sendmsg objinfo_hwnd(objID), LVM_INSERTCOLUMN, index, varptr(lvcolumn)
+	return
+
+
+//リストビューのカラム追加  %1,%2,%3,%4,%5
+//%1 : 設置したリストビューのオブジェクトID
+//%2 : カラムを格納した配列変数
+//%3 : カラムの数
+//%4 : カラムの幅
+//%5 : 0=左揃え / 1=右揃え / 2=中央揃え
+#define global myincol(%1,%2,%3,%4,%5 = 0)\
+		repeat %3\
+		: InsertListViewColumn %1, cnt, %2(cnt), %5, %4(cnt)\
+		: loop
+/*******************************************************************************/
+
+
+// リストビューに項目追加
+#deffunc InsertListViewItem int objID, int index, var v2
+	dim lvitem, 13
+	lvitem(0) = LVIF_TEXT
+	lvitem(1) = index
+	lvitem(5) = varptr(v2)
+	sendmsg objinfo_hwnd(objID), LVM_INSERTITEM, 0, varptr(lvitem)
+	return
+
+// リストビューの項目またはサブ項目テキスト設定
+#deffunc SetListViewItemText int objID, int index, int subitem, var v3
+	dim lvitem, 13
+	lvitem(0) = LVIF_TEXT
+	lvitem(1) = index
+	lvitem(2) = subitem
+	lvitem(5) = varptr(v3)
+	sendmsg objinfo_hwnd(objID), LVM_SETITEM, 0, varptr(lvitem)
+	return
+
+
+//リストビューのレコードを追加  %1,%2,%3,%4
+//%1 : 設置したリストビューのオブジェクトID
+//%2 : レコードを格納した配列変数
+//%3 : レコードの数
+//%4 : カラムの数
+#define global myinitem(%1,%2,%3,%4)\
+		i = 0\
+		: repeat %3\
+		: InsertListViewItem %1, i, %2(i * %4)\
+		: repeat %4 - 1, 1\
+		: SetListViewItemText %1, i, cnt, %2(cnt + (i * %4))\
+		: loop\
+		: i++\
+		: loop
+/*******************************************************************************/
+#global
+
+
+#module
+//リストビューアイテムの文字列取得
+// p1 : リストビューのオブジェクトID
+// p2 : アイテムのインデックス
+// p3 : サブアイテムのインデックス
+// p4 : 取得文字列を格納する文字列型変数
+// p5 : バッファサイズ
+#deffunc GetListItem int p1, int p2, int p3, var p4, int p5
+	dim lvitem, 13
+	lvitem(0) = 0x0001
+	lvitem(1) = p2
+	lvitem(2) = p3
+	lvitem(5) = varptr(p4)
+	lvitem(6) = p5
+	sendmsg objinfo_hwnd(p1), LVM_GETITEM, 0, varptr(lvitem)
+	return
+#global
+
+#module
+//p1 : リストビューのオブジェクトID
+//p2 : カラムの数
+//p3 : 取得文字列を格納する文字列型変数
+#deffunc mygetitem int p1, int p2, var v
+	i = -1 : sdim v2
+	repeat
+		sendmsg objinfo(p1, 2), LVM_GETNEXTITEM, i, 0x0002
+		i = stat
+		if i == -1 : break
+		j = 0
+		repeat p2
+			GetListItem p1, i, j, v2(j), 126
+			j++
+		loop
+		v += "\n" + v2(0) + " | " + v2(1) + " | " +  v2(2) + " | " +  v2(3) + " | " +  v2(4) + " | " +  v2(5)
+	loop
+	return
+#global
+
+#module
+//SQLのデータを文字列型1次元配列変数に変換し格納する
+//p1 : レコードの数
+//p2 : カラムの数
+//p3 : カラムを格納した文字列型配列変数
+//p4 : レコードを受け取る文字列型配列変数
+#define global myindata(%1,%2,%3,%4)\
+	repeat %1\
+	: j = 0\
+	: repeat %2\
+	: %4 += "" + sql_v(%3(j)) + ","\
+	: j++\
+	: loop\
+	: sql_next\
+	: loop\
+	: split %4,",",%4
+#global
+
+#module
+//リストビューアイテムの削除
+//h1 : リストビューのオブジェクトID
+#deffunc mydelitem int h1
+	sendmsg objinfo(h1, 2), 0x1009, 0, 0
+	return
+#global

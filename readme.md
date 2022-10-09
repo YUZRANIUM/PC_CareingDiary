@@ -1,13 +1,10 @@
-# PC_CareingDiary
-PC（自作パソコン）を作って育成していく育成･放置系ゲームです。色々制作中。
-<br />
+# PC CareingDiary
+PC（自作パソコン）を作って育成していく育成･放置系ゲームです。色々制作中。  
+This is an idle desktop game where you build and upgrade your PC.  
+It's still under development.
 
-## ※注意※ 現在まともに動きません!
-
-今現在、UIの大規模改修工事中により全然まともに表示できません。
-
-詳細は、Issues と 09_ChangeLog_pc.txt を御覧ください。
-
+個人制作であると同時に、リポジトリの練習も兼ねています。  
+In this repository, I practice the repository itself while publishing my personal work.
 <br />
 
 ## 工事中だよ. いつ完成するかわからないよ
@@ -16,41 +13,44 @@ PC（自作パソコン）を作って育成していく育成･放置系ゲー
 - 不定期な更新です。
 
 ## ファイルについて
-<br /><!--  -->
-* 00_module_pc.hsp
+
+* 00_module.hsp
 	- ユーザー定義命令･関数、一部のWin32API定数のマクロ登録、その他外部から導入したモジュールなどをまとめたファイル.
-<br /><!--  -->
-* 01_Constants_pc.hsp
+<br />
+
+* 01_variable.hsp
 	- 以下のスクリプト内で使用するほぼ全ての変数をここで定義･管理しています.
 	- ウィンドウIDに関してはマクロ名定数列挙にてこちらで管理.
-	- ファイル名が "Constants" -定数  となっているのは誤りです.
-<br /><!--  -->
-* 02_UI_pc.hsp
-	- メニューバーやボタン、タブコントロール、リストビューといったウィンドウオブジェクトをまとめています.
+<br />
+
+* 02_interface.hsp
+	- メニューバーやボタン、リストビューといったウィンドウオブジェクトをまとめています.
 	- 同時に必要なウィンドウメッセージ、及び各種割り込み設定もこちらで扱っています.
-<br /><!--  -->
-* 03_Process1_pc.hsp
-	- メインループの他、上記 03_UI_pc.hsp からのルーチンジャンプ後の処理は原則全てこちらで扱っています.
-<br /><!--  -->
-* 04_Process2_pc.hsp
+<br />
+
+* 03_process01.hsp
+	- メインループの他、上記 02_interfaceからのルーチンジャンプ後の処理は原則全てこちらで扱っています.
+<br />
+
+* 04_process02.hsp
 	- 描画に関するルーチンジャンプ処理のみこちらで管理しています.
 	- 今後、ゲーム内のアイテムなどを管理しているSQLの処理部分を追加していく予定.
-<br /><!--  -->
-* 05_experiment_pc.hsp
+<br />
+
+* 05_experiment.hsp
 	- 上記6つのスクリプトに変更を加える前にこちらで、加える変更箇所の動作確認や部分的な仮構築などを行います.
 	- その他、思いつきや実験的な取り組みなどが中心でプロジェクトとはさほど関係ありません.
-<br /><!--  -->
+<br />
+
 * 06, 07 拡張用のため欠番
-<br /><!--  -->
-* 08_myhelp_pc.hs
-	- 本プロジェクトとは関係ないが、00_module_pc内で定義してある自作命令やマクロについてののヘルプファイルです。現段階ではまだ不十分。
-<br /><!--  -->
-* 09_ChangeLog_pc.txt
+<br />
+
+* 08_myhelp.hs
+	- 本プロジェクトとは関係ないが、00_module内で定義してある自作命令やマクロについてののヘルプファイルです。現段階ではまだ不十分。
+<br />
+
+* 09_changelog.txt
 	- 更新履歴です. ゲーム内で表示可能
-<br /><!--  -->
-* Syouhin.db
-	- ゲーム内で扱うアイテムを管理しているデータベースファイルです.
-	- ゲーム内で用いられる名称、価格、レアリティーの他、性能値や補正値といったスクリプト内でのみ扱う、いわゆる一般的にマスクデータと呼ばれるデータが混在しているため、チートなどに対抗できず大きな脆弱性の一つとなっています.将来的に完全分離、個別管理･操作を実現させたい.   使用言語 : SQLite
 
 以下略.
 <br />
@@ -128,18 +128,18 @@ Anyone is free to copy, modify, publish, use, compile, sell, or distribute the o
 <br />
 
 * hsp37beta/
-	* common / 00_module_pc.hsp
-	* hsphelp / 08_myhelp_pc.hs
+	* common / 00_module.hsp
+	* hsphelp / 08_myhelp.hs
 <br /><!--  -->
-* 01_Constants_pc.hsp
-* 02_UI_pc.hsp
-* 03_Process1_pc.hsp
-* 04_Process2_pc.hsp
-* 05_experiment_pc.hsp
-* 09_ChangeLog_pc.txt
+* 01_variable.hsp
+* 02_interface.hsp
+* 03_process01.hsp
+* 04_process02.hsp
+* 05_experiment.hsp
+* 09_changelog.txt
+* 05_ver000ex.txt
 * 05_ver016ex.exe
-* 05_verex実行ファイルについて.txt
-* readme.md
+* README.md
 
 ## MIT License
 Copyright (c) 2022 YUZURANIUM

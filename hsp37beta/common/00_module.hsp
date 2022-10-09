@@ -1,0 +1,189 @@
+//					<<  自作命令･関数の作成  >>
+
+//タブ項目の文字列の長さに関わらずタブつまみの横幅をすべて同じサイズにします
+#define global TCS_FIXEDWIDTH $400
+//スタティックテキスト
+//winobj "static", "表示するもの", <拡張ウィンドウスタイル>, <ウィンドウスタイル>, Xサイズ, Yサイズ
+//<拡張ウィンドウスタイル> : 深い凹み
+#define global WS_EX_WINDOWEDGE $200
+//<ウィンドウスタイル>
+#define global WS_BORDER        $800000		//境界枠線
+#define global WS_DISABLED      $8000000	//無効
+#define global WS_DLGFRAME      $400000		//膨らみ
+#define global SS_CENTER        $1			//中央揃え
+#define global SS_RIGHT         $2			//右揃え
+#define global SS_SUNKEN        $1000		//浅い凹み
+/*******************************************************************************/
+#module
+//vsave短縮
+//%1,%2,%3,%4,%5,%6
+//%1～%6:保存したい配列変数
+//%7:ファイル名
+#define global mysave(%1,%2,%3,%4,%5,%6,%7)\
+	vsave_start\
+	: vsave_put %1\
+	: vsave_put %2\
+	: vsave_put %3\
+	: vsave_put %4\
+	: vsave_put %5\
+	: vsave_put %6\
+	: vsave_end %7
+#global
+
+#module
+#deffunc rm_init
+	WakuSize = (ginfo(10) - ginfo(12)) / 2
+	TabSize = ginfo(11) - ginfo(13) - WakuSize
+	return
+
+#defcfunc rmousex
+	x1 = ginfo(0) - ginfo(4) - WakuSize
+	return x1
+
+#defcfunc rmousey
+	y1 = ginfo(1) - ginfo(5) - TabSize
+	return y1
+#global
+
+/******************************************************************************/
+#module
+#uselib "user32"
+#func GetClientRect "GetClientRect" int, int
+#func SetWindowLong "SetWindowLongA" int, int, int
+#func SetParent "SetParent" int, int
+#uselib "gdi32"
+#cfunc GetStockObject "GetStockObject" int
+
+#define global TCN_SELCHANGE     0xFFFFFDD9
+#define global TCM_GETCURSEL    0x130B
+
+
+//CreateTab p1, p2, p3, p4
+//タブコントロールを設置します。statにタブコントロールのハンドルが返ります。
+//p1～p2=タブコントロールのX/Y方向のサイズ
+//p3 : タブコントロールのハンドルを受け取る変数
+//p4=タブコントロールの追加ウィンドウスタイル
+#deffunc CreateTab int p1, int p2, var p3, int p4
+	winobj "systabcontrol32", "", , $52000000 | p4, p1, p2
+	p3 = objinfo(stat, 2)
+	sendmsg p3, $30, GetStockObject(17)
+	dim rect, 4
+	return p3
+/*******************************************************************************/
+//My_CreateTab p1, p2, p3, p4
+//タブコントロールを設置します。
+//p1～p2=タブコントロールのX/Y方向のサイズ
+//p3 : タブコントロールのハンドルを受け取る変数
+//p4($400) : タブコントロールの追加ウィンドウスタイル
+#define global My_CreateTab(%1, %2, %3, %4 = $400) CreateTab %1,%2,%3,%4
+/*******************************************************************************/
+
+//InsertTab p1,p2,index,p3
+//タブコントロールに項目を追加します。
+//p1 : "タブつまみ部分の文字列"
+//p2 : タブの項目として貼り付けるbgscr命令のウィンドウID値
+//index = 0～ : タブの序列
+//p3 : タブコントロールのオブジェクトハンドル
+#deffunc InsertTab str p1, int p2, int index, var p3
+	pszText = p1 : tcitem = 1, 0, 0, varptr(pszText)
+	sendmsg p3, $1307, index, varptr(tcitem)
+	GetClientRect p3, varptr(rect)
+	sendmsg p3, $1328, , varptr(rect)
+
+	bgscr p2, rect(2) - rect(0) + 2, rect(3) - rect(1) + 8, 2, rect(0) + 2, rect(1) + 8
+	SetWindowLong hwnd, -16, WS_CHILD
+	SetParent hwnd, p3
+	return
+#global
+
+#module
+//ChangeTab p1,
+//タブ切り替え処理用
+//p1 : タブの項目として貼り付けるbgscr命令の初回ウィンドウID値
+//p2 : タブコントロールのオブジェクトハンドル
+#deffunc ChangeTab int p1, var p2
+	gsel wID + p1, -1
+	sendmsg p2, TCM_GETCURSEL
+	wID = stat
+	gsel wID + p1, 1
+	return
+#global
+/*******************************************************************************/
+#module
+//My_ChangeTab %1,%2,%3
+//タブ切り替え処理用
+//%1 : タブの項目として貼り付けるbgscr命令の初回ウィンドウID値
+//%2 : タブコントロールのオブジェクトハンドル
+//%3 : タブが設置されているウィンドウID
+#define global My_ChangeTab(%1,%2,%3)\
+		gsel wID + %1, -1\
+		: sendmsg %2, $130B\
+		: wID = stat\
+		: gsel wID + %1, 1\
+		: gsel %3
+#global
+
+/*******************************************************************************
+					2022/10/05現在 以下調整中のため一時使用中止
+********************************************************************************/
+
+//#module
+//ハイパーリンクを設置する命令
+//p1,p2,p3,p4,p5,p6
+//p1=文字列 : 表示する文字列
+//p2=文字列 : リンク先のhttps～
+//p3=0: マウスが反応する範囲. Xサイズ
+//p4=0: マウスが反応する範囲. Yサイズ*/
+//gdi32.as と user32.as をインクルードしてください.
+/*
+#deffunc hyperlink str p1, str p2, int p3, int p4
+	dim RECT, 4
+	winobj "static", p1, , $50000001 | $100, p3, p4
+	hStatic = objinfo(stat, 2)
+	mref BMSCR, 67
+	sendmsg hStatic, $30, BMSCR.38
+	LoadCursor 0, 32649     //スタティックテキスト上のカーソルをハンドカーソルに変更
+	SetClassLong hStatic, -12, stat
+	//スタティックテキストが描画されているときに送られてくるウィンドウメッセージ
+	oncmd gosub *ctlcolorstatic, $138
+	oncmd gosub *command, $111      //マウスクリック時のウィンドウメッセージ
+	oncmd gosub *wmsetcursor, $20   //WM_SETCURSOR
+	stop
+
+*ctlcolorstatic
+	if hStatic = lparam {
+		if oncursor {
+			crColor = RGB($FF, $00, $00)
+		} else {
+			crColor = RGB($00, $00, $FF)
+		}
+		SetTextColor wparam, crColor
+		return hBrush
+	}
+	return
+
+*command
+	if hStatic = lparam : exec p2, 16
+	return
+
+*wmsetcursor
+	if (lparam & $FFFF) != 1 : return
+	// オブジェクトの左上XY右下XYの座標位置を取得
+	GetWindowRect hStatic, varptr(RECT)
+	// 取得したオブジェクトの座標位置とカーソルの座標位置を比較
+	PtInRect varptr(RECT), ginfo(0), ginfo(1)
+	if stat {
+		if oncursor : return
+		InvalidateRect hStatic, 0, 0
+		oncursor = 1
+		return
+	} else {
+		if oncursor = 0 : return
+		InvalidateRect hStatic, 0, 0
+		oncursor = 0
+		return
+	}
+	return
+	return
+#global
+*/
