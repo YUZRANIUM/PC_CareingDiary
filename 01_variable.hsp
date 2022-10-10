@@ -147,7 +147,7 @@
 	//レコードの数
 	dim rec_cnum   : dim rec_gnum   : dim rec_rnum   : dim rec_snum
 	//カラムの数
-	dim col_cnu    : dim col_gnum   : dim col_rnum   : dim col_snum
+	dim col_cnum   : dim col_gnum   : dim col_rnum   : dim col_snum
 	//カラムリスト
 	sdim col_clis, 64 : sdim col_glis, 64 : sdim col_rlis, 64 : sdim col_slis, 64
 	//カラムの幅

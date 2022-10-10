@@ -30,6 +30,9 @@
 				case 1
 					gosub *hlay_u
 					swbreak
+				case 2
+					gosub *hlay_gt
+					swbreak
 			swend
 			swbreak
 		//•¶š—ñ‚ğ“n‚³‚ê‚½
@@ -61,7 +64,7 @@
 			swbreak
 		//redraw–½—ß‚ªÀs‚³‚ê‚½‚Æ‚«
 		case objlayer_cmddraw
-			gosub *hlay_gt
+			//gosub *hlay_gt
 			swbreak
 	swend
 	return

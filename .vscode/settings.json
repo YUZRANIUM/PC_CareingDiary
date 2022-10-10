@@ -10,6 +10,7 @@
 		"hsp37beta": true,
 		"hsptmp": true,
 		"obj": true,
+		"packfile": true,
 		"Project": true,
 		"SQL": true,
 		"vsave*": true
