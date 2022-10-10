@@ -5,10 +5,6 @@
 			"path": "."
 		},
 		{
-			"name": "hsphelp",
-			"path": "hsp37beta/hsphelp"
-		},
-		{
 			"name": "common",
 			"path": "hsp37beta/common"
 		}
@@ -145,17 +141,17 @@
 		"git-graph.repository.useMailmap": true,
 		"gitHistory.alwaysPromptRepositoryPicker": true,
 		"language-hsp3.choiceWorkDirCur": true,
-		"language-hsp3.compiler": "C:/HSP.git/hsp37beta/hspc.exe",
+		"language-hsp3.compiler": "C:\\HSP.git\\hsp37beta\\hspc.exe",
 		"language-hsp3.encoding": "Shift_JIS",
 		"language-hsp3.executor.enable": true,
 		"language-hsp3.executor.index": "3.7",
 		"language-hsp3.executor.paths": {
 			"3.7": {
 				"hide": false,
-				"path": "C:/HSP.git/hsp37beta/hspc.exe",
+				"path": "C:\\HSP.git\\hsp37beta\\hspc.exe",
 				"encoding": "Shift_JIS",
 				"buffer": 204800,
-				"helpman": "C:/HSP.git/hsp37beta/helphsp/helpman.exe",
+				"helpman": "C:\\HSP.git\\hsp37beta\\helphsp\\helpman.exe",
 				"commands": {
 					"run": [
 						"-dwCra",
@@ -169,10 +165,10 @@
 			}
 		},
 		"html.format.templating": true,
-		"language-hsp3.helpman.path.local": "C:/HSP.git/hsp37beta/hsphelp/helpman.exe",
+		"language-hsp3.helpman.path.local": "C:\\HSP.git\\hsp37beta/\\sphelp\\helpman.exe",
 		"language-hsp3.helpman.path.online": "https://docs.hsp.moe/3.6/?q=%s",
-		"hsp3-debug-window-adapter.hsp3-root": "C:/HSP.git/hsp37beta",
-		"hsp3-analyzer-mini.hsp3-root": "C:/HSP.git/hsp37beta",
+		"hsp3-debug-window-adapter.hsp3-root": "C:\\HSP.git\\hsp37beta",
+		"hsp3-analyzer-mini.hsp3-root": "C:\\HSP.git\\hsp37beta",
 		"hsp3-analyzer-mini.trace.server": "messages",
 		"markdown.preview.breaks": true,
 		"markdown.experimental.validate.enabled": true,
@@ -198,7 +194,6 @@
 		"typescript.format.insertSpaceAfterOpeningAndBeforeClosingTemplateStringBraces": true,
 		"typescript.tsserver.useSyntaxServer": "never",
 		"editor.tabSize": 4,
-		"commentAnchors.tagHighlights.enabled": true,
 		"files.exclude": {
 			"**/*.pdf": true
 		},
@@ -214,9 +209,14 @@
 		"files.encoding": "shiftjis",
 		"terminal.integrated.detectLocale": "auto",
 		"workbench.editor.scrollToSwitchTabs": true,
+		"breadcrumbs.symbolSortOrder": "type",
+		"explorer.sortOrder": "foldersNestsFiles",
+		"explorer.openEditors.sortOrder": "alphabetical",
+		"explorer.fileNesting.expand": false,
 	},
 	"extensions": {
 		"recommendations": [
+			"exodiusstudios.comment-anchors",
 			"ExodiusStudios.comment-anchors"
 		]
 	},
