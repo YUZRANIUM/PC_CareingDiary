@@ -141,5 +141,6 @@
 	"explorer.excludeGitIgnore": false,
 	"[markdown]": {
 		"editor.defaultFormatter": "yzhang.markdown-all-in-one"
-	}
+	},
+	"breadcrumbs.symbolSortOrder": "type"
 }
