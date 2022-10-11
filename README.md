@@ -1,9 +1,9 @@
 # PC CareingDiary
-PC（自作パソコン）を作って育成していく育成･放置系ゲームです。色々制作中。  
-This is an idle desktop game where you build and upgrade your PC.  
+PC（自作パソコン）を作って育成していく育成･放置系ゲームです。色々制作中。
+This is an idle desktop game where you build and upgrade your PC.
 It's still under development.
 
-個人制作であると同時に、リポジトリの練習も兼ねています。  
+個人制作であると同時に、リポジトリの練習も兼ねています。
 In this repository, I practice the repository itself while publishing my personal work.
 <br />
 
@@ -45,8 +45,7 @@ In this repository, I practice the repository itself while publishing my persona
 * 06, 07 拡張用のため欠番
 <br />
 
-* 08_myhelp.hs
-	- 本プロジェクトとは関係ないが、00_module内で定義してある自作命令やマクロについてののヘルプファイルです。現段階ではまだ不十分。
+* 08_myhelp.hs 別リポジトリへ
 <br />
 
 * 09_changelog.txt
@@ -75,7 +74,6 @@ In this repository, I practice the repository itself while publishing my persona
 	* hsp3utf.as
 	* hsp3util.as
 	* hspda.as
-	* mod_menu.as
 * hsprt
 * hsp3utf.hrt
 * hspcmp.dll
@@ -129,7 +127,6 @@ Anyone is free to copy, modify, publish, use, compile, sell, or distribute the o
 
 * hsp37beta/
 	* common / 00_module.hsp
-	* hsphelp / 08_myhelp.hs
 <br /><!--  -->
 * 01_variable.hsp
 * 02_interface.hsp
