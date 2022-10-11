@@ -7,7 +7,6 @@
 	"files.exclude": {
 		"{!/*.db,!/*.sql}": true,
 		"hsp36": true,
-		"hsp37beta": true,
 		"hsptmp": true,
 		"obj": true,
 		"packfile": true,
@@ -142,5 +141,6 @@
 	"[markdown]": {
 		"editor.defaultFormatter": "yzhang.markdown-all-in-one"
 	},
-	"breadcrumbs.symbolSortOrder": "type"
+	"breadcrumbs.symbolSortOrder": "type",
+	"files.encoding": "shiftjis"
 }
