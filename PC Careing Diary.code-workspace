@@ -129,7 +129,7 @@
 		"git.enableCommitSigning": false,
 		"git.mergeEditor": true,
 		"git.pullTags": false,
-		"git.repositoryScanMaxDepth": -1,
+		"git.repositoryScanMaxDepth": 1,
 		"git.showPushSuccessNotification": true,
 		"git.suggestSmartCommit": false,
 		"git.supportCancellation": true,
@@ -195,7 +195,9 @@
 		"typescript.tsserver.useSyntaxServer": "never",
 		"editor.tabSize": 4,
 		"files.exclude": {
-			"**/*.pdf": true
+			"**/*.pdf": true,
+			"00_mylv.hsp": true,
+			"hsp37beta": true
 		},
 		"language-hsp3.helpman.enable": "online",
 		"workbench.preferredDarkColorTheme": "Default Dark+",
@@ -213,6 +215,44 @@
 		"explorer.sortOrder": "foldersNestsFiles",
 		"explorer.openEditors.sortOrder": "alphabetical",
 		"explorer.fileNesting.expand": false,
+		"projectManager.git.baseFolders": [
+			"C:\\HSP.git"
+		],
+		"projectManager.filterOnFullPath": true,
+		"projectManager.groupList": true,
+		"projectManager.openInNewWindowWhenClickingInStatusBar": true,
+		"projectManager.showParentFolderInfoOnDuplicates": true,
+		"projectManager.git.ignoredFolders": [
+			"node_modules",
+			"out",
+			"typings",
+			"test",
+			".haxelib",
+			"doclib",
+			"sample"
+		],
+		"git.ignoreSubmodules": true,
+		"projectManager.ignoreProjectsWithinProjects": true,
+		"projectManager.any.ignoredFolders": [
+			"node_modules",
+			"out",
+			"typings",
+			"test",
+			"doclib"
+		],
+		"projectManager.supportSymlinksOnBaseFolders": false,
+		"files.watcherInclude": [
+			"hsp37beta/common/00_module.hsp"
+		],
+		"explorer.excludeGitIgnore": true,
+		"projectManager.confirmSwitchOnActiveWindow": "onlyUsingSideBar",
+		"git.ignoredRepositories": [
+			"00_mylv",
+			"hsp37beta",
+			"mylvtest",
+			"master_module"
+		],
+		"github.gitProtocol": "ssh",
 	},
 	"extensions": {
 		"recommendations": [

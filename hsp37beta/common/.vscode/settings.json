@@ -3,8 +3,7 @@
 		"[!g,!h,!s,!u,!0]*": true,
 		"{**/h[g,i]*,**/hsp[!d,!3]*,**/hsp3[!u]*,**/hspd[!a]*}": true,
 		"{gpp*,hse*,she*}": true,
-		"**/*.txt": true,
-		"00_mylv.hsp": true
+		"**/*.txt": true
 	},
 	"editor.fontFamily": "MyricaM M",
 	"editor.fontSize": 16,

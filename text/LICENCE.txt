@@ -4,7 +4,6 @@ hsp37beta/common/
     + hsp3utf.as
     + hsp3util.as
     + hspda.as
-    + mod_menu.as
 + hsprt
 + hsp3utf.hrt
 + hspcmp.dll
@@ -52,7 +51,6 @@ hsp37beta/common/
 
 hsp37beta/
     + common/00_module.hsp
-    + hsphelp/08_myhelp.hs
 + 01_variable.hsp
 + 02_interface.hsp
 + 03_process01.hsp

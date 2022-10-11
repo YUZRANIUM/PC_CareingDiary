@@ -6,8 +6,8 @@
 	"editor.insertSpaces": false,
 	"files.exclude": {
 		"{!/*.db,!/*.sql}": true,
+		"{**/doclib,**/sample}": true,
 		"hsp36": true,
-		"hsp37beta": true,
 		"hsptmp": true,
 		"obj": true,
 		"packfile": true,
@@ -84,7 +84,7 @@
 	"git.closeDiffOnOperation": true,
 	"git.enableCommitSigning": false,
 	"git.pullTags": false,
-	"git.repositoryScanMaxDepth": -1,
+	"git.repositoryScanMaxDepth": 2,
 	"git.supportCancellation": true,
 	"git.suggestSmartCommit": false,
 	"git.useCommitInputAsStashMessage": true,
@@ -142,5 +142,19 @@
 	"[markdown]": {
 		"editor.defaultFormatter": "yzhang.markdown-all-in-one"
 	},
-	"breadcrumbs.symbolSortOrder": "type"
+	"breadcrumbs.symbolSortOrder": "type",
+	"files.encoding": "shiftjis",
+	"files.watcherExclude": {
+		"**/doclib/**": true,
+		"**/sample/**": true
+	},
+	"scm.defaultViewMode": "tree",
+	"git.detectSubmodules": false,
+	"git.ignoreSubmodules": true,
+	"git.repositoryScanIgnoredFolders": [
+		"node_modules",
+		"**/doclib",
+		"**/sample"
+	],
+	"git.untrackedChanges": "hidden"
 }
