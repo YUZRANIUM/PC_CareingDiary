@@ -48,7 +48,7 @@
 	sdim rom, 2048 : sdim data_rom, 1024 : sdim rom_culm, 64 : dim r_culm_num
 	cpu_culm = "" : gpu_culm = "" : rom_culm = "" : all_clum = ""
 
-	Tyuc = 1 : Tyug = 1 : Tyur = 1
+	swi = 1
 	c_clum_w = 50, 55, 75, 80, 80, 80
 	g_clum_w = 50, 55, 75, 80, 80, 80
 	r_clum_w = 50, 55, 75, 80, 80, 80
@@ -297,69 +297,49 @@
 
 //並べ替え
 *listnotify
-
 	dupptr nmhdr, lparam, 12, 4 : id = nmhdr(0)
 	if (nmhdr(2) = LVN_COLUMNCLICK) {
 		dupptr nmlv, lparam, 40, 4 : inde = nmlv(4)
+
+		swi = swi * -1
+		if swi == -1 : sqsc = " DESC;" : else : sqsc = " ASC;"
 		/***描画先・操作先***/
 		gsel MAIN_ex
 
 		sql_open f
 		sql_q "BEGIN;"
-
 		switch id
-
 			/***CPUの処理***/
 			case hLVcsouko
 				sdim cpu, 2048 : sdim data_cpu, 1024
-				Tyuc = Tyuc * -1
-				if Tyuc == -1 {
-					sql_q "SELECT * FROM MyCPU ORDER BY " + cpu_culm(inde) + " DESC;"
-				}
-				else {
-					sql_q "SELECT * FROM MyCPU ORDER BY " + cpu_culm(inde) + " ASC;"
-				}
-				/***今あるリストアイテムの削除***/
-				mydelitem id_cpumoni
+				sql_q "SELECT * FROM MyCPU ORDER BY " + cpu_culm(inde) + sqsc
 				cpu_culm = sql_collist() : split cpu_culm, ",", cpu_culm
 				myindata cpu_cunt, c_culm_num, cpu_culm, cpu
+				/***今あるリストアイテムの削除***/
+				mydelitem id_cpumoni
 				myinitem id_cpumoni, cpu, cpu_cunt, c_culm_num
 				swbreak
 
 			/***GPU***/
 			case hLVgsouko
 				sdim gpu, 2048 : sdim data_gpu, 1024
-				Tyug = Tyug * -1
-				if Tyug == -1 {
-					sql_q "SELECT * FROM MyGPU ORDER BY " + gpu_culm(inde) + " DESC;"
-				}
-				else {
-					sql_q "SELECT * FROM MyGPU ORDER BY " + gpu_culm(inde) + " ASC;"
-				}
-				mydelitem id_gpumoni
+				sql_q "SELECT * FROM MyGPU ORDER BY " + gpu_culm(inde) + sqsc
 				gpu_culm = sql_collist() : split gpu_culm, ",", gpu_culm
 				myindata gpu_cunt, g_culm_num, gpu_culm, gpu
+				mydelitem id_gpumoni
 				myinitem id_gpumoni, gpu, gpu_cunt, g_culm_num
 				swbreak
 
 			/***ROM***/
 			case hLVrsouko
 				sdim rom, 2048 : sdim data_rom, 1024
-				Tyur = Tyur * -1
-				if Tyur == -1 {
-					sql_q "SELECT * FROM MyROM ORDER BY " + rom_culm(inde) + " DESC;"
-				}
-				else {
-					sql_q "SELECT * FROM MyROM ORDER BY " + rom_culm(inde) + " ASC;"
-				}
-				mydelitem id_rommoni
+				sql_q "SELECT * FROM MyROM ORDER BY " + rom_culm(inde) + sqsc
 				rom_culm = sql_collist() : split rom_culm, ",", rom_culm
 				myindata rom_cunt, r_culm_num, rom_culm, rom
+				mydelitem id_rommoni
 				myinitem id_rommoni, rom, rom_cunt, r_culm_num
 				swbreak
-
 		swend
-
 		sql_q "COMMIT;"
 		sql_close
 	}
