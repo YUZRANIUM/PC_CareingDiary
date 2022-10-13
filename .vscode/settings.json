@@ -156,5 +156,8 @@
 		"**/doclib",
 		"**/sample"
 	],
-	"git.untrackedChanges": "hidden"
+	"git.untrackedChanges": "hidden",
+	"[html]": {
+		"editor.defaultFormatter": "vscode.html-language-features"
+	}
 }

@@ -64,7 +64,6 @@
 			swbreak
 		//redraw–½—ß‚ªÀs‚³‚ê‚½‚Æ‚«
 		case objlayer_cmddraw
-			//gosub *hlay_gt
 			swbreak
 	swend
 	return

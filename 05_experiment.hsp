@@ -165,6 +165,13 @@
 	pos 10, 50
 	font msgothic, 15
 	mesbox logfile_ex, 845, 500, 0
+
+	pos 10, 555
+	link = "https://github.com/YUZURANIUM/PC_CareingDiary"
+	hyperlink "Git Hub", link, 150, 25, hlink
+
+	sendmsg hlink, $30, ,hFontn
+
 	/***MAIN_exここまで***/
 
 
@@ -229,12 +236,16 @@
 
 	gsel tabid1, 1
 
+
 	gsel SUB2_ex
 	oncmd gosub *notify_ex, WM_NOTIFY
 	/***SUB2_exここまで***/
 
 	gsel MASTER_ex, 1
 	gsel SUB1_ex, 1
+
+	oncmd gosub *command, $111      //マウスクリック時のウィンドウメッセージ
+	oncmd gosub *wmsetcursor, $20   //WM_SETCURSOR
 
 
 *maint
@@ -247,6 +258,32 @@
 
 
 //############################## < 以下処理系 > #################################
+
+
+*command
+	if hlink = lparam : exec link, 16
+	return
+
+*wmsetcursor
+	if (lparam & $FFFF) != 1 : return
+	// オブジェクトの左上XY右下XYの座標位置を取得
+	GetWindowRect hlink, varptr(RECT)
+	// 取得したオブジェクトの座標位置とカーソルの座標位置を比較
+	PtInRect varptr(RECT), ginfo(0), ginfo(1)
+	if stat {
+		if oncursor : return
+		InvalidateRect hlink, 0, 0
+		oncursor = 1
+		return
+	}
+	else {
+		if oncursor = 0 : return
+		InvalidateRect hlink, 0, 0
+		oncursor = 0
+		return
+	}
+	return
+
 
 
 /*********ウィンドウ切り替え処理*********/

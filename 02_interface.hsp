@@ -12,7 +12,7 @@
 /*******************************************************************************
 								Opening Window
 ********************************************************************************/
-	//screen ID_WIN_OPEN, 800, 500, 0
+
 	bgscr ID_WIN_OPEN, 800, 500, 2
 	SetWindowLong hwnd, -16, WS_CHILD
 	SetParent hwnd, hWin_master
@@ -64,8 +64,7 @@
 	/***ステータス項目表示***/
 	mx = 20 : my = 35
 	pos mx, my
-	statictext " C P U\n G P U\n R O M\n S S D\n F a n\n 温 度\n Power", 170, 170
-	//winobj "static", " C P U\n G P U\n R O M\n S S D\n F a n\n 温 度\n Power", , $50000000 | $800000, 170, 170
+	winobj "static", " C P U\n G P U\n R O M\n S S D\n F a n\n 温 度\n Power", , $50000000 | $800000, 170, 170
 	hStatic_i = objinfo(stat, 2)
 
 	/***ステータス数値表示***/
@@ -109,7 +108,7 @@
 
 //==========================================================
 
-	gsel ID_TAB_MOTI, 1 : gsel ID_WIN_MAIN, -1
+	gsel ID_TAB_MOTI, 1 : gsel ID_WIN_MAIN
 
 	/******フォントの反映******/
 	sendmsg hStatic_h, $30, hFont
@@ -139,7 +138,7 @@
 
 	button gosub "Setting", *settei
 
-	gsel ID_WIN_MAIN, 0
+	gsel ID_WIN_MAIN
 	oncmd gosub *noti_main, WM_NOTIFY //タブ項目切り替え処理時のメッセージ
 
 
@@ -186,18 +185,18 @@
 
 	InsertTab "S S D", ID_OMTAB_SSD, 8, hTabOMI
 	pos 2, 2
-	mycrelv listx, listy, id_LVSSD, hLVSSD
-	oncmd gosub *notify, WM_NOTIFY
+	//mycrelv listx, listy, id_LVSSD, hLVSSD
+	//oncmd gosub *notify, WM_NOTIFY
 
 	InsertTab "F A N", ID_OMTAB_FAN, 9, hTabOMI
 	pos 2, 2
-	mycrelv listx, listy, id_LVFAN, hLVFAN
-	oncmd gosub *notify, WM_NOTIFY
+	//mycrelv listx, listy, id_LVFAN, hLVFAN
+	//oncmd gosub *notify, WM_NOTIFY
 
 	InsertTab "Power", ID_OMTAB_POW, 10, hTabOMI
 	pos 2, 2
-	mycrelv listx, listy, id_LVPOW, hLVPOW
-	oncmd gosub *notify, WM_NOTIFY
+	//mycrelv listx, listy, id_LVPOW, hLVPOW
+	//oncmd gosub *notify, WM_NOTIFY
 
 
 	gsel ID_OMTAB_CPU, 1 : gsel ID_WIN_AMAZ
@@ -292,9 +291,9 @@
 ********************************************************************************/
 	screen ID_WIN_INFO, 650, 450, 6 : title "Information ver" + ver
 	font "メイリオ", 16 : objmode 2, 0
-	pos 10, 15 : mes "N A M E\nVERSION\nHSP ver\nAUTHOR\nU  R  L", 1
+	pos 10, 2 : mes "N A M E\nVERSION\nHSP ver\nAUTHOR\nU  R  L\nGit Hub", 1
 	pos 100,
-	repeat 5
+	repeat 6
 		mes infa(cnt)
 	loop
 //==============================================================================
@@ -315,7 +314,7 @@
 
 //##############################################################################
 
-	gsel ID_WIN_OPEN, 1
 	gsel ID_WIN_MASTER, 1
 	oncmd 1
 	onexit gosub *exit	//終了ボタン
+	gsel ID_WIN_OPEN, 1
