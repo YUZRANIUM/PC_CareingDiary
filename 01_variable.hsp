@@ -41,7 +41,6 @@
 	infa2 = "" : sdim infa2, 4096
 	notesel infa2
 	noteload "text/09_changelog.txt" : noteunsel
-	//noteload "README.md" : noteunsel
 
 	//設定項目配列
 	//setting(0, 0):オートセーブON/OFF

@@ -253,12 +253,12 @@
 	button gosub "Information", *infomation
 	button gosub "Return to Title", *retitle
 
-	pos 20, 20 : objsize 115, 20
+	pos 20, 20 : objsize 100, 20
 	chkbox "AutoSave OFF", setting(0, 0)
 	id_savebut = stat : hButton = objinfo(id_savebut, 2)
 
 	//==================================ゲーム速度の設定
-	pos 20, 60 : objsize 60, 19
+	pos 20, 60 : objsize 65, 19
 	mes "Game Speed"
 
 	//----------------------------------chkbox
@@ -280,7 +280,7 @@
 	sendmsg hChkbox3, $F4, $9
 
 	//------------------適用ボタン[ID=5]
-	pos 700, 170 : objsize 75, 28
+	pos 700, 455 : objsize 75, 30
 	button gosub "Active", *tekiou
 
 
@@ -290,20 +290,26 @@
 							Infomation Window
 ********************************************************************************/
 	screen ID_WIN_INFO, 650, 450, 6 : title "Information ver" + ver
-	font "メイリオ", 16 : objmode 2, 0
+	font "メイリオ", 15 : objmode 2, 0
 	pos 10, 2 : mes "N A M E\nVERSION\nHSP ver\nAUTHOR\nU  R  L\nGit Hub", 1
 	pos 100,
-	repeat 6
+	repeat 4
 		mes infa(cnt)
 	loop
+
 //==============================================================================
 //						<<  オブジェクトの設置  >>
 //==============================================================================
+
+	mylink "作者ついった～", infa(4), 150, 20, hLinktw
+	pos ginfo_cx, ginfo_cy + 5
+	mylink "作者ぎっとはぶぅ", infa(5), 150, 20, hLinkgi
+
 //----------------------------------------------------------サブmesbox設置[ID=0]
 	font "メイリオ", 14 : objmode 2, 1
 	//HSPのBMSCR構造体からフォントハンドルを取得
 	mref BMSCR2, 67 : hFont2 = BMSCR2.38
-	pos 0, 140
+	pos 0, 142
 	mes "  UPDATE HISTORY  "
 	mesbox infa2, 650, 262, 0
 //----------------------------------------------------------サブbutton設置[ID=1]
@@ -311,6 +317,14 @@
 	button gosub "Close", *subw_exi
 
 
+	/***ハイパーリンクフォントの適用***/
+	sendmsg hLinktw, $30, hFont3
+	sendmsg hLinkgi, $30, hFont3
+
+	//マウスクリック
+	oncmd gosub *mousclick, $111
+	//カーソルの見た目
+	oncmd gosub *cursorche, $20
 
 //##############################################################################
 

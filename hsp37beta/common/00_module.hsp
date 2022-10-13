@@ -132,10 +132,10 @@
 //p1,p2,p3,p4,p5,p6
 //p1=文字列 : 表示する文字列
 //p2=文字列 : リンク先のhttps～
-//p3: マウスが反応する範囲. Xサイズ
-//p4: マウスが反応する範囲. Yサイズ
+//p3: マウスが反応するXサイズ
+//p4: マウスが反応するYサイズ
 //p5: オブジェクトハンドルを受け取る変数
-#deffunc hyperlink str p1, str p2, int p3, int p4, var p5
+#deffunc mylink str p1, str p2, int p3, int p4, var p5
 	dim RECT, 4
 	winobj "static", p1, , $50000001 | $100, p3, p4
 	p5 = objinfo(stat, 2)

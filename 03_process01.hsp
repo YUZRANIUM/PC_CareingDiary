@@ -11,12 +11,15 @@
 	else {
 		gsel ID_WIN_MAIN : objprm id_opebut, opebut_text(1)
 	}
+	gsel ID_WIN_MASTER
+	title " gt(6, 0) = " + gt(6, 0) + " gtcontrol = " + gtcontrol + " savec = " + savec
 	/***描画更新***/
-	//gsel ID_WIN_MAIN
+	gsel ID_WIN_MAIN
 	objprm layid0, 2
 
+
 	gt(6, 0) = str(int(gt(6, 0)) + 1) //ゲーム内時間カウンタ
-	if int(gt(6, 0)) > 5000 : gt(6, 0) = "1"
+	if int(gt(6, 0)) > 500 : gt(6, 0) = "1"
 
 	//カウンター変速機
 	gtcontrol = int(gt(6, 0)) \ setting(4, 0)
@@ -34,9 +37,9 @@
 
 	//オートセーブ設定が有効かどうか
 	if setting(0, 0) == 1 {
-		savecontrol = int(gt(6, 0)) \ 10
+		savecontrol = int(gt(6, 0)) \ 5
 		if savecontrol == 0 : savec = 1 + savec
-		if savec > 500 {
+		if savec > 200 {
 			//ファイルの確認
 			exist fname
 			if strsize == -1 {
@@ -201,12 +204,14 @@
 
 //======================================
 
+//main>>>amazoon
 *amazoon
 	setting(5, 0) = -1
 	gsel ID_WIN_MAIN, -1
 	gsel ID_WIN_AMAZ, 1
 	return
 
+//main>>>setting
 *settei
 	setting(5, 0) = -1
 	gsel ID_WIN_MAIN, -1
@@ -222,13 +227,16 @@
 	gsel ID_WIN_INFO, -1
 	return
 
+//main<<<amazoon,save
 *remain
 	gsel ID_WIN_SAVE, -1
 	gsel ID_WIN_AMAZ, -1
 	gsel ID_WIN_MAIN, 1
 	return
 
+//save,setting>>>open
 *retitle
+	setting(5, 0) = -1
 	exist fname
 	if strsize == -1 {
 		fname = savedir + "\\autosave.var"
@@ -241,6 +249,7 @@
 	return
 
 *saveload
+	setting(5, 0) = -1
 	gsel ID_WIN_MAIN, -1
 	gsel ID_WIN_SAVE, 1
 	return
@@ -253,15 +262,15 @@
 	sendmsg hChkbox3, $F0 : setting(3, 0) = stat
 
 	if setting(1, 0) == 1 {
-		setting(4, 0) = 30
+		setting(4, 0) = 10
 		string2 = " GameSpeed [Slowest]"
 	}
 	if setting(2, 0) == 1 {
-		setting(4, 0) = 6
+		setting(4, 0) = 4
 		string2 = " GameSpeed [Normal]"
 	}
 	if setting(3, 0) == 1 {
-		setting(4, 0) = 3
+		setting(4, 0) = 2
 		string2 = " GameSpeed [Fastest]"
 	}
 	gsel ID_WIN_MAIN : objprm layid0, "auto_chk"
@@ -269,6 +278,44 @@
 	gsel ID_WIN_SETI, -1
 	gsel ID_WIN_MAIN, 1
 	return
+
+//情報ウィンドウハイパーリンク
+*mousclick
+	hL = lparam
+	switch hL
+		case hLinktw
+			exec infa(4), 16
+			swbreak
+		case hLinkgi
+			exec infa(5), 16
+			swbreak
+	swend
+	return
+
+*cursorche
+	if (lparam & $FFFF) != 1 : return
+
+	// オブジェクトの左上XY右下XYの座標位置を取得
+	GetWindowRect hlink, varptr(RECT)
+
+	// 取得したオブジェクトの座標位置とカーソルの座標位置を比較
+	PtInRect varptr(RECT), ginfo(0), ginfo(1)
+	if stat {
+		if oncursor : return
+		InvalidateRect hlink, 0, 0
+		oncursor = 1
+		return
+	}
+	else {
+		if oncursor = 0 : return
+		InvalidateRect hlink, 0, 0
+		oncursor = 0
+		return
+	}
+	return
+
+
+
 
 //終了の処理
 *exit
