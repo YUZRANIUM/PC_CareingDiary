@@ -64,7 +64,6 @@
 	/***ステータス項目表示***/
 	mx = 20 : my = 35
 	pos mx, my
-	//statictext " C P U\n G P U\n R O M\n S S D\n F a n\n 温 度\n Power", 170, 170
 	winobj "static", " C P U\n G P U\n R O M\n S S D\n F a n\n 温 度\n Power", , $50000000 | $800000, 170, 170
 	hStatic_i = objinfo(stat, 2)
 
@@ -292,9 +291,9 @@
 ********************************************************************************/
 	screen ID_WIN_INFO, 650, 450, 6 : title "Information ver" + ver
 	font "メイリオ", 16 : objmode 2, 0
-	pos 10, 15 : mes "N A M E\nVERSION\nHSP ver\nAUTHOR\nU  R  L", 1
+	pos 10, 2 : mes "N A M E\nVERSION\nHSP ver\nAUTHOR\nU  R  L\nGit Hub", 1
 	pos 100,
-	repeat 5
+	repeat 6
 		mes infa(cnt)
 	loop
 //==============================================================================

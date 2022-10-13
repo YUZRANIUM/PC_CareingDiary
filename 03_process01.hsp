@@ -36,7 +36,7 @@
 	if setting(0, 0) == 1 {
 		savecontrol = int(gt(6, 0)) \ 10
 		if savecontrol == 0 : savec = 1 + savec
-		if savec > 1000 {
+		if savec > 500 {
 			//ファイルの確認
 			exist fname
 			if strsize == -1 {
