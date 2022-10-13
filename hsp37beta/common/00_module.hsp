@@ -127,63 +127,22 @@
 					2022/10/05現在 以下調整中のため一時使用中止
 ********************************************************************************/
 
-//#module
+#module
 //ハイパーリンクを設置する命令
 //p1,p2,p3,p4,p5,p6
 //p1=文字列 : 表示する文字列
 //p2=文字列 : リンク先のhttps～
-//p3=0: マウスが反応する範囲. Xサイズ
-//p4=0: マウスが反応する範囲. Yサイズ*/
-//gdi32.as と user32.as をインクルードしてください.
-/*
-#deffunc hyperlink str p1, str p2, int p3, int p4
+//p3: マウスが反応する範囲. Xサイズ
+//p4: マウスが反応する範囲. Yサイズ
+//p5: オブジェクトハンドルを受け取る変数
+#deffunc hyperlink str p1, str p2, int p3, int p4, var p5
 	dim RECT, 4
 	winobj "static", p1, , $50000001 | $100, p3, p4
-	hStatic = objinfo(stat, 2)
+	p5 = objinfo(stat, 2)
 	mref BMSCR, 67
-	sendmsg hStatic, $30, BMSCR.38
-	LoadCursor 0, 32649     //スタティックテキスト上のカーソルをハンドカーソルに変更
-	SetClassLong hStatic, -12, stat
-	//スタティックテキストが描画されているときに送られてくるウィンドウメッセージ
-	oncmd gosub *ctlcolorstatic, $138
-	oncmd gosub *command, $111      //マウスクリック時のウィンドウメッセージ
-	oncmd gosub *wmsetcursor, $20   //WM_SETCURSOR
-	stop
-
-*ctlcolorstatic
-	if hStatic = lparam {
-		if oncursor {
-			crColor = RGB($FF, $00, $00)
-		} else {
-			crColor = RGB($00, $00, $FF)
-		}
-		SetTextColor wparam, crColor
-		return hBrush
-	}
-	return
-
-*command
-	if hStatic = lparam : exec p2, 16
-	return
-
-*wmsetcursor
-	if (lparam & $FFFF) != 1 : return
-	// オブジェクトの左上XY右下XYの座標位置を取得
-	GetWindowRect hStatic, varptr(RECT)
-	// 取得したオブジェクトの座標位置とカーソルの座標位置を比較
-	PtInRect varptr(RECT), ginfo(0), ginfo(1)
-	if stat {
-		if oncursor : return
-		InvalidateRect hStatic, 0, 0
-		oncursor = 1
-		return
-	} else {
-		if oncursor = 0 : return
-		InvalidateRect hStatic, 0, 0
-		oncursor = 0
-		return
-	}
-	return
+	sendmsg p5, $30, BMSCR.38
+	//スタティックテキスト上のカーソルをハンドカーソルに変更
+	LoadCursor 0, 32649
+	SetClassLong p5, -12, stat
 	return
 #global
-*/
