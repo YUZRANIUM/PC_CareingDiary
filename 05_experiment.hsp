@@ -7,13 +7,13 @@
 #packopt name "05_ver016ex"
 #packopt type 0
 
+#if 1
 	hspv = strf("%.3f", double(strf("%4x", hspver)) / 1000)
 	title " 05_ver0.1.6experiment  for  HSP " + hspv
 	sdim logfile_ex, 2048
 	notesel logfile_ex
 	noteload "text/05_ver000ex.txt" : noteunsel
 
-#if 1
 /*##############################################################################
 							âÊñ êÿÇËë÷Ç¶ã@î\é¿å±
 ###############################################################################*/
@@ -168,7 +168,7 @@
 
 	pos 10, 555
 	link = "https://github.com/YUZURANIUM/PC_CareingDiary"
-	hyperlink "Git Hub", link, 150, 25, hlink
+	mylink "Git Hub", link, 150, 25, hlink
 
 	sendmsg hlink, $30, ,hFontn
 
