@@ -9,18 +9,30 @@ In this repository, I practice the repository itself while publishing my persona
 
 ## 現在の仕様
 
-<details open>
+<details>
 <summary>画面遷移</summary>
 
-* Master Window
-
 ```mermaid
-graph TD;
-	Master Window-->Opening Window;
-	Opening Window-->Home Window;
-	Opening Window-->Sqve Window;
 
+%%{ init: { 'flowchart': { 'curve': 'monotoneY' } } }%%
 
+flowchart TB;
+
+	MASTER o-- 貼り付け ---o bgscr;
+
+	subgraph bgscr
+		Setting ---> OpeningWindow;
+
+		subgraph id2 [Player]
+			Main <--> Setting & Amazoon & Save&Load;
+		end
+
+		OpeningWindow <--> Save&Load;
+		OpeningWindow --> Main;
+	end
+
+	Save&Load---情報ウィンドウ;
+	style id2 fill:#26a, strole:#aaa, stroke-width:3px
 
 ```
 
