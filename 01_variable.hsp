@@ -23,7 +23,7 @@
 	//バージョン
 	ver = "0.2.0"
 	//HSPのバージョン
-	hspv = strf("%.3f", double(strf("%4x", hspver)) / 1000)
+	hspv = strf("%.3f", double(strf("%4X", __hspver__)) / 1000)
 	//オートセーブ通知"AutoSave Successed!"
 	astip = ""
 	//titleバー
@@ -73,14 +73,24 @@
 	savec = 0
 	//ゲーム内時間の速度変更
 	gtcontrol = 0
-	//セーブデータフォルダのディレクトリ
-	savedir = dir_cur + "\\savedata"
+
+	//saveフォルダの有無
+	sdim flist
+	dirlist flist, "savedata", 5
+	if flist == "" : mkdir "savedata"
+	sdim flist
 	//ファイル名変数
-	fname = ""
+	fname = "" : sdim fname, 512
+	fname(0) = "" + dir_cur + "\\savedata\\Save0"
+	fname(1) = "" + dir_cur + "\\savedata\\Save1"
+	fname(2) = "" + dir_cur + "\\savedata\\Save2"
+	fname(3) = "" + dir_cur + "\\savedata\\Save3"
+	fname(4) = "" + dir_cur + "\\savedata\\Save4"
+	fname(5) = "" + dir_cur + "\\savedata\\Save5"
+	//saveIDスロット番号
+	saveID = "" : dim saveID
 	//設定変更時のゲーム速度
 	string2 = ""
-	//ログ表示用の時間
-	time = "" + gettime(1) + "/" + gettime(3) + " " + gettime(4) + ":" + gettime(5) + ":" + gettime(6)
 
 	//単位変換
 	u = "" : sdim u, 32, 11
@@ -142,7 +152,7 @@
 	logmoni = "\n\n"
 
 	//アイテムDB
-	db = "Syouhin.db"
+	db = "SQL\\Syouhin.db"
 	//商品データ
 	sdim cpu, 2048 : sdim gpu, 2048 : sdim rom, 2048 : sdim ssd, 2048
 	//レコードの数

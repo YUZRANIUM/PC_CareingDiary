@@ -1,11 +1,9 @@
 hsp37beta/common/
     + user32.as
     + gdi32.as
-    + hsp3utf.as
     + hsp3util.as
     + hspda.as
 + hsprt
-+ hsp3utf.hrt
 + hspcmp.dll
 + hspda.dll
 ----------------------------------------
@@ -51,14 +49,16 @@ hsp37beta/common/
 
 hsp37beta/
     + common/00_module.hsp
+text/
+    + 05_ver000ex.txt
+    + 09_changelog.txt
 + 01_variable.hsp
 + 02_interface.hsp
 + 03_process01.hsp
 + 04_process02.hsp
 + 05_experiment.hsp
-+ 09_changelog.txt
-+ 05_ver000ex.txt
 + 05_ver016ex.exe
++ PC Careing Diary.exe
 + README.md
 ----------------------------------------
   MIT License

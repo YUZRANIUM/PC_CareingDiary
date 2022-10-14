@@ -151,7 +151,7 @@
 				"path": "C:\\HSP.git\\hsp37beta\\hspc.exe",
 				"encoding": "Shift_JIS",
 				"buffer": 204800,
-				"helpman": "C:\\HSP.git\\hsp37beta\\helphsp\\helpman.exe",
+				"helpman": "C:\\HSP.git\\hsp37beta\\hsphelp\\helpman.exe",
 				"commands": {
 					"run": [
 						"-dwCra",
@@ -165,7 +165,7 @@
 			}
 		},
 		"html.format.templating": true,
-		"language-hsp3.helpman.path.local": "C:\\HSP.git\\hsp37beta/\\sphelp\\helpman.exe",
+		"language-hsp3.helpman.path.local": "C:\\HSP.git\\hsp37beta\\hsphelp\\helpman.exe",
 		"language-hsp3.helpman.path.online": "https://docs.hsp.moe/3.6/?q=%s",
 		"hsp3-debug-window-adapter.hsp3-root": "C:\\HSP.git\\hsp37beta",
 		"hsp3-analyzer-mini.hsp3-root": "C:\\HSP.git\\hsp37beta",
@@ -199,7 +199,7 @@
 			"00_mylv.hsp": true,
 			"hsp37beta": true
 		},
-		"language-hsp3.helpman.enable": "online",
+		"language-hsp3.helpman.enable": "local",
 		"workbench.preferredDarkColorTheme": "Default Dark+",
 		"workbench.preferredLightColorTheme": "Default Dark+",
 		"markdown.experimental.updateLinksOnFileMove.enabled": "always",
@@ -253,6 +253,21 @@
 			"master_module"
 		],
 		"github.gitProtocol": "ssh",
+		"scm.defaultViewMode": "tree",
+		"git.detectSubmodules": false,
+		"markdown-preview-github-styles.colorTheme": "system",
+		"material-icon-theme.showUpdateMessage": false,
+		"css.lint.hexColorLength": "warning",
+		"markdown.preview.fontSize": 12,
+		"markdown.preview.lineHeight": 1.5,
+		"markdown.preview.typographer": true,
+		"markdown.trace.extension": "verbose",
+		"markdown.validate.enabled": true,
+		"markdown.extension.print.onFileSave": true,
+		"markdown.extension.print.theme": "dark",
+		"markdown.extension.syntax.decorations": false,
+		"markdown.extension.syntax.plainTheme": true,
+		"markdown.extension.toc.levels": "1..6",
 	},
 	"extensions": {
 		"recommendations": [

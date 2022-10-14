@@ -1,4 +1,5 @@
 #packopt name "PC Careing Diary"
+#packopt version "version.ini"
 #packopt type 0
 /*********************layerobj‚Ìˆ—************************/
 	#include "user32.as"
@@ -40,17 +41,19 @@
 			//layerobj‚É“n‚·•¶š—ñ
 			string = refstr
 			notesel logmoni : noteadd "\n", 1, 0
+			//ƒƒO•\¦—p‚ÌŠÔ
+			time = "" + gettime(1) + "/" + gettime(3) + " " + gettime(4) + ":" + gettime(5) + ":" + gettime(6)
 			if string == "asc" {
-				noteadd time + " : AutoSave Successed! " + fname, 1, 0
+				noteadd time + " : AutoSave Successed! " + fname(0), 1, 0
 			}
 			if string == "auto_chk" {
-				noteadd time + " : Settings Change " + savebut_text(setting(0, 0)) + string2, 1, 0
+				noteadd time + " : Settings Change [" + savebut_text(setting(0, 0)) + "]" + string2, 1, 0
 			}
 			if string == "load" {
-				noteadd time + " : load Successed! " + fname, 1, 0
+				noteadd time + " : load Successed! " + fname(0), 1, 0
 			}
 			if string == "Save" {
-				noteadd time + " : Save Successed! " + fname, 1, 0
+				noteadd time + " : Save Successed! " + fname(0), 1, 0
 			}
 			if string == "dd" {
 				noteadd "------------------------------------------------------------------------------------", 1, 0

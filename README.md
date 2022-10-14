@@ -1,4 +1,4 @@
-# PC CareingDiary
+# PC Careing Diary
 PC（自作パソコン）を作って育成していく育成･放置系ゲームです。色々制作中。
 This is an idle desktop game where you build and upgrade your PC.
 It's still under development.
@@ -7,12 +7,38 @@ It's still under development.
 In this repository, I practice the repository itself while publishing my personal work.
 <br />
 
-## 工事中だよ. いつ完成するかわからないよ
-- ここに何を書くべきで書かざるべきなのか全くわかっていません。
-- 中の人はかなりのポンコツでたまに無計画で事を進めてしまうことがあります。
-- 不定期な更新です。
+## 現在の仕様
+
+<details open>
+<summary>画面遷移</summary>
+
+```mermaid
+flowchart TB;
+	MASTER o---o bgscr;
+
+	subgraph bgscr
+		Setting ---> OpeningWindow;
+
+		subgraph id2 [Player]
+			Main <--> Setting & Amazoon & Save&Load;
+		end
+
+		OpeningWindow <--> Save&Load;
+		OpeningWindow --> Main;
+	end
+	Save&Load---情報ウィンドウ;
+	style id2 fill:#26a, strole:#aaa, stroke-width:3px
+```
+
+
+</details>
 
 ## ファイルについて
+
+<details>
+<summary>スクリプトファイルの説明</summary>
+
+<br>
 
 * 00_module.hsp
 	- ユーザー定義命令･関数、一部のWin32API定数のマクロ登録、その他外部から導入したモジュールなどをまとめたファイル.
@@ -20,11 +46,12 @@ In this repository, I practice the repository itself while publishing my persona
 
 * 01_variable.hsp
 	- 以下のスクリプト内で使用するほぼ全ての変数をここで定義･管理しています.
+	- また、ゲーム内で扱うアイテム類のデータをDBファイルから取り出す処理も行っています.
 	- ウィンドウIDに関してはマクロ名定数列挙にてこちらで管理.
 <br />
 
 * 02_interface.hsp
-	- メニューバーやボタン、リストビューといったウィンドウオブジェクトをまとめています.
+	- ボタンやリストビュー、ハイパーリンクといったウィンドウオブジェクトをまとめています.
 	- 同時に必要なウィンドウメッセージ、及び各種割り込み設定もこちらで扱っています.
 <br />
 
@@ -34,7 +61,7 @@ In this repository, I practice the repository itself while publishing my persona
 
 * 04_process02.hsp
 	- 描画に関するルーチンジャンプ処理のみこちらで管理しています.
-	- 今後、ゲーム内のアイテムなどを管理しているSQLの処理部分を追加していく予定.
+	- また、SQLの処理部もこちらで扱う予定です.
 <br />
 
 * 05_experiment.hsp
@@ -52,7 +79,9 @@ In this repository, I practice the repository itself while publishing my persona
 	- 更新履歴です. ゲーム内で表示可能
 
 以下略.
-<br />
+
+</details>
+
 
 ## その他
 ### 使用言語 (Codeing Language)
@@ -62,6 +91,7 @@ In this repository, I practice the repository itself while publishing my persona
 ### 開発環境 (Development Environment)
 - Windows11 Pro 22H2 x64
 - Visual Studio Code
+- HSP3.7beta3
 <br />
 
 # Licence
@@ -71,11 +101,10 @@ In this repository, I practice the repository itself while publishing my persona
 * hsp37beta/common/
 	* user32.as
 	* gdi32.as
-	* hsp3utf.as
 	* hsp3util.as
 	* hspda.as
+<!--  -->
 * hsprt
-* hsp3utf.hrt
 * hspcmp.dll
 * hspda.dll
 
@@ -125,17 +154,22 @@ Anyone is free to copy, modify, publish, use, compile, sell, or distribute the o
 <br />
 <br />
 
-* hsp37beta/
-	* common / 00_module.hsp
-<br /><!--  -->
+* hsp37beta/common/
+	* 00_module.hsp
+<!--  -->
+* text/
+	* 09_changelog.txt
+	* 05_ver000ex.txt
+<!--  -->
 * 01_variable.hsp
 * 02_interface.hsp
 * 03_process01.hsp
 * 04_process02.hsp
 * 05_experiment.hsp
-* 09_changelog.txt
-* 05_ver000ex.txt
+<!--  -->
 * 05_ver016ex.exe
+* PC Careing Diary.exe
+<!--  -->
 * README.md
 
 ## MIT License
