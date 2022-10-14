@@ -14,20 +14,19 @@ In this repository, I practice the repository itself while publishing my persona
 
 ```mermaid
 flowchart TB;
-	MASTER o---o bgscr;
+MASTER o---o bgscr;
+subgraph bgscr
+	Setting ---> OpeningWindow;
 
-	subgraph bgscr
-		Setting ---> OpeningWindow;
-
-		subgraph id2 [Player]
-			Main <--> Setting & Amazoon & Save&Load;
-		end
-
-		OpeningWindow <--> Save&Load;
-		OpeningWindow --> Main;
+	subgraph id1 [Player]
+		Main <--> Setting & Amazoon & Save&Load;
 	end
-	Save&Load---情報ウィンドウ;
-	style id2 fill:#26a, strole:#aaa, stroke-width:3px
+
+	OpeningWindow <--> Save&Load;
+	OpeningWindow --> Main;
+end
+Save&Load---情報ウィンドウ;
+style id1 fill:#26a, strole:#aaa, stroke-width:3px
 ```
 
 
@@ -166,10 +165,8 @@ Anyone is free to copy, modify, publish, use, compile, sell, or distribute the o
 * 03_process01.hsp
 * 04_process02.hsp
 * 05_experiment.hsp
-<!--  -->
 * 05_ver016ex.exe
 * PC Careing Diary.exe
-<!--  -->
 * README.md
 
 ## MIT License
