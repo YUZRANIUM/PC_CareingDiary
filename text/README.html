@@ -1335,20 +1335,19 @@ In this repository, I practice the repository itself while publishing my persona
 <details open>
 <summary>画面遷移</summary>
 <pre style="all:unset;"><div class="mermaid">flowchart TB;
-	MASTER o---o bgscr;
+MASTER o---o bgscr;
+subgraph bgscr
+	Setting ---&gt; OpeningWindow;
 
-	subgraph bgscr
-		Setting ---&gt; OpeningWindow;
-
-		subgraph id2 [Player]
-			Main &lt;--&gt; Setting & Amazoon & Save&Load;
-		end
-
-		OpeningWindow &lt;--&gt; Save&Load;
-		OpeningWindow --&gt; Main;
+	subgraph id1 [Player]
+		Main &lt;--&gt; Setting & Amazoon & Save&Load;
 	end
-	Save&Load---情報ウィンドウ;
-	style id2 fill:#26a, strole:#aaa, stroke-width:3px
+
+	OpeningWindow &lt;--&gt; Save&Load;
+	OpeningWindow --&gt; Main;
+end
+Save&Load---情報ウィンドウ;
+style id1 fill:#26a, strole:#aaa, stroke-width:3px
 </div></pre>
 </details>
 <h2 id="ファイルについて">ファイルについて</h2>
@@ -1514,14 +1513,8 @@ All rights reserved.</p>
 <li>03_process01.hsp</li>
 <li>04_process02.hsp</li>
 <li>05_experiment.hsp</li>
-</ul>
-<!--  -->
-<ul>
 <li>05_ver016ex.exe</li>
 <li>PC Careing Diary.exe</li>
-</ul>
-<!--  -->
-<ul>
 <li><a href="http://README.html">README.md</a></li>
 </ul>
 <h2 id="mit-license">MIT License</h2>
