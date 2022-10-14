@@ -86,7 +86,7 @@
 	"git-graph.fileEncoding": "Shift_JIS",
 	"gitHistory.includeRemoteBranches": true,
 	"language-hsp3.choiceWorkDirCur": true,
-	"language-hsp3.compiler": "C:/HSP.git/hsp37beta/hspc.exe",
+	"language-hsp3.compiler": "C:\\HSP.git\\hsp37beta\\hspc.exe",
 	"language-hsp3.encoding": "Shift_JIS",
 	"language-hsp3.executor.enable": true,
 	"language-hsp3.executor.index": "3.7",
@@ -96,7 +96,7 @@
 			"path": "C:\\HSP.git\\hsp37beta\\hspc.exe",
 			"encoding": "Shift_JIS",
 			"buffer": 204800,
-			"helpman": "C:\\HSP.git\\hsp37beta\\helphsp\\helpman.exe",
+			"helpman": "C:\\HSP.git\\hsp37beta\\hsphelp\\helpman.exe",
 			"commands": {
 				"run": [
 					"-dwCra",
@@ -109,7 +109,7 @@
 			}
 		}
 	},
-	"language-hsp3.helpman.path.local": "C:/HSP.git/hsp37beta/hsphelp/helpman.exe",
+	"language-hsp3.helpman.path.local": "C:\\HSP.git\\hsp37beta\\hsphelp\\helpman.exe",
 	"language-hsp3.helpman.path.online": "https://docs.hsp.moe/3.6/?q=%s",
 	"html.format.templating": true,
 	"markdown.experimental.validate.enabled": true,
@@ -135,4 +135,5 @@
 	"language-hsp3.helpman.enable": "online",
 	"explorer.excludeGitIgnore": false,
 	"files.encoding": "shiftjis",
+	"css.lint.hexColorLength": "warning",
 }

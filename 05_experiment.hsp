@@ -52,7 +52,7 @@
 	c_clum_w = 50, 55, 75, 80, 80, 80
 	g_clum_w = 50, 55, 75, 80, 80, 80
 	r_clum_w = 50, 55, 75, 80, 80, 80
-	f = "Syouhin.db"
+	f = "SQL\\Syouhin.db"
 
 	sql_open f
 	sql_q "BEGIN;"
@@ -510,5 +510,12 @@
 	title " x = " + rmousex() + "  y = " + rmousey()
 	redraw 1
 	goto *main
+
+#endif
+
+#if 0
+
+	mes " __hspver__ = " + __hspver__ + "\n strf(\"%4X\", __hspver__) = " + strf("%4X", __hspver__)
+	mes " hspver = " + hspver + "\n strf(\"%4X\", hspver) = " + strf("%4X", hspver)
 
 #endif

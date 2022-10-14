@@ -37,15 +37,11 @@
 
 	//オートセーブ設定が有効かどうか
 	if setting(0, 0) == 1 {
-		savecontrol = int(gt(6, 0)) \ 5
+		savecontrol = int(gt(6, 0)) \ 4
 		if savecontrol == 0 : savec = 1 + savec
-		if savec > 200 {
+		if savec > 100 {
 			//ファイルの確認
-			exist fname
-			if strsize == -1 {
-				fname = savedir + "\\autosave.var"
-			}
-			mysave u, st, gt, setting, motimono, logmoni, fname
+			mysave u, st, gt, setting, motimono, logmoni, fname(0)
 			astip = "asc"
 			objprm layid0, astip
 			gsel ID_TAB_LOG, 0 : objprm id_logmoni, logmoni
@@ -62,10 +58,7 @@
 //		//ファイル(F) >> 開く
 //		case CMD_OPEN
 //			setting(5, 0) = -1
-//			dialog "var", 16, "SaveData"
-//			if stat = 0 : return
-//			fname = refstr
-//			vload fname
+//			gsel ID_WIN_SAVE
 //			//メインウィンドウ更新
 //			gsel ID_WIN_MAIN, 0 : redraw 0 : redraw 1
 //			gsel ID_TAB_MOTI, 0 : objprm id_motimono, motimono
@@ -82,13 +75,7 @@
 //		//ファイル(F) >> 保存
 //		case CMD_SAVE
 //			setting(5, 0) = -1
-//			dialog "var", 17, "SaveData"
-//			if stat = 0 : return
-//			fname = refstr
-//			//拡張子
-//			exname = getpath(fname, 2)
-//			if exname = "" : fname += ".var"
-//			mysave u, st, gt, setting, motimono, logmoni, fname
+//			mysave u, st, gt, setting, motimono, logmoni, fname(0)
 //			gsel ID_WIN_MAIN, 0 : objprm layid0, "Save"
 //			gsel ID_TAB_LOG, 0 : objprm id_logmoni, logmoni
 //			gsel ID_WIN_MAIN
@@ -183,10 +170,8 @@
 
 *OPload
 	setting(5, 0) = -1
-	dialog "var", 16, "SaveData"
-	if stat = 0 : return
-	fname = refstr
-	vload fname
+	gsel ID_WIN_SAVE, 1
+	vload fname(0)
 	//メインウィンドウ更新
 	gsel ID_WIN_MAIN, 0 : redraw 0 : redraw 1
 	gsel ID_TAB_MOTI, 0 : objprm id_motimono, motimono
@@ -237,11 +222,7 @@
 //save,setting>>>open
 *retitle
 	setting(5, 0) = -1
-	exist fname
-	if strsize == -1 {
-		fname = savedir + "\\autosave.var"
-	}
-	mysave u, st, gt, setting, motimono, logmoni, fname
+	mysave u, st, gt, setting, motimono, logmoni, fname(0)
 	gsel ID_WIN_SAVE, -1
 	gsel ID_WIN_SETI, -1
 	gsel ID_WIN_INFO, -1
@@ -262,7 +243,7 @@
 	sendmsg hChkbox3, $F0 : setting(3, 0) = stat
 
 	if setting(1, 0) == 1 {
-		setting(4, 0) = 10
+		setting(4, 0) = 5
 		string2 = " GameSpeed [Slowest]"
 	}
 	if setting(2, 0) == 1 {
@@ -270,7 +251,7 @@
 		string2 = " GameSpeed [Normal]"
 	}
 	if setting(3, 0) == 1 {
-		setting(4, 0) = 2
+		setting(4, 0) = 1
 		string2 = " GameSpeed [Fastest]"
 	}
 	gsel ID_WIN_MAIN : objprm layid0, "auto_chk"
@@ -294,10 +275,8 @@
 
 *cursorche
 	if (lparam & $FFFF) != 1 : return
-
 	// オブジェクトの左上XY右下XYの座標位置を取得
 	GetWindowRect hlink, varptr(RECT)
-
 	// 取得したオブジェクトの座標位置とカーソルの座標位置を比較
 	PtInRect varptr(RECT), ginfo(0), ginfo(1)
 	if stat {
@@ -314,9 +293,6 @@
 	}
 	return
 
-
-
-
 //終了の処理
 *exit
 	setting(5, 0) = -1
@@ -324,11 +300,7 @@
 	switch winID
 		//------------------------------Master Window
 		case ID_WIN_MASTER
-			exist fname
-			if strsize == -1 {
-				fname = savedir + "\\autosave.var"
-			}
-			mysave u, st, gt, setting, motimono, logmoni, fname
+			mysave u, st, gt, setting, motimono, logmoni, fname(0)
 			oncmd 0
 			end
 			swbreak

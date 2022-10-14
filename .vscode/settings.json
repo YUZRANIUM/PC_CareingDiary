@@ -12,7 +12,6 @@
 		"obj": true,
 		"packfile": true,
 		"Project": true,
-		"SQL": true,
 		"vsave*": true
 	},
 	"editor.autoClosingDelete": "always",
@@ -91,17 +90,17 @@
 	"git-graph.fileEncoding": "Shift_JIS",
 	"gitHistory.includeRemoteBranches": true,
 	"language-hsp3.choiceWorkDirCur": true,
-	"language-hsp3.compiler": "C:/HSP.git/hsp37beta/hspc.exe",
+	"language-hsp3.compiler": "C:\\HSP.git\\hsp37beta\\hspc.exe",
 	"language-hsp3.encoding": "Shift_JIS",
 	"language-hsp3.executor.enable": true,
 	"language-hsp3.executor.index": "3.7",
 	"language-hsp3.executor.paths": {
 		"3.7": {
 			"hide": false,
-			"path": "C:/HSP.git/hsp37beta/hspc.exe",
+			"path": "C:\\HSP.git\\hsp37beta\\hspc.exe",
 			"encoding": "Shift_JIS",
 			"buffer": 204800,
-			"helpman": "C:/HSP.git/hsp37beta/helphsp/helpman.exe",
+			"helpman": "C:\\HSP.git\\hsp37beta\\hsphelp\\helpman.exe",
 			"commands": {
 				"run": [
 					"-dwCra",
@@ -114,7 +113,7 @@
 			}
 		}
 	},
-	"language-hsp3.helpman.path.local": "C:/HSP.git/hsp37beta/hsphelp/helpman.exe",
+	"language-hsp3.helpman.path.local": "C:\\HSP.git\\hsp37beta\\hsphelp\\helpman.exe",
 	"language-hsp3.helpman.path.online": "https://docs.hsp.moe/3.6/?q=%s",
 	"html.format.templating": true,
 	"markdown.experimental.validate.enabled": true,
@@ -159,5 +158,21 @@
 	"git.untrackedChanges": "hidden",
 	"[html]": {
 		"editor.defaultFormatter": "vscode.html-language-features"
-	}
+	},
+	"files.watcherInclude": [
+		"/SQL"
+	],
+	"css.lint.hexColorLength": "warning",
+	"markdown.experimental.updateLinksOnFileMove.enabled": "always",
+	"markdown.preview.fontSize": 12,
+	"markdown.preview.lineHeight": 1.5,
+	"markdown.preview.typographer": true,
+	"markdown.extension.print.onFileSave": true,
+	"markdown.extension.print.theme": "dark",
+	"markdown.preview.breaks": true,
+	"html.format.indentHandlebars": true,
+	"html.format.indentInnerHtml": true,
+	"markdown.preview.scrollEditorWithPreview": false,
+	"markdown.preview.scrollPreviewWithEditor": false,
+	"markdown.validate.enabled": true
 }
