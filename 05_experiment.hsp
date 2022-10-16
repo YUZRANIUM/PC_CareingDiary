@@ -8,7 +8,7 @@
 #packopt type 0
 
 #if 1
-	hspv = strf("%.3f", double(strf("%4x", hspver)) / 1000)
+	hspv = strf("%.3f", double(strf("%4x", __hspver__)) / 1000)
 	title " 05_ver0.1.6experiment  for  HSP " + hspv
 	sdim logfile_ex, 2048
 	notesel logfile_ex
