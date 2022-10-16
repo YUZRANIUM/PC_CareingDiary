@@ -29,7 +29,6 @@ Save&Load---情報ウィンドウ;
 style id1 fill:#26a, strole:#aaa, stroke-width:3px
 ```
 
-
 </details>
 
 ## ファイルについて
@@ -157,7 +156,7 @@ Anyone is free to copy, modify, publish, use, compile, sell, or distribute the o
 	* 00_module.hsp
 <!--  -->
 * text/
-	* 09_changelog.txt
+	* 09_changelog.md
 	* 05_ver000ex.txt
 <!--  -->
 * 01_variable.hsp
