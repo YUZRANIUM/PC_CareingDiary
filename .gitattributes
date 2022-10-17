@@ -1,2 +1,2 @@
-*.as linguist-language=HotSoupProcessor
-*.hsp linguist-language=HotSoupProcessor
+*.as linguist-language=HSP
+*.hsp linguist-language=HSP
