@@ -11,10 +11,7 @@
 	else {
 		gsel ID_WIN_MAIN : objprm id_opebut, opebut_text(1)
 	}
-	gsel ID_WIN_MASTER
-	title " gt(6, 0) = " + gt(6, 0) + " gtcontrol = " + gtcontrol + " savec = " + savec
 	/***描画更新***/
-	gsel ID_WIN_MAIN
 	objprm layid0, 2
 
 
@@ -41,11 +38,10 @@
 		if savecontrol == 0 : savec = 1 + savec
 		if savec > 100 {
 			//ファイルの確認
-			mysave u, st, gt, setting, motimono, logmoni, fname(0)
-			astip = "asc"
-			objprm layid0, astip
-			gsel ID_TAB_LOG, 0 : objprm id_logmoni, logmoni
+			mysave u, st, gt, setting, motimono, logmoni, fname(saveID)
+			//gsel ID_TAB_LOG, 0 : objprm id_logmoni, logmoni
 			gsel ID_WIN_MAIN
+			objprm layid0, "asc"
 			savec = 0
 		}
 	}
@@ -260,15 +256,24 @@
 	gsel ID_WIN_MAIN, 1
 	return
 
-//情報ウィンドウハイパーリンク
 *mousclick
 	hL = lparam
 	switch hL
+		//情報twハイパーリンク
 		case hLinktw
 			exec infa(4), 16
 			swbreak
+		//情報githubハイパーリンク
 		case hLinkgi
 			exec infa(5), 16
+			swbreak
+		case hSave1
+			dialog "Save Data 1 にセーブしますか?", 2, "SAVE"
+			if stat == 6 {
+				saveID = 1
+				mysave u, st, gt, setting, motimono, logmoni, fname(saveID)
+				gsel ID_WIN_MAIN, 1 : objprm layid0, "save"
+			}
 			swbreak
 	swend
 	return
@@ -300,7 +305,7 @@
 	switch winID
 		//------------------------------Master Window
 		case ID_WIN_MASTER
-			mysave u, st, gt, setting, motimono, logmoni, fname(0)
+			mysave u, st, gt, setting, motimono, logmoni, fname(saveID)
 			oncmd 0
 			end
 			swbreak

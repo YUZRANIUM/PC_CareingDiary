@@ -232,9 +232,15 @@
 
 	pos bx + 5, by + 5
 	Mycolor 0, 0, 0, 0
+	mes "Save Data 1"
 
+	pos bx + 130, by + 5
+	mylmb " Save", 50, 20, hSave1, WS_BORDER
 
-
+	//マウスクリック
+	oncmd gosub *mousclick, $111
+	//カーソルの見た目
+	oncmd gosub *cursorche, $20
 
 
 
@@ -301,9 +307,9 @@
 //						<<  オブジェクトの設置  >>
 //==============================================================================
 
-	mylink "作者ついった～", infa(4), 150, 20, hLinktw
+	mylmb "作者ついった～", 150, 20, hLinktw, $1
 	pos ginfo_cx, ginfo_cy + 5
-	mylink "作者ぎっとはぶぅ", infa(5), 150, 20, hLinkgi
+	mylmb "作者ぎっとはぶぅ", 150, 20, hLinkgi, $1
 
 //----------------------------------------------------------サブmesbox設置[ID=0]
 	font "メイリオ", 14 : objmode 2, 1
