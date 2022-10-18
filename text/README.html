@@ -1315,7 +1315,7 @@ body,
 <style>
             body {
                 font-family: MyricaM M;
-                font-size: 12px;
+                font-size: 10px;
                 line-height: 1.5;
             }
         </style>
@@ -1346,20 +1346,26 @@ In this repository, I practice the repository itself while publishing my persona
 <h2 id="現在の仕様">現在の仕様</h2>
 <details open>
 <summary>画面遷移</summary>
-<pre style="all:unset;"><div class="mermaid">flowchart TB;
-MASTER o---o bgscr;
-subgraph bgscr
-	Setting ---&gt; OpeningWindow;
+<pre style="all:unset;"><div class="mermaid">
+flowchart TB
 
-	subgraph id1 [Player]
-		Main &lt;--&gt; Setting & Amazoon & Save&Load;
+MASTER[MASTER Window] o---o | 貼り付け | bgscr
+
+subgraph bgscr
+	se([Setting]) ---&gt; op([Opening Window])
+
+	subgraph id1 [ゲーム中にプレイヤーが見る画面]
+		ma([Main]) &lt;--&gt; se([Setting]) & am([Amazoon]) & sa([Save & Load])
 	end
 
-	OpeningWindow &lt;--&gt; Save&Load;
-	OpeningWindow --&gt; Main;
+	op([Opening Window]) &lt;--&gt; sa([Save & Load])
+	op([Opening Window]) --&gt; ma([Main])
 end
-Save&Load---情報ウィンドウ;
+
+sa([Save & Load])---情報ウィンドウ
+
 style id1 fill:#26a, strole:#aaa, stroke-width:3px
+
 </div></pre>
 </details>
 <h2 id="ファイルについて">ファイルについて</h2>
@@ -1432,6 +1438,8 @@ style id1 fill:#26a, strole:#aaa, stroke-width:3px
 <p>以下略.</p>
 </details>
 <h2 id="その他">その他</h2>
+<h3 id="動作環境">動作環境</h3>
+<p>動作にはWebView2Loader.dllが必要です。</p>
 <h3 id="使用言語-codeing-language">使用言語 (Codeing Language)</h3>
 <ul>
 <li><a href="https://hsp.tv/">Hot Soup Processor (HSP3)</a></li>
@@ -1513,8 +1521,9 @@ All rights reserved.</p>
 <ul>
 <li>text/
 <ul>
-<li>09_changelog.md</li>
+<li>09_changelog.html</li>
 <li>05_ver000ex.txt</li>
+<li>README.html</li>
 </ul>
 </li>
 </ul>
