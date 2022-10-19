@@ -90,7 +90,7 @@ style id1 fill:#26a, strole:#aaa, stroke-width:3px
 ## その他
 
 ### 動作環境
-動作にはWebView2Loader.dllが必要です。
+* 動作にはWebView2Loader.dllが必要です。同梱しておりませんのでご了承ください。
 
 
 ### 使用言語 (Codeing Language)
