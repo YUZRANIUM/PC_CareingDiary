@@ -217,25 +217,30 @@
 
 	pos hx + 90, hy + 50 : objsize 110, 30, 20
 	button gosub "Exit", *remain
-	button gosub "Return to Title", *retitle
+	button gosub "Title", *retitle
 
 	pos 10, 20
 	mes "Chooes your play data slot"
-	bx = 30 : by = 80 : bb = 3
-	bcolor = 0.9
+	bb = 3 : bcolor = 0.9
 
+	bx = 30 : by = 80
+	/*** save1_outer ***/
 	Mycolor 0.1, 0.1, 0.75, 0
 	boxf bx - bb, by - bb, bx + 200 + bb, by + 75 + bb
-
+	/*** save1_inner ***/
 	Mycolor bcolor, bcolor, bcolor, 0
 	boxf bx, by, bx + 200, by + 75
-
+	/*** save1_text ***/
 	pos bx + 5, by + 5
-	Mycolor 0, 0, 0, 0
-	mes "Save Data 1"
+	Mycolor 0, 0, 0, 0 : mes "Save Data 1"
 
-	pos bx + 130, by + 5
-	mylmb " Save", 50, 20, hSave1, WS_BORDER
+	pos bx + 75, by + 48
+	mylmb " LOAD ", 55, 25, hLoad1, WS_BORDER
+	pos bx + 140, by + 48
+	mylmb " SAVE ", 55, 25, hSave1, WS_BORDER
+
+
+
 
 	//マウスクリック
 	oncmd gosub *mousclick, $111
@@ -257,7 +262,7 @@
 	pos hx + 90, hy + 50 : objsize 110, 30, 20
 
 	button gosub "Information", *infomation
-	button gosub "Return to Title", *retitle
+	button gosub "Title", *retitle
 
 	pos 20, 20 : objsize 100, 20
 	chkbox "AutoSave OFF", setting(0, 0)
@@ -295,14 +300,14 @@
 /*******************************************************************************
 							Infomation Window
 ********************************************************************************/
-	screen ID_WIN_INFO, 650, 450, 6 : title "Information ver" + ver
+	screen ID_WIN_INFO, 650, 500, 6 : title "Information ver" + ver
+	//gsel ID_WIN_INFO, -1
 	font "メイリオ", 15 : objmode 2, 0
 	pos 10, 2 : mes "N A M E\nVERSION\nHSP ver\nAUTHOR\nU  R  L\nGit Hub", 1
 	pos 100,
 	repeat 4
 		mes infa(cnt)
 	loop
-
 //==============================================================================
 //						<<  オブジェクトの設置  >>
 //==============================================================================
@@ -315,11 +320,18 @@
 	font "メイリオ", 14 : objmode 2, 1
 	//HSPのBMSCR構造体からフォントハンドルを取得
 	mref BMSCR2, 67 : hFont2 = BMSCR2.38
+
 	pos 0, 142
 	mes "  UPDATE HISTORY  "
-	mesbox infa2, 650, 262, 0
+
+	pEnv = WebView2_CreateEnv()
+	pCtrl = WebView2_CreateCtrl(pEnv, hwnd)
+	WebView2_Size pCtrl, 0, 160, ginfo_winx, ginfo_winy - 25
+	pView = WebView2_GetView(pCtrl)
+	WebView2_Navigate pView, "C:\\HSP.git\\text\\09_changelog.html"
+
 //----------------------------------------------------------サブbutton設置[ID=1]
-	pos 525, 426 : objsize 125,
+	pos 525, 475 : objsize 125,
 	button gosub "Close", *subw_exi
 
 
