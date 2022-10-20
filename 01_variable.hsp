@@ -22,8 +22,7 @@
 	//バージョン
 	ver = "0.2.0"
 	//HSPのバージョン
-	hspv = "" : hsed_cnvverstr __hspver__
-	hspv += refstr
+	hspv = "" : hsed_cnvverstr hspver : hspv += refstr
 	if instr(hspv, 0, "b") != -1 : strrep hspv, "b", "beta"
 	//titleバー
 	titlemes = "PC CareingDiary ver" + ver + " /HSP" + hspv
@@ -83,6 +82,7 @@
 	fname(4) = "" + dir_cur + "\\savedata\\Save4"
 	fname(5) = "" + dir_cur + "\\savedata\\Save5"
 	fname(6) = "" + dir_cur + "\\savedata\\Save6"
+	fname(7) = "" + dir_cur + "\\savedata\\Save7"
 	//saveIDスロット番号
 	saveID = 0 : dim saveID
 	//設定変更時のゲーム速度

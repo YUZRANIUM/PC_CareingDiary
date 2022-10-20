@@ -30,6 +30,14 @@
 	: vsave_end %7
 #global
 
+//#module
+////HSPバージョン"beta文字"付き出力命令
+////p1:バージョンを受け取る文字列型変数
+//#deffunc
+
+
+//#global
+
 #module
 #deffunc rm_init
 	WakuSize = (ginfo(10) - ginfo(12)) / 2
@@ -44,8 +52,9 @@
 	y1 = ginfo(1) - ginfo(5) - TabSize
 	return y1
 #global
-
-/******************************************************************************/
+/*******************************************************************************
+					タブコントロールモジュール
+********************************************************************************/
 #module
 #uselib "user32"
 #func GetClientRect "GetClientRect" int, int
@@ -56,7 +65,6 @@
 
 #define global TCN_SELCHANGE     0xFFFFFDD9
 #define global TCM_GETCURSEL    0x130B
-
 
 //CreateTab p1, p2, p3, p4
 //タブコントロールを設置します。statにタブコントロールのハンドルが返ります。
@@ -88,13 +96,11 @@
 	sendmsg p3, $1307, index, varptr(tcitem)
 	GetClientRect p3, varptr(rect)
 	sendmsg p3, $1328, , varptr(rect)
-
 	bgscr p2, rect(2) - rect(0) + 2, rect(3) - rect(1) + 8, 2, rect(0) + 2, rect(1) + 8
 	SetWindowLong hwnd, -16, WS_CHILD
 	SetParent hwnd, p3
 	return
 #global
-
 #module
 //ChangeTab p1,
 //タブ切り替え処理用
@@ -123,15 +129,15 @@
 #global
 
 /*******************************************************************************
-					2022/10/16現在 以下調整中
+				マウスクリックに反応するスタティックテキスト
+					(完成度ビミョー)
 ********************************************************************************/
-
 #module
 //マウスクリックに反応するオブジェクト
 //p1 : 表示する文字列
 //p2,p3 : マウスが反応するXサイズ,Yサイズ
 //p4 : オブジェクトハンドルを受け取る変数
-//p5 : ウィンドウスタイル(=$1/中央揃え)
+//p5 : ウィンドウスタイル($1:中央揃え, $2:右揃え)
 #deffunc mylmb_ str p1, int p2, int p3, var p4, int p5
 	dim RECT, 4
 	winobj "static", p1, , $50000000 | $100 | p5, p2, p3
@@ -143,12 +149,11 @@
 	SetClassLong p4, -12, stat
 	return
 #global
-
 #module
 //マウスクリックに反応するオブジェクト
 //p1 : 表示する文字列
 //p2,p3 : マウスが反応するXサイズ,Yサイズ
 //p4 : オブジェクトハンドルを受け取る変数
-//p5 : ウィンドウスタイル
+//p5 : ウィンドウスタイル($1:中央揃え, $2:右揃え)
 #define global mylmb(%1, %2, %3, %4, %5 = $0) mylmb_ %1,%2,%3,%4,%5
 #global

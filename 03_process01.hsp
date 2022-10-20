@@ -223,9 +223,39 @@
 	if stat == 6 {
 		mysave u, st, gt, setting, motimono, logmoni, fname(0)
 		mysave u, st, gt, setting, motimono, logmoni, fname(saveID)
-		gsel ID_WIN_SAVE, -1
+		vload fname(7)
+		//メインウィンドウ更新
+		gsel ID_TAB_MOTI, 0 : objprm id_motimono, motimono
+		gsel ID_TAB_LOG, 0 : objprm id_logmoni, logmoni
 		gsel ID_WIN_SETI, -1
+		objprm id_savebut, setting(0, 0)
+		objprm id_chkosoi, setting(1, 0)
+		objprm id_chkfutu, setting(2, 0)
+		objprm id_chkhaya, setting(3, 0)
+		gsel ID_WIN_AMAZ, -1
+		/*** AMAZリストビューリセット ***/
+		sql_open db
+		sql_q "BEGIN;"
+		/*** CPU ***/
+		sql_q "SELECT * FROM MyCPU ORDER BY ID ASC;"
+		col_clis = sql_collist() : split col_clis, ",", col_clis
+		myindata rec_cnum, col_cnum, col_clis, cpu
+		gsel ID_OMTAB_CPU : mydelitem id_LVCPU
+		myinitem id_LVCPU, cpu, rec_cnum, col_cnum
+		/*** GPU ***/
+		sql_q "SELECT * FROM MyCPU ORDER BY ID ASC;"
+
+
+
+		gsel ID_OMTAB_GPU : mydelitem id_LVGPU
+		gsel ID_OMTAB_ROM : mydelitem id_LVROM
+
+		sql_q "COMMIT;"
+		sql_close
+
+		gsel ID_WIN_SAVE, -1
 		gsel ID_WIN_INFO, -1
+		gsel ID_WIN_MAIN, -1 : objprm layid0, 2
 		gsel ID_WIN_OPEN, 1
 	}
 	return
