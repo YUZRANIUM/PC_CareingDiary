@@ -6,19 +6,13 @@
 //******************************************************
 #packopt name "05_ver016ex"
 #packopt type 0
-
-#if 1
-	hspv = strf("%.3f", double(strf("%4x", __hspver__)) / 1000)
-	title " 05_ver0.1.6experiment  for  HSP " + hspv
-	sdim logfile_ex, 2048
-	notesel logfile_ex
-	noteload "text/05_ver000ex.txt" : noteunsel
-
+#if 0
 /*##############################################################################
 							画面切り替え機能実験
 ###############################################################################*/
 	#include "user32.as"
 	#include "gdi32.as"
+	#include "hsedsdk.as"
 	#include "sqlele.hsp"
 	#include "00_module.hsp"
 	#include "00_mylv.hsp"
@@ -33,6 +27,16 @@
 	#enum tabid3
 	#enum tabid4
 	#enum tabid5
+	/*** 各種変数定義 ***/
+
+	//HSPのバージョン
+	hspv = "" : hsed_cnvverstr __hspver__ : hspv += refstr
+	if instr(hspv, 0, "b") != -1 : strrep hspv, "b", "beta"
+	title " 05_ver0.1.6experiment  for  HSP " + hspv
+	sdim logfile_ex, 2048
+	notesel logfile_ex
+	noteload "text/05_ver000ex.txt" : noteunsel
+	link = "https://github.com/YUZURANIUM/PC_CareingDiary"
 /*******************************************************************************
 								MASTER_ex
 ********************************************************************************/
@@ -167,8 +171,7 @@
 	mesbox logfile_ex, 845, 500, 0
 
 	pos 10, 555
-	link = "https://github.com/YUZURANIUM/PC_CareingDiary"
-	mylink "Git Hub", link, 150, 25, hlink
+	mylmb "Git Hub", 150, 25, hlink, $1
 
 	sendmsg hlink, $30, ,hFontn
 
@@ -512,10 +515,28 @@
 	goto *main
 
 #endif
+/*##############################################################################
+						hspバージョン確認
+###############################################################################*/
+//#ifdef _debug
+#if 1
+	#include "hsedsdk.as"
 
-#if 0
-
+	/*** __hspver__ ***/
 	mes " __hspver__ = " + __hspver__ + "\n strf(\"%4X\", __hspver__) = " + strf("%4X", __hspver__)
-	mes " hspver = " + hspver + "\n strf(\"%4X\", hspver) = " + strf("%4X", hspver)
+	hspv = "" : hsed_cnvverstr __hspver__ : hspv += refstr
+	mes "\n hsed_cnvverstr __hspver__ = " + hspv
+	if instr(hspv, 0, "b") != -1 : strrep hspv, "b", "beta"
+	mes "\n " + hspv + "\n"
 
+	mes "----------------------------------\n"
+
+	/*** hspver ***/
+	mes " hspver = " + hspver + "\n strf(\"%4X\", hspver) = " + strf("%4X", hspver)
+	hspv = ""
+	hsed_cnvverstr hspver
+	hspv += refstr
+	mes "\n hsed_cnvverstr hspver = " + hspv
+	if instr(hspv, 0, "b") != -1 : strrep hspv, "b", "beta"
+	mes "\n " + hspv + "\n"
 #endif

@@ -13,20 +13,26 @@ In this repository, I practice the repository itself while publishing my persona
 <summary>画面遷移</summary>
 
 ```mermaid
-flowchart TB;
-MASTER o---o bgscr;
-subgraph bgscr
-	Setting ---> OpeningWindow;
 
-	subgraph id1 [Player]
-		Main <--> Setting & Amazoon & Save&Load;
+flowchart TB
+
+MASTER[MASTER Window] o---o | 貼り付け | bgscr
+
+subgraph bgscr
+	se([Setting]) ---> op([Opening Window])
+
+	subgraph id1 [ゲーム中にプレイヤーが見る画面]
+		ma([Main]) <--> se([Setting]) & am([Amazoon]) & sa([Save & Load])
 	end
 
-	OpeningWindow <--> Save&Load;
-	OpeningWindow --> Main;
+	op([Opening Window]) <--> sa([Save & Load])
+	op([Opening Window]) --> ma([Main])
 end
-Save&Load---情報ウィンドウ;
+
+sa([Save & Load])---情報ウィンドウ
+
 style id1 fill:#26a, strole:#aaa, stroke-width:3px
+
 ```
 
 </details>
@@ -82,6 +88,11 @@ style id1 fill:#26a, strole:#aaa, stroke-width:3px
 
 
 ## その他
+
+### 動作環境
+* 動作にはWebView2Loader.dllが必要です。同梱しておりませんのでご了承ください。
+
+
 ### 使用言語 (Codeing Language)
 
 - [Hot Soup Processor (HSP3)](https://hsp.tv/)
@@ -156,8 +167,9 @@ Anyone is free to copy, modify, publish, use, compile, sell, or distribute the o
 	* 00_module.hsp
 <!--  -->
 * text/
-	* 09_changelog.md
+	* 09_changelog.html
 	* 05_ver000ex.txt
+	* README.html
 <!--  -->
 * 01_variable.hsp
 * 02_interface.hsp

@@ -1,9 +1,10 @@
 #packopt name "PC Careing Diary"
-#packopt version "version.ini"
+#packopt version "text/version.ini"
 #packopt type 0
 /*********************layerobj‚Ìˆ—************************/
 	#include "user32.as"
 	#include "gdi32.as"
+	#include "mod_WebView2_10115038.hsp"
 	#include "hsp3util.as"
 	#include "hsedsdk.as"
 	#include "hspda.as"	//vsaveŒn

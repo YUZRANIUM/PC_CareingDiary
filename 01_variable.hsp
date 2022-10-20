@@ -22,18 +22,8 @@
 	//バージョン
 	ver = "0.2.0"
 	//HSPのバージョン
-	hspv = "" : hsed_cnvverstr __hspver__
-	switch refstr
-		case "3.7b2"
-			hspv = "3.7beta2"
-			swbreak
-		case "3.7b3"
-			hspv = "3.7beta3"
-			swbreak
-		default
-			hspv = "" + refstr
-			swbreak
-	swend
+	hspv = "" : hsed_cnvverstr hspver : hspv += refstr
+	if instr(hspv, 0, "b") != -1 : strrep hspv, "b", "beta"
 	//titleバー
 	titlemes = "PC CareingDiary ver" + ver + " /HSP" + hspv
 	//バージョン情報
@@ -45,10 +35,6 @@
 	infa(4) = "https://twitter.com/YUZRANIUM"
 	infa(5) = "https://github.com/YUZURANIUM/PC_CareingDiary"
 	strrep infa(0), "vv", ver : strrep infa(1), "vv", ver : strrep infa(2), "hh", hspv
-	//更新履歴.txt
-	infa2 = "" : sdim infa2, 4096
-	notesel infa2
-	noteload "text/09_changelog.md" : noteunsel
 
 	//設定項目配列
 	//setting(0, 0):オートセーブON/OFF
@@ -96,6 +82,7 @@
 	fname(4) = "" + dir_cur + "\\savedata\\Save4"
 	fname(5) = "" + dir_cur + "\\savedata\\Save5"
 	fname(6) = "" + dir_cur + "\\savedata\\Save6"
+	fname(7) = "" + dir_cur + "\\savedata\\Save7"
 	//saveIDスロット番号
 	saveID = 0 : dim saveID
 	//設定変更時のゲーム速度

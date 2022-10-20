@@ -1,7 +1,6 @@
 /***メインループ***/
 *main
 	wait 16
-
 	gsel ID_WIN_SETI : objprm id_savebut, savebut_text(setting(0, 0))
 	//ループ制御ボタンの表示切り替え
 	if setting(5, 0) == -1 {
@@ -13,7 +12,6 @@
 	}
 	/***描画更新***/
 	objprm layid0, 2
-
 
 	gt(6, 0) = str(int(gt(6, 0)) + 1) //ゲーム内時間カウンタ
 	if int(gt(6, 0)) > 500 : gt(6, 0) = "1"
@@ -34,12 +32,12 @@
 
 	//オートセーブ設定が有効かどうか
 	if setting(0, 0) == 1 {
-		savecontrol = int(gt(6, 0)) \ 4
+		savecontrol = int(gt(6, 0)) \ 5
 		if savecontrol == 0 : savec = 1 + savec
 		if savec > 100 {
 			//ファイルの確認
+			mysave u, st, gt, setting, motimono, logmoni, fname(0)
 			mysave u, st, gt, setting, motimono, logmoni, fname(saveID)
-			//gsel ID_TAB_LOG, 0 : objprm id_logmoni, logmoni
 			gsel ID_WIN_MAIN
 			objprm layid0, "asc"
 			savec = 0
@@ -87,6 +85,7 @@
 	gsel ID_WIN_MAIN
 	return
 
+//ここの処理はamazと統合できるのでは?
 //mainタブコントロールの処理
 *noti_main
 	dupptr nmhdr, lparam, 12, 4
@@ -95,6 +94,7 @@
 	}
 	return
 
+//ここの処理はmainと統合できるのでは?
 //amazタブコントロールの処理
 *noti_amaz
 	dupptr nmhdr, lparam, 12, 4
@@ -167,7 +167,7 @@
 *OPload
 	setting(5, 0) = -1
 	gsel ID_WIN_SAVE, 1
-	vload fname(0)
+	vload fname(saveID)
 	//メインウィンドウ更新
 	gsel ID_WIN_MAIN, 0 : redraw 0 : redraw 1
 	gsel ID_TAB_MOTI, 0 : objprm id_motimono, motimono
@@ -200,6 +200,7 @@
 	return
 
 *infomation
+	ret = CCall2(pCtrl, 4, 1, 1)
 	gsel ID_WIN_INFO, 1
 	return
 
@@ -218,11 +219,45 @@
 //save,setting>>>open
 *retitle
 	setting(5, 0) = -1
-	mysave u, st, gt, setting, motimono, logmoni, fname(0)
-	gsel ID_WIN_SAVE, -1
-	gsel ID_WIN_SETI, -1
-	gsel ID_WIN_INFO, -1
-	gsel ID_WIN_OPEN, 1
+	dialog "Return to Opening Really?", 2, "Return to Opening"
+	if stat == 6 {
+		mysave u, st, gt, setting, motimono, logmoni, fname(0)
+		mysave u, st, gt, setting, motimono, logmoni, fname(saveID)
+		vload fname(7)
+		//メインウィンドウ更新
+		gsel ID_TAB_MOTI, 0 : objprm id_motimono, motimono
+		gsel ID_TAB_LOG, 0 : objprm id_logmoni, logmoni
+		gsel ID_WIN_SETI, -1
+		objprm id_savebut, setting(0, 0)
+		objprm id_chkosoi, setting(1, 0)
+		objprm id_chkfutu, setting(2, 0)
+		objprm id_chkhaya, setting(3, 0)
+		gsel ID_WIN_AMAZ, -1
+		/*** AMAZリストビューリセット ***/
+		sql_open db
+		sql_q "BEGIN;"
+		/*** CPU ***/
+		sql_q "SELECT * FROM MyCPU ORDER BY ID ASC;"
+		col_clis = sql_collist() : split col_clis, ",", col_clis
+		myindata rec_cnum, col_cnum, col_clis, cpu
+		gsel ID_OMTAB_CPU : mydelitem id_LVCPU
+		myinitem id_LVCPU, cpu, rec_cnum, col_cnum
+		/*** GPU ***/
+		sql_q "SELECT * FROM MyCPU ORDER BY ID ASC;"
+
+
+
+		gsel ID_OMTAB_GPU : mydelitem id_LVGPU
+		gsel ID_OMTAB_ROM : mydelitem id_LVROM
+
+		sql_q "COMMIT;"
+		sql_close
+
+		gsel ID_WIN_SAVE, -1
+		gsel ID_WIN_INFO, -1
+		gsel ID_WIN_MAIN, -1 : objprm layid0, 2
+		gsel ID_WIN_OPEN, 1
+	}
 	return
 
 *saveload
@@ -239,7 +274,7 @@
 	sendmsg hChkbox3, $F0 : setting(3, 0) = stat
 
 	if setting(1, 0) == 1 {
-		setting(4, 0) = 5
+		setting(4, 0) = 6
 		string2 = " GameSpeed [Slowest]"
 	}
 	if setting(2, 0) == 1 {
@@ -256,7 +291,11 @@
 	gsel ID_WIN_MAIN, 1
 	return
 
+//mylmbによる割り込み
 *mousclick
+	//saveload画面での割り込みウィンドウID
+	idsave = ginfo_intid
+	//ハイパーリンクのオブジェクトハンドル
 	hL = lparam
 	switch hL
 		//情報twハイパーリンク
@@ -267,10 +306,12 @@
 		case hLinkgi
 			exec infa(5), 16
 			swbreak
+		/*** Save & Load ***/
 		case hSave1
 			dialog "Save Data 1 にセーブしますか?", 2, "SAVE"
 			if stat == 6 {
 				saveID = 1
+				mysave u, st, gt, setting, motimono, logmoni, fname(0)
 				mysave u, st, gt, setting, motimono, logmoni, fname(saveID)
 				gsel ID_WIN_MAIN, 1 : objprm layid0, "save"
 			}
@@ -305,7 +346,13 @@
 	switch winID
 		//------------------------------Master Window
 		case ID_WIN_MASTER
+			mysave u, st, gt, setting, motimono, logmoni, fname(0)
 			mysave u, st, gt, setting, motimono, logmoni, fname(saveID)
+			gsel ID_WIN_INFO
+			WebView2_Release pView
+			WebView2_Release pCtrl
+			WebView2_Release pEnv
+			WebView2_Release ret
 			oncmd 0
 			end
 			swbreak
