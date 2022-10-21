@@ -36,8 +36,17 @@
 		if savecontrol == 0 : savec = 1 + savec
 		if savec > 100 {
 			//ファイルの確認
-			mysave u, st, gt, setting, motimono, logmoni, fname(0)
-			mysave u, st, gt, setting, motimono, logmoni, fname(saveID)
+			vsave_start
+			vsave_put u
+			vsave_put st
+			vsave_put gt
+			vsave_put setting
+			vsave_put motimono
+			vsave_put logmoni
+			vsave_put bfcpu
+			vsave_put bfgpu
+			vsave_put bfrom
+			vsave_end fname(saveID)
 			gsel ID_WIN_MAIN
 			objprm layid0, "asc"
 			savec = 0
@@ -118,12 +127,10 @@
 				sdim cpu, 2048
 				swc = swc * -1
 				if swc == -1 : sqsc = " DESC;" : else : sqsc = " ASC;"
-				sql_q "SELECT * FROM MyCPU ORDER BY " + col_clis(index) + sqsc
-				col_clis = sql_collist() : split col_clis, ",", col_clis
-				myindata rec_cnum, col_cnum, col_clis, cpu
-				gsel ID_OMTAB_CPU
-				mydelitem id_LVCPU
-				myinitem id_LVCPU, cpu, rec_cnum, col_cnum
+				sql_q "SELECT * FROM MyCPU ORDER BY " + col_list(index) + sqsc
+				myindata rec_cnum, col_num, col_list, cpu
+				gsel ID_OMTAB_CPU : mydelitem id_LVCPU
+				myinitem id_LVCPU, cpu, rec_cnum, col_num
 				swbreak
 
 			/***GPU***/
@@ -131,12 +138,10 @@
 				sdim gpu, 2048
 				swg = swg * -1
 				if swg == -1 : sqsc = " DESC;" : else : sqsc = " ASC;"
-				sql_q "SELECT * FROM MyGPU ORDER BY " + col_glis(index) + sqsc
-				col_glis = sql_collist() : split col_glis, ",", col_glis
-				myindata rec_gnum, col_gnum, col_glis, gpu
-				gsel ID_OMTAB_GPU
-				mydelitem id_LVGPU
-				myinitem id_LVGPU, gpu, rec_gnum, col_gnum
+				sql_q "SELECT * FROM MyGPU ORDER BY " + col_list(index) + sqsc
+				myindata rec_gnum, col_num, col_list, gpu
+				gsel ID_OMTAB_GPU : mydelitem id_LVGPU
+				myinitem id_LVGPU, gpu, rec_gnum, col_num
 				swbreak
 
 			/***ROM***/
@@ -144,16 +149,70 @@
 				sdim rom, 2048
 				swr = swr * -1
 				if swr == -1 : sqsc = " DESC;" : else : sqsc = " ASC;"
-				sql_q "SELECT * FROM MyROM ORDER BY " + col_rlis(index) + sqsc
-				col_rlis = sql_collist() : split col_rlis, ",", col_rlis
-				myindata rec_rnum, col_rnum, col_rlis, rom
-				gsel ID_OMTAB_ROM
-				mydelitem id_LVROM
-				myinitem id_LVROM, rom, rec_rnum, col_rnum
+				sql_q "SELECT * FROM MyROM ORDER BY " + col_list(index) + sqsc
+				myindata rec_rnum, col_num, col_list, rom
+				gsel ID_OMTAB_ROM : mydelitem id_LVROM
+				myinitem id_LVROM, rom, rec_rnum, col_num
 				swbreak
 		swend
 		sql_q "COMMIT;"
 		sql_close
+	}
+	return
+
+//mylmbによる割り込み
+*mousclick
+	//ハイパーリンクのオブジェクトハンドル
+	hL = lparam
+	switch hL
+		case hLinktw //情報twハイパーリンク
+			exec infa(4), 16
+			swbreak
+		case hLinkgi //情報githubハイパーリンク
+			exec infa(5), 16
+			swbreak
+		/*** Save & Load ***/
+		case hSave1
+			dialog "Save Data 1 にセーブしますか?", 2, "SAVE"
+			if stat == 6 {
+				saveID = 1
+				vsave_start
+				vsave_put u
+				vsave_put st
+				vsave_put gt
+				vsave_put setting
+				vsave_put motimono
+				vsave_put logmoni
+				vsave_put bfcpu
+				vsave_put bfgpu
+				vsave_put bfrom
+				vsave_end fname(saveID)
+				gsel ID_WIN_MAIN, 1 : objprm layid0, "save"
+			}
+			swbreak
+		case hLoad1
+			vload fname(1)
+			swbreak
+	swend
+	return
+
+*cursorche
+	if (lparam & $FFFF) != 1 : return
+	// オブジェクトの左上XY右下XYの座標位置を取得
+	GetWindowRect hlink, varptr(RECT)
+	// 取得したオブジェクトの座標位置とカーソルの座標位置を比較
+	PtInRect varptr(RECT), ginfo(0), ginfo(1)
+	if stat {
+		if oncursor : return
+		InvalidateRect hlink, 0, 0
+		oncursor = 1
+		return
+	}
+	else {
+		if oncursor = 0 : return
+		InvalidateRect hlink, 0, 0
+		oncursor = 0
+		return
 	}
 	return
 
@@ -167,7 +226,6 @@
 *OPload
 	setting(5, 0) = -1
 	gsel ID_WIN_SAVE, 1
-	vload fname(saveID)
 	//メインウィンドウ更新
 	gsel ID_WIN_MAIN, 0 : redraw 0 : redraw 1
 	gsel ID_TAB_MOTI, 0 : objprm id_motimono, motimono
@@ -221,9 +279,18 @@
 	setting(5, 0) = -1
 	dialog "Return to Opening Really?", 2, "Return to Opening"
 	if stat == 6 {
-		mysave u, st, gt, setting, motimono, logmoni, fname(0)
-		mysave u, st, gt, setting, motimono, logmoni, fname(saveID)
-		vload fname(7)
+		vsave_start
+		vsave_put u
+		vsave_put st
+		vsave_put gt
+		vsave_put setting
+		vsave_put motimono
+		vsave_put logmoni
+		vsave_put bfcpu
+		vsave_put bfgpu
+		vsave_put bfrom
+		vsave_end fname(saveID)
+		vload "savedata\\Save7.var"
 		//メインウィンドウ更新
 		gsel ID_TAB_MOTI, 0 : objprm id_motimono, motimono
 		gsel ID_TAB_LOG, 0 : objprm id_logmoni, logmoni
@@ -232,26 +299,18 @@
 		objprm id_chkosoi, setting(1, 0)
 		objprm id_chkfutu, setting(2, 0)
 		objprm id_chkhaya, setting(3, 0)
-		gsel ID_WIN_AMAZ, -1
 		/*** AMAZリストビューリセット ***/
-		sql_open db
-		sql_q "BEGIN;"
+		gsel ID_WIN_AMAZ, -1
 		/*** CPU ***/
-		sql_q "SELECT * FROM MyCPU ORDER BY ID ASC;"
-		col_clis = sql_collist() : split col_clis, ",", col_clis
-		myindata rec_cnum, col_cnum, col_clis, cpu
 		gsel ID_OMTAB_CPU : mydelitem id_LVCPU
-		myinitem id_LVCPU, cpu, rec_cnum, col_cnum
+		myinitem id_LVCPU, bfcpu, rec_cnum, col_num
 		/*** GPU ***/
-		sql_q "SELECT * FROM MyCPU ORDER BY ID ASC;"
-
-
-
 		gsel ID_OMTAB_GPU : mydelitem id_LVGPU
+		myinitem id_LVGPU, bfgpu, rec_gnum, col_num
+		/*** ROM ***/
 		gsel ID_OMTAB_ROM : mydelitem id_LVROM
-
-		sql_q "COMMIT;"
-		sql_close
+		myinitem id_LVROM, bfrom, rec_rnum, col_num
+		gsel ID_OMTAB_CPU, 1
 
 		gsel ID_WIN_SAVE, -1
 		gsel ID_WIN_INFO, -1
@@ -291,54 +350,6 @@
 	gsel ID_WIN_MAIN, 1
 	return
 
-//mylmbによる割り込み
-*mousclick
-	//saveload画面での割り込みウィンドウID
-	idsave = ginfo_intid
-	//ハイパーリンクのオブジェクトハンドル
-	hL = lparam
-	switch hL
-		//情報twハイパーリンク
-		case hLinktw
-			exec infa(4), 16
-			swbreak
-		//情報githubハイパーリンク
-		case hLinkgi
-			exec infa(5), 16
-			swbreak
-		/*** Save & Load ***/
-		case hSave1
-			dialog "Save Data 1 にセーブしますか?", 2, "SAVE"
-			if stat == 6 {
-				saveID = 1
-				mysave u, st, gt, setting, motimono, logmoni, fname(0)
-				mysave u, st, gt, setting, motimono, logmoni, fname(saveID)
-				gsel ID_WIN_MAIN, 1 : objprm layid0, "save"
-			}
-			swbreak
-	swend
-	return
-
-*cursorche
-	if (lparam & $FFFF) != 1 : return
-	// オブジェクトの左上XY右下XYの座標位置を取得
-	GetWindowRect hlink, varptr(RECT)
-	// 取得したオブジェクトの座標位置とカーソルの座標位置を比較
-	PtInRect varptr(RECT), ginfo(0), ginfo(1)
-	if stat {
-		if oncursor : return
-		InvalidateRect hlink, 0, 0
-		oncursor = 1
-		return
-	}
-	else {
-		if oncursor = 0 : return
-		InvalidateRect hlink, 0, 0
-		oncursor = 0
-		return
-	}
-	return
-
 //終了の処理
 *exit
 	setting(5, 0) = -1
@@ -346,8 +357,18 @@
 	switch winID
 		//------------------------------Master Window
 		case ID_WIN_MASTER
-			mysave u, st, gt, setting, motimono, logmoni, fname(0)
-			mysave u, st, gt, setting, motimono, logmoni, fname(saveID)
+			vsave_start
+			vsave_put u
+			vsave_put st
+			vsave_put gt
+			vsave_put setting
+			vsave_put motimono
+			vsave_put logmoni
+			vsave_put bfcpu
+			vsave_put bfgpu
+			vsave_put bfrom
+			vsave_end fname(saveID)
+			vsave "" + dir_cur + "\\savedata\\backup.var"
 			gsel ID_WIN_INFO
 			WebView2_Release pView
 			WebView2_Release pCtrl
