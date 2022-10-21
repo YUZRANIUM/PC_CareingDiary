@@ -56,13 +56,13 @@
 /*******************<<  ウィンドウオブジェクトの設置  >>********************/
 
 	/***ゲーム内時間***/
-	hx = 580 : hy = 15
+	hx = 590 : hy = 15
 	pos hx, hy
 	winobj "static", "ゲーム内時間を表記します", , $50000000 | $1 | $800000, 200, 28
 	hStatic_h = objinfo(stat, 2)
 
 	/***ステータス項目表示***/
-	mx = 20 : my = 35
+	mx = 15 : my = 15
 	pos mx, my
 	winobj "static", " C P U\n G P U\n R O M\n S S D\n F a n\n 温 度\n Power", , $50000000 | $800000, 170, 170
 	hStatic_i = objinfo(stat, 2)
@@ -97,7 +97,7 @@
 
 //==========================================================
 	InsertTab "Arsenal", ID_TAB_SOUKO, 1, hTab_main
-	pos 5, 0
+	pos 0, 0
 	mycrelv 794, 210, id_soukomoni, hLVsouko
 
 //==========================================================
@@ -163,24 +163,24 @@
 	InsertTab "C P U", ID_OMTAB_CPU, 5, hTabOMI
 	pos 2, 2
 	mycrelv listx, listy, id_LVCPU, hLVCPU
-	myincol id_LVCPU, col_clis, col_cnum, column_w
-	myinitem id_LVCPU, cpu, rec_cnum, col_cnum
+	myincol id_LVCPU, col_list, col_num, column_w
+	myinitem id_LVCPU, bfcpu, rec_cnum, col_num
 	oncmd gosub *notify, WM_NOTIFY
 
 
 	InsertTab "G P U", ID_OMTAB_GPU, 6, hTabOMI
 	pos 2, 2
 	mycrelv listx, listy, id_LVGPU, hLVGPU
-	myincol id_LVGPU, col_glis, col_gnum, column_w
-	myinitem id_LVGPU, gpu, rec_gnum, col_gnum
+	myincol id_LVGPU, col_list, col_num, column_w
+	myinitem id_LVGPU, bfgpu, rec_gnum, col_num
 	oncmd gosub *notify, WM_NOTIFY
 
 
 	InsertTab "R O M", ID_OMTAB_ROM, 7, hTabOMI
 	pos 2, 2
 	mycrelv listx, listy, id_LVROM, hLVROM
-	myincol id_LVROM, col_rlis, col_rnum, column_w
-	myinitem id_LVROM, rom, rec_rnum, col_rnum
+	myincol id_LVROM, col_list, col_num, column_w
+	myinitem id_LVROM, bfrom, rec_rnum, col_num
 	oncmd gosub *notify, WM_NOTIFY
 
 	InsertTab "S S D", ID_OMTAB_SSD, 8, hTabOMI

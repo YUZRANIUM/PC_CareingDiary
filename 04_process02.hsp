@@ -1,7 +1,8 @@
+
+/*** Packfile ***/
 #packopt name "PC Careing Diary"
-#packopt version "text/version.ini"
 #packopt type 0
-/*********************layerobjの処理************************/
+	/*** 外部モジュール ***/
 	#include "user32.as"
 	#include "gdi32.as"
 	#include "mod_WebView2_10115038.hsp"
@@ -9,12 +10,13 @@
 	#include "hsedsdk.as"
 	#include "hspda.as"	//vsave系
 	#include "sqlele.hsp"
-
+	/*** 分割ファイル ***/
 	#include "00_module.hsp"
 	#include "00_mylv.hsp"
 	#include "01_variable.hsp"
 	#include "02_interface.hsp"
 	#include "03_process01.hsp"
+/*********************layerobjの処理************************/
 
 //ゲーム内時間とステータス
 *lay
