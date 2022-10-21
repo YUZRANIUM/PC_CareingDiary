@@ -30,13 +30,18 @@
 	: vsave_end %7
 #global
 
-//#module
-////HSPバージョン"beta文字"付き出力命令
-////p1:バージョンを受け取る文字列型変数
-//#deffunc
-
-
-//#global
+#module
+//HSPバージョン"beta文字"付き出力関数
+//hsedsdk.asをインクルードすること
+#defcfunc myhspver
+	hsed_cnvverstr hspver
+	sdim a
+	a += refstr
+	if instr(a, 0, "b") != -1 {
+		strrep a, "b", "beta"
+	}
+	return a
+#global
 
 #module
 #deffunc rm_init
