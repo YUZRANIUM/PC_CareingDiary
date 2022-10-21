@@ -6,7 +6,7 @@
 //******************************************************
 #packopt name "05_ver016ex"
 #packopt type 0
-#if 0
+#if 1
 /*##############################################################################
 							画面切り替え機能実験
 ###############################################################################*/
@@ -353,7 +353,6 @@
 			case hLVcsouko
 				sdim cpu, 2048 : sdim data_cpu, 1024
 				sql_q "SELECT * FROM MyCPU ORDER BY " + cpu_culm(inde) + sqsc
-				cpu_culm = sql_collist() : split cpu_culm, ",", cpu_culm
 				myindata cpu_cunt, c_culm_num, cpu_culm, cpu
 				/***今あるリストアイテムの削除***/
 				mydelitem id_cpumoni
@@ -364,7 +363,6 @@
 			case hLVgsouko
 				sdim gpu, 2048 : sdim data_gpu, 1024
 				sql_q "SELECT * FROM MyGPU ORDER BY " + gpu_culm(inde) + sqsc
-				gpu_culm = sql_collist() : split gpu_culm, ",", gpu_culm
 				myindata gpu_cunt, g_culm_num, gpu_culm, gpu
 				mydelitem id_gpumoni
 				myinitem id_gpumoni, gpu, gpu_cunt, g_culm_num
@@ -374,7 +372,6 @@
 			case hLVrsouko
 				sdim rom, 2048 : sdim data_rom, 1024
 				sql_q "SELECT * FROM MyROM ORDER BY " + rom_culm(inde) + sqsc
-				rom_culm = sql_collist() : split rom_culm, ",", rom_culm
 				myindata rom_cunt, r_culm_num, rom_culm, rom
 				mydelitem id_rommoni
 				myinitem id_rommoni, rom, rom_cunt, r_culm_num
@@ -519,24 +516,25 @@
 						hspバージョン確認
 ###############################################################################*/
 //#ifdef _debug
-#if 1
+#if 0
 	#include "hsedsdk.as"
+	#include "00_module.hsp"
 
 	/*** __hspver__ ***/
 	mes " __hspver__ = " + __hspver__ + "\n strf(\"%4X\", __hspver__) = " + strf("%4X", __hspver__)
-	hspv = "" : hsed_cnvverstr __hspver__ : hspv += refstr
+	hspv = ""  :  hsed_cnvverstr __hspver__  :  hspv += refstr
 	mes "\n hsed_cnvverstr __hspver__ = " + hspv
-	if instr(hspv, 0, "b") != -1 : strrep hspv, "b", "beta"
+	if instr(hspv, 0, "b") != -1  :  strrep hspv, "b", "beta"
 	mes "\n " + hspv + "\n"
-
 	mes "----------------------------------\n"
 
 	/*** hspver ***/
 	mes " hspver = " + hspver + "\n strf(\"%4X\", hspver) = " + strf("%4X", hspver)
-	hspv = ""
-	hsed_cnvverstr hspver
-	hspv += refstr
+	hspv = ""  :  hsed_cnvverstr hspver  :  hspv += refstr
 	mes "\n hsed_cnvverstr hspver = " + hspv
-	if instr(hspv, 0, "b") != -1 : strrep hspv, "b", "beta"
+	if instr(hspv, 0, "b") != -1  :  strrep hspv, "b", "beta"
 	mes "\n " + hspv + "\n"
+
+	/*** HSPのバージョン自作関数 ***/
+	mes " " + myhspver()
 #endif
