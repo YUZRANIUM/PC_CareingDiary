@@ -90,21 +90,23 @@ style id1 fill:#26a, strole:#aaa, stroke-width:3px
 ## その他
 
 ### 動作環境
-* 動作にはWebView2Loader.dllが必要です。同梱しておりませんのでご了承ください。
+* 動作には **WebView2Loader.dllが必要** です。**同梱しておりません**のでご了承ください。
 
 
 ### 使用言語 (Codeing Language)
 
 - [Hot Soup Processor (HSP3)](https://hsp.tv/)
 - [SQLite](https://www.sqlite.org)
+
+
 ### 開発環境 (Development Environment)
 - Windows11 Pro 22H2 x64
 - Visual Studio Code
 - HSP3.7beta3
+
 <br />
 
 # Licence
-<br>
 <br>
 
 * hsp37beta/common/
@@ -112,6 +114,7 @@ style id1 fill:#26a, strole:#aaa, stroke-width:3px
 	* gdi32.as
 	* hsp3util.as
 	* hspda.as
+	* hsedsdk.as
 <!--  -->
 * hsprt
 * hspcmp.dll
@@ -154,11 +157,17 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 All of the code and documentation in SQLite has been dedicated to the public domain by the authors.
 
 Anyone is free to copy, modify, publish, use, compile, sell, or distribute the original SQLite code, either in source code form or as a compiled binary, for any purpose, commercial or non-commercial, and by any means.
-* [SQLite HP URL](https://www.sqlite.org)
-* [SQlele URL](http://spn.php.xdomain.jp/hsp_sqlele.htm)
 
-<!--*SQLiteはパブリックドメインです。*
-*ソース、コード形式またはコンパイルされたバイナリとして、目的、商用または非商用、手段を問わず、誰でもオリジナルの SQLiteコードを自由にコピー、変更、公開、使用、コンパイル、販売、配布することができます。*-->
+>*ソース、コード形式またはコンパイルされたバイナリとして、目的、商用または非商用、手段を問わず、誰でもオリジナルの SQLiteコードを自由にコピー、変更、公開、使用、コンパイル、販売、配布することができます。*
+
+<br>
+
+* [SQLite HP URL](https://www.sqlite.org)
+SQLite はパブリックドメインです。
+
+* [SQlele URL](http://spn.php.xdomain.jp/hsp_sqlele.htm)
+SQlele はHSP3でSQLiteを扱えるようにするための支援モジュールです。
+
 ***
 <br />
 <br />
@@ -200,3 +209,21 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+***
+<br>
+<br>
+
+* hsp37beta/common/
+	* webview2_10115038.hsp
+
+# THANKS
+webview2_10115038 はHSP3でWebView2を扱えるようにするための支援モジュールです。
+* Author : eller
+* [HSPメモ帳](https://blog.goo.ne.jp/hiro239415)
+
+
+<br>
+<br>
+
+※随時追加予定
