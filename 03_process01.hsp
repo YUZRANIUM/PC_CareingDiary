@@ -26,9 +26,9 @@
 		st(6, 0) = str(double(st(6, 0)) - 0.01)
 	}
 
-	/***単位変換チェック***/
+	/*** 単位変換チェック***/
 	if int(st(2, 0)) > 1023 : objprm layid0, 0
-	if int(st(3, 0)) > 1023 : objprm layid0, 1
+	if int(st(3, 0)) > 1023 : objprm layid0, 0
 
 	//オートセーブ設定が有効かどうか
 	if setting(0, 0) == 1 {
@@ -36,17 +36,7 @@
 		if savecontrol == 0 : savec = 1 + savec
 		if savec > 100 {
 			//ファイルの確認
-			vsave_start
-			vsave_put u
-			vsave_put st
-			vsave_put gt
-			vsave_put setting
-			vsave_put motimono
-			vsave_put logmoni
-			vsave_put bfcpu
-			vsave_put bfgpu
-			vsave_put bfrom
-			vsave_end fname(saveID)
+			mysave2 (fname(saveID))
 			gsel ID_WIN_MAIN
 			objprm layid0, "asc"
 			savec = 0
@@ -176,22 +166,16 @@
 			dialog "Save Data 1 にセーブしますか?", 2, "SAVE"
 			if stat == 6 {
 				saveID = 1
-				vsave_start
-				vsave_put u
-				vsave_put st
-				vsave_put gt
-				vsave_put setting
-				vsave_put motimono
-				vsave_put logmoni
-				vsave_put bfcpu
-				vsave_put bfgpu
-				vsave_put bfrom
-				vsave_end fname(saveID)
+				mysave2 (fname(saveID))
 				gsel ID_WIN_MAIN, 1 : objprm layid0, "save"
 			}
 			swbreak
 		case hLoad1
-			vload fname(1)
+			dialog "Save Data 1 をロードしますか?", 2, "LOAD"
+			if stat == 6 {
+				saveID = 1
+				vload fname(saveID)
+			}
 			swbreak
 	swend
 	return
@@ -279,27 +263,18 @@
 	setting(5, 0) = -1
 	dialog "Return to Opening Really?", 2, "Return to Opening"
 	if stat == 6 {
-		vsave_start
-		vsave_put u
-		vsave_put st
-		vsave_put gt
-		vsave_put setting
-		vsave_put motimono
-		vsave_put logmoni
-		vsave_put bfcpu
-		vsave_put bfgpu
-		vsave_put bfrom
-		vsave_end fname(saveID)
+		mysave2 (fname(saveID))
 		vload "savedata\\Save7.var"
-		//メインウィンドウ更新
+		/*** Mainウィンドウ各変数リセット ***/
 		gsel ID_TAB_MOTI, 0 : objprm id_motimono, motimono
 		gsel ID_TAB_LOG, 0 : objprm id_logmoni, logmoni
+		/*** Settingウィンドウ各項目リセット ***/
 		gsel ID_WIN_SETI, -1
 		objprm id_savebut, setting(0, 0)
 		objprm id_chkosoi, setting(1, 0)
 		objprm id_chkfutu, setting(2, 0)
 		objprm id_chkhaya, setting(3, 0)
-		/*** AMAZリストビューリセット ***/
+		/*** Amazoonリストビューリセット ***/
 		gsel ID_WIN_AMAZ, -1
 		/*** CPU ***/
 		gsel ID_OMTAB_CPU : mydelitem id_LVCPU
@@ -311,7 +286,6 @@
 		gsel ID_OMTAB_ROM : mydelitem id_LVROM
 		myinitem id_LVROM, bfrom, rec_rnum, col_num
 		gsel ID_OMTAB_CPU, 1
-
 		gsel ID_WIN_SAVE, -1
 		gsel ID_WIN_INFO, -1
 		gsel ID_WIN_MAIN, -1 : objprm layid0, 2
@@ -357,17 +331,7 @@
 	switch winID
 		//------------------------------Master Window
 		case ID_WIN_MASTER
-			vsave_start
-			vsave_put u
-			vsave_put st
-			vsave_put gt
-			vsave_put setting
-			vsave_put motimono
-			vsave_put logmoni
-			vsave_put bfcpu
-			vsave_put bfgpu
-			vsave_put bfrom
-			vsave_end fname(saveID)
+			mysave2 (fname(saveID))
 			vsave "" + dir_cur + "\\savedata\\backup.var"
 			gsel ID_WIN_INFO
 			WebView2_Release pView

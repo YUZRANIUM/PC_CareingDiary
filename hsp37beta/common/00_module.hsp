@@ -31,6 +31,23 @@
 #global
 
 #module
+//vsave短縮2
+//%1 : ファイル名
+#define global mysave2(%1)\
+	vsave_start\
+	: vsave_put u\
+	: vsave_put st\
+	: vsave_put gt\
+	: vsave_put setting\
+	: vsave_put motimono\
+	: vsave_put logmoni\
+	: vsave_put bfcpu\
+	: vsave_put bfgpu\
+	: vsave_put bfrom\
+	: vsave_end %1
+#global
+
+#module
 //HSPバージョン"beta文字"付き出力関数
 //hsedsdk.asをインクルードすること
 #defcfunc myhspver

@@ -1,11 +1,13 @@
 
 /*** Packfile ***/
 #packopt name "PC Careing Diary"
+#packopt runtime "hsprt"
+#packopt version "version.ini"
 #packopt type 0
 	/*** 外部モジュール ***/
 	#include "user32.as"
 	#include "gdi32.as"
-	#include "mod_WebView2_10115038.hsp"
+	#include "WebView2_10115038.hsp"
 	#include "hsp3util.as"
 	#include "hsedsdk.as"
 	#include "hspda.as"	//vsave系
@@ -29,6 +31,7 @@
 		case objlayer_cmdprmi
 			layint = iparam
 			switch layint
+				//メインループ>>ROM & SSD unit convert
 				case 0
 					gosub *hlay_u
 					swbreak
