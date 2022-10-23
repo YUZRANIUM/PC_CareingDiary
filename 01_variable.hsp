@@ -33,6 +33,13 @@
 	infa(5) = "https://github.com/YUZURANIUM/PC_CareingDiary"
 	strrep infa(0), "vv", ver : strrep infa(1), "vv", ver : strrep infa(2), "hh", myhspver()
 
+	//フォントハンドル:メイリオ, 16
+	hFont = 0 : dim hFont
+	//フォントハンドル:メイリオ, 14
+	hFont2 = 0 : dim hFont2
+	//フォントハンドル:メイリオ, 13
+	hFont3 = 0 : dim hFont3
+
 	//設定項目配列
 	//setting(0, 0):オートセーブON/OFF
 	//setting(1, 0):ゲーム速度項目[遅  め]
@@ -42,7 +49,10 @@
 	//setting(5, 0):めいんるーてん制御
 	//setting(6, 0):日付変更フラグ
 	//setting(7, 0):新年あけおめフラグ
-	setting = "" : dim setting, 8, 0
+	//setting(8, 0):amzo auto start
+	//setting(9, 0):sett auto start
+	//setting(10, 0):save auto start
+	setting = "" : dim setting, 11, 0
 	setting(0, 0) = 0
 	setting(1, 0) = 0
 	setting(2, 0) = 1
@@ -51,8 +61,17 @@
 	setting(5, 0) = -1
 	setting(6, 0) = 0
 	setting(7, 0) = 0
+	setting(8, 0) = 0
+	setting(9, 0) = 0
+	setting(10, 0) = 0
 	//オートセーブボタン
 	savebut_text = "AutoSave OFF", "AutoSave ON"
+	//return amaz
+	re_amaz = "Amazoon Return OFF", "Amazoon Return ON"
+	//return setteing
+	re_sett = "Setting Return OFF", "Setting Return ON"
+	//return save load
+	re_save = "Save & Load Return OFF", "Save & Load Return ON"
 
 	//経過時間
 	hmoni = "" : sdim hmoni, 64

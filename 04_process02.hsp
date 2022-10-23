@@ -1,8 +1,5 @@
-
 /*** Packfile ***/
 #packopt name "PC Careing Diary"
-#packopt runtime "hsprt"
-#packopt version "version.ini"
 #packopt type 0
 	/*** 外部モジュール ***/
 	#include "user32.as"
@@ -35,11 +32,13 @@
 				case 0
 					gosub *hlay_u
 					swbreak
+				//メインループ>>ゲーム内時間
 				case 1
-					gosub *hlay_u
-					swbreak
-				case 2
 					gosub *hlay_gt
+					swbreak
+				//save&loadLの処理
+				case 2
+					gosub *hlay_saveload
 					swbreak
 			swend
 			swbreak
@@ -173,4 +172,40 @@
 	}
 	mesmoni_u += " " + st(2, 1) + "\n" + " " + st(3, 1)
 	sendmsg hStatic_u, $C, , mesmoni_u
+	return
+
+//セーブデータのロード･各変数とオブジェクトの更新
+*hlay_saveload
+	/*** Mainウィンドウ各変数読み込み ***/
+	gsel ID_TAB_MOTI, 0 : objprm id_motimono, motimono
+	gsel ID_TAB_LOG, 0 : objprm id_logmoni, logmoni
+
+	/*** Settingウィンドウ各項目読み込み ***/
+	gsel ID_WIN_SETI, -1
+	objprm id_savebut, setting(0, 0)
+	objprm id_chkosoi, setting(1, 0)
+	objprm id_chkfutu, setting(2, 0)
+	objprm id_chkhaya, setting(3, 0)
+
+	/*** Amazoonリストビュー読み込み ***/
+	gsel ID_WIN_AMAZ, -1
+	/*** CPU ***/
+	gsel ID_OMTAB_CPU : mydelitem id_LVCPU
+	myinitem id_LVCPU, bfcpu, rec_cnum, col_num
+	/*** GPU ***/
+	gsel ID_OMTAB_GPU : mydelitem id_LVGPU
+	myinitem id_LVGPU, bfgpu, rec_gnum, col_num
+	/*** ROM ***/
+	gsel ID_OMTAB_ROM : mydelitem id_LVROM
+	myinitem id_LVROM, bfrom, rec_rnum, col_num
+	gsel ID_OMTAB_CPU, 1
+
+	/*** 各ウィンドウの非表示切り替え ***/
+	gsel ID_WIN_SAVE, -1
+	gsel ID_WIN_INFO, -1
+
+	gsel ID_WIN_MAIN
+	objprm layid0, 1
+	objprm layid0, 0
+	objprm layid0, "load"
 	return

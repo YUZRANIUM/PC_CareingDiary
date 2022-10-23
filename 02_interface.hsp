@@ -257,19 +257,19 @@
 	SetWindowLong hwnd, -16, WS_CHILD
 	SetParent hwnd, hWin_master
 
-	font "メイリオ", 12 : objmode 2, 0
+	font "メイリオ", 13 : objmode 2, 0
+	pos hx + 90, hy + 50 : objsize 110, 30, 30
 
-	pos hx + 90, hy + 50 : objsize 110, 30, 20
-
+	button gosub "Exit", *remain
 	button gosub "Information", *infomation
 	button gosub "Title", *retitle
 
-	pos 20, 20 : objsize 100, 20
+	pos 20, 20 : objsize 110, 20
 	chkbox "AutoSave OFF", setting(0, 0)
 	id_savebut = stat : hButton = objinfo(id_savebut, 2)
 
 	//==================================ゲーム速度の設定
-	pos 20, 60 : objsize 65, 19
+	pos 20, 60 : objsize 75, 19 : font "メイリオ", 16
 	mes "Game Speed"
 
 	//----------------------------------chkbox
@@ -290,18 +290,36 @@
 	id_chkhaya = stat : hChkbox3 = objinfo(id_chkhaya, 2)
 	sendmsg hChkbox3, $F4, $9
 
+	//======================================================
+	pos 20, 130 : objsize 165, 19, 30 : font "メイリオ", 16
+	mes "Auto starting Game when return to Main"
+
+	pos 20, 160
+	chkbox re_amaz(setting(8, 0)), setting(8, 0)
+	id_chkreamaz = stat : hChkbox4 = objinfo(id_chkreamaz, 2)
+
+	chkbox re_sett(setting(9, 0)), setting(9, 0)
+	id_chkreset = stat : hChkbox5 = objinfo(id_chkreset, 2)
+
+	chkbox re_save(setting(10, 0)), setting(10, 0)
+	id_chkresave = stat : hChkbox6 = objinfo(id_chkresave, 2)
+
 	//------------------適用ボタン[ID=5]
-	pos 700, 455 : objsize 75, 30
+	pos 675, 455 : objsize 110, 30
 	button gosub "Active", *tekiou
 
-
-
+	/*** フォント設定 ***/
+	sendmsg hChkbox1, $30, hFont3
+	sendmsg hChkbox2, $30, hFont3
+	sendmsg hChkbox3, $30, hFont3
+	sendmsg hChkbox4, $30, hFont3
+	sendmsg hChkbox5, $30, hFont3
+	sendmsg hChkbox6, $30, hFont3
 
 /*******************************************************************************
 							Infomation Window
 ********************************************************************************/
 	screen ID_WIN_INFO, 650, 500, 6 : title "Information ver" + ver
-	//gsel ID_WIN_INFO, -1
 	font "メイリオ", 15 : objmode 2, 0
 	pos 10, 2 : mes "N A M E\nVERSION\nHSP ver\nAUTHOR\nU  R  L\nGit Hub", 1
 	pos 100,
