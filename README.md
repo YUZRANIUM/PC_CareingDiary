@@ -9,7 +9,7 @@ In this repository, I practice the repository itself while publishing my persona
 
 ## 現在の仕様
 
-<details>
+<details open>
 <summary>画面遷移</summary>
 
 ```mermaid
@@ -28,8 +28,11 @@ subgraph bgscr
 	op([Opening Window]) <--> sa([Save & Load])
 	op([Opening Window]) --> ma([Main])
 end
-	am([Amazoon]) <-.-> db[(Syouhin<br>DB)]
-	sa([Save & Load]) ---> 情報ウィンドウ
+
+am([Amazoon]) <-.-> db[(SyouhinDB)]
+sa([Save & Load]) <-.-> db[(SyouhinDB)]
+
+sa([Save & Load]) --> info[Information Window]
 
 style id1 fill:#26a, strole:#aaa, stroke-width:3px
 

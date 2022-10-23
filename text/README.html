@@ -1344,7 +1344,7 @@ It's still under development.</p>
 In this repository, I practice the repository itself while publishing my personal work.<br>
 <br /></p>
 <h2 id="現在の仕様">現在の仕様</h2>
-<details>
+<details open>
 <summary>画面遷移</summary>
 <pre style="all:unset;"><div class="mermaid">
 flowchart TB
@@ -1361,8 +1361,11 @@ subgraph bgscr
 	op([Opening Window]) &lt;--&gt; sa([Save & Load])
 	op([Opening Window]) --&gt; ma([Main])
 end
-	am([Amazoon]) &lt;-.-&gt; db[(Syouhin&lt;br&gt;DB)]
-	sa([Save & Load]) ---&gt; 情報ウィンドウ
+
+am([Amazoon]) &lt;-.-&gt; db[(SyouhinDB)]
+sa([Save & Load]) &lt;-.-&gt; db[(SyouhinDB)]
+
+sa([Save & Load]) --&gt; info[Information Window]
 
 style id1 fill:#26a, strole:#aaa, stroke-width:3px
 
