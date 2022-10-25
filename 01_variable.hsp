@@ -1,14 +1,31 @@
-//					<<  変数の定義  >>
+// INFO ****************************************************
+// FileName : 01_variable.hsp
+// Version : 0.2.0
+// Date    : 2022/10/24
+// Author  : YUZURANIUM（ゆずらにうむ）
+// Twitter : https://twitter.com/YUZRANIUM
+// Git Hub : https://github.com/YUZURANIUM/PC_CareingDiary
+//**********************************************************
+/* Description
+このファイルは以降のスクリプトで使用する変数の定義、初期化などを行っています。
+SQL関係もデータを変数に格納するということでこちらで扱っています。
 
-	//各ウィンドウID
+ちなみに、配列変数等の直上にコメントがたらたらと連なっている理由としては、
+使用しているエディタとそれに導入している拡張機能によって、ツールヒントの様に
+変数直上のコメントを表示させるためです。
+************************************************************/
+
+
+
+	/*** 各ウィンドウID ***/
 	#enum ID_WIN_MASTER = 0
 	#enum ID_WIN_OPEN	//OPウィンドウ
 	#enum ID_WIN_MAIN	//メインウィンドウ
-	#enum ID_WIN_AMAZ	//お店
-	#enum ID_WIN_SETI	//設定ウィンドウ
+	#enum ID_WIN_AMAZ	//Amaz
+	#enum ID_WIN_SAVE	//Save $ Load
+	#enum ID_WIN_SETI	//Setting
 	#enum ID_WIN_INFO	//情報ウィンドウ
-	#enum ID_WIN_SAVE	//セーブ・ロード画面
-	//bgscr命令のウィンドウID
+	/*** bgscr命令のウィンドウID ***/
 	#enum ID_TAB_MOTI	//タブid持ち物
 	#enum ID_TAB_SOUKO	//タブid倉庫
 	#enum ID_TAB_LOG	//タブidログ
@@ -32,7 +49,6 @@
 	infa(4) = "https://twitter.com/YUZRANIUM"
 	infa(5) = "https://github.com/YUZURANIUM/PC_CareingDiary"
 	strrep infa(0), "vv", ver : strrep infa(1), "vv", ver : strrep infa(2), "hh", myhspver()
-
 	//フォントハンドル:メイリオ, 16
 	hFont = 0 : dim hFont
 	//フォントハンドル:メイリオ, 14
@@ -50,8 +66,8 @@
 	//setting(6, 0):日付変更フラグ
 	//setting(7, 0):新年あけおめフラグ
 	//setting(8, 0):amzo auto start
-	//setting(9, 0):sett auto start
-	//setting(10, 0):save auto start
+	//setting(9, 0):save auto start
+	//setting(10, 0):sett auto start
 	setting = "" : dim setting, 11, 0
 	setting(0, 0) = 0
 	setting(1, 0) = 0
@@ -68,11 +84,20 @@
 	savebut_text = "AutoSave OFF", "AutoSave ON"
 	//return amaz
 	re_amaz = "Amazoon Return OFF", "Amazoon Return ON"
-	//return setteing
-	re_sett = "Setting Return OFF", "Setting Return ON"
 	//return save load
 	re_save = "Save & Load Return OFF", "Save & Load Return ON"
-
+	//return setteing
+	re_sett = "Setting Return OFF", "Setting Return ON"
+	//ログの設定変更時のフォーマット
+	logstr = "" : sdim logstr
+	logstr = {"
+	*** Settings Change ***
+	aa
+	bb
+	cc
+	"}
+	//設定変更時のゲーム速度
+	string2 = ""
 	//経過時間
 	hmoni = "" : sdim hmoni, 64
 	//ステータス表示用
@@ -83,7 +108,6 @@
 	savec = 0
 	//ゲーム内時間の速度変更
 	gtcontrol = 0
-
 	//saveフォルダの有無
 	sdim flist
 	dirlist flist, "savedata", 5
@@ -101,8 +125,6 @@
 	fname(7) = "" + dir_cur + "\\savedata\\Save7.var"
 	//saveIDスロット番号
 	saveID = 0 : dim saveID
-	//設定変更時のゲーム速度
-	string2 = ""
 
 	//単位変換
 	u = "" : sdim u, 32, 11
@@ -152,7 +174,6 @@
 	gt(6, 0) = "0"
 	//スタートストップボタン
 	opebut_text = "START", "STOP"
-
 	sdim motimono, 2048 : sdim soukomoni, 2048 : sdim logmoni, 2048 : sdim omisemoni, 2048
 	//持ち物表示用その他1
 	motimono += "持ち物一覧です\n\n"

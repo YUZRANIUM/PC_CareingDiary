@@ -1,3 +1,18 @@
+// INFO ****************************************************
+// FileName : 02_interface.hsp
+// Version : 0.2.0
+// Date    : 2022/10/24
+// Author  : YUZURANIUM（ゆずらにうむ）
+// Twitter : https://twitter.com/YUZRANIUM
+// Git Hub : https://github.com/YUZURANIUM/PC_CareingDiary
+//**********************************************************
+/* Description
+このファイルはウィンドウの初期化とウィンドウオブジェクトの配置を行っています。
+また、ウィンドウメッセージや割り込み設定も扱っています。
+************************************************************/
+
+
+
 /*******************************************************************************
 								Master Window
 ********************************************************************************/
@@ -84,10 +99,10 @@
 
 /*******************************************************************************/
 
-	/***タブコントロール***/
+
+	/*****  タブコントロール  *****/
 	pos 0, 240
 	My_CreateTab 800, 240, hTab_main
-
 //==========================================================
 	InsertTab "Tools", ID_TAB_MOTI, 0, hTab_main
 	font "メイリオ", 15 : objmode 2, 0
@@ -110,6 +125,27 @@
 
 	gsel ID_TAB_MOTI, 1 : gsel ID_WIN_MAIN
 
+
+
+//--------------------------------------レイヤーオブジェクトlay0
+	pos 0, 0
+	layerobj 800, 200, 3, *lay, 0
+	layid0 = stat
+
+//--------------------------------------再開ボタン
+	pos hx + 90, hy + 50 : objsize 110, 30, 30
+	button gosub "START", *ope
+	id_opebut = stat
+	SetWindowLong objinfo(id_opebut, 2), -16, $50000003 | $1000
+
+
+	button gosub "Amazoon", *amazoon
+	button gosub "Save&Load", *saveload
+	button gosub "Setting", *settei
+
+
+	gsel ID_WIN_MAIN
+
 	/******フォントの反映******/
 	sendmsg hStatic_h, $30, hFont
 	sendmsg hStatic_i, $30, hFont
@@ -120,25 +156,7 @@
 	sendmsg hTab_main, $30, hFont2
 	sendmsg hLVsouko, $30, hFont3
 
-//--------------------------------------レイヤーオブジェクトlay0
-	pos 0, 0
-	layerobj 800, 200, 3, *lay, 0
-	layid0 = stat
-
-//--------------------------------------再開ボタン
-	pos hx + 90, hy + 50 : objsize 110, 30, 30
-
-	button gosub "START", *ope
-	id_opebut = stat
-	SetWindowLong objinfo(id_opebut, 2), -16, $50000003 | $1000
-
-	button gosub "Amazoon", *amazoon
-
-	button gosub "Save&Load", *saveload
-
-	button gosub "Setting", *settei
-
-	gsel ID_WIN_MAIN
+	/*****  割り込み  *****/
 	oncmd gosub *noti_main, WM_NOTIFY //タブ項目切り替え処理時のメッセージ
 
 
@@ -154,56 +172,72 @@
 
 	button gosub "Exit", *remain
 
+	/*****  タブコントロール  *****/
 	pos 5, 120
 	My_CreateTab 750, 300, hTabOMI
 	listx = 550
 	listy = 280
 
-
+//==========================================================
 	InsertTab "C P U", ID_OMTAB_CPU, 5, hTabOMI
 	pos 2, 2
 	mycrelv listx, listy, id_LVCPU, hLVCPU
 	myincol id_LVCPU, col_list, col_num, column_w
 	myinitem id_LVCPU, bfcpu, rec_cnum, col_num
+	/*****  割り込み  *****/
 	oncmd gosub *notify, WM_NOTIFY
 
 
+//==========================================================
 	InsertTab "G P U", ID_OMTAB_GPU, 6, hTabOMI
 	pos 2, 2
 	mycrelv listx, listy, id_LVGPU, hLVGPU
 	myincol id_LVGPU, col_list, col_num, column_w
 	myinitem id_LVGPU, bfgpu, rec_gnum, col_num
+	/*****  割り込み  *****/
 	oncmd gosub *notify, WM_NOTIFY
 
 
+//==========================================================
 	InsertTab "R O M", ID_OMTAB_ROM, 7, hTabOMI
 	pos 2, 2
 	mycrelv listx, listy, id_LVROM, hLVROM
 	myincol id_LVROM, col_list, col_num, column_w
 	myinitem id_LVROM, bfrom, rec_rnum, col_num
+	/*****  割り込み  *****/
 	oncmd gosub *notify, WM_NOTIFY
 
+
+//==========================================================
 	InsertTab "S S D", ID_OMTAB_SSD, 8, hTabOMI
 	pos 2, 2
 	//mycrelv listx, listy, id_LVSSD, hLVSSD
 	//oncmd gosub *notify, WM_NOTIFY
 
+
+//==========================================================
 	InsertTab "F A N", ID_OMTAB_FAN, 9, hTabOMI
 	pos 2, 2
 	//mycrelv listx, listy, id_LVFAN, hLVFAN
 	//oncmd gosub *notify, WM_NOTIFY
 
+
+//==========================================================
 	InsertTab "Power", ID_OMTAB_POW, 10, hTabOMI
 	pos 2, 2
 	//mycrelv listx, listy, id_LVPOW, hLVPOW
 	//oncmd gosub *notify, WM_NOTIFY
 
 
+
 	gsel ID_OMTAB_CPU, 1 : gsel ID_WIN_AMAZ
-	oncmd gosub *noti_amaz, WM_NOTIFY //タブ項目切り替え処理時のメッセージ
 
 	/******フォントの反映******/
 	sendmsg hTabOMI, $30, hFont3
+	/*****  割り込み  *****/
+	oncmd gosub *noti_amaz, WM_NOTIFY //タブ項目切り替え処理時のメッセージ
+
+
 
 /*******************************************************************************
 							SAVE & LOAD
@@ -234,6 +268,7 @@
 	pos bx + 5, by + 5
 	Mycolor 0, 0, 0, 0 : mes "Save Data 1"
 
+	/*****  mylmb  *****/
 	pos bx + 75, by + 48
 	mylmb " LOAD ", 55, 25, hLoad1, WS_BORDER
 	pos bx + 140, by + 48
@@ -241,12 +276,9 @@
 
 
 
-
-	//マウスクリック
-	oncmd gosub *mousclick, $111
-	//カーソルの見た目
-	oncmd gosub *cursorche, $20
-
+	/*****  割り込み  *****/
+	oncmd gosub *mousclick, $111 //マウスクリック
+	oncmd gosub *cursorche, $20  //カーソルの見た目
 
 
 
@@ -268,15 +300,17 @@
 	chkbox "AutoSave OFF", setting(0, 0)
 	id_savebut = stat : hButton = objinfo(id_savebut, 2)
 
-	//==================================ゲーム速度の設定
+
+
+	/******* ゲーム速度の変更 *******/
 	pos 20, 60 : objsize 75, 19 : font "メイリオ", 16
-	mes "Game Speed"
+	mes "Game Speed" : font "メイリオ", 13
 
 	//----------------------------------chkbox
 	pos 20, 90
 	chkbox "Slowest", setting(1, 0)
 	id_chkosoi = stat : hChkbox1 = objinfo(id_chkosoi, 2)
-	sendmsg hChkbox1, $F4, $9
+	sendmsg hChkbox1, $F4, $9 //ラジオボタングループ化
 
 	//----------------------------------chkbox
 	pos 110, 90
@@ -290,31 +324,30 @@
 	id_chkhaya = stat : hChkbox3 = objinfo(id_chkhaya, 2)
 	sendmsg hChkbox3, $F4, $9
 
-	//======================================================
+
+
+
+	/*** メインウィンドウに戻る際にメインループを自動で開始するか ***/
 	pos 20, 130 : objsize 165, 19, 30 : font "メイリオ", 16
-	mes "Auto starting Game when return to Main"
+	mes "Auto starting Game when return to Main" : font "メイリオ", 13
 
 	pos 20, 160
 	chkbox re_amaz(setting(8, 0)), setting(8, 0)
 	id_chkreamaz = stat : hChkbox4 = objinfo(id_chkreamaz, 2)
 
-	chkbox re_sett(setting(9, 0)), setting(9, 0)
-	id_chkreset = stat : hChkbox5 = objinfo(id_chkreset, 2)
+	chkbox re_save(setting(9, 0)), setting(9, 0)
+	id_chkresave = stat : hChkbox5 = objinfo(id_chkresave, 2)
 
-	chkbox re_save(setting(10, 0)), setting(10, 0)
-	id_chkresave = stat : hChkbox6 = objinfo(id_chkresave, 2)
+	chkbox re_sett(setting(10, 0)), setting(10, 0)
+	id_chkresett = stat : hChkbox6 = objinfo(id_chkresett, 2)
+
+
 
 	//------------------適用ボタン[ID=5]
 	pos 675, 455 : objsize 110, 30
 	button gosub "Active", *tekiou
 
-	/*** フォント設定 ***/
-	sendmsg hChkbox1, $30, hFont3
-	sendmsg hChkbox2, $30, hFont3
-	sendmsg hChkbox3, $30, hFont3
-	sendmsg hChkbox4, $30, hFont3
-	sendmsg hChkbox5, $30, hFont3
-	sendmsg hChkbox6, $30, hFont3
+
 
 /*******************************************************************************
 							Infomation Window
@@ -334,20 +367,21 @@
 	pos ginfo_cx, ginfo_cy + 5
 	mylmb "作者ぎっとはぶぅ", 150, 20, hLinkgi, $1
 
-//----------------------------------------------------------サブmesbox設置[ID=0]
 	font "メイリオ", 14 : objmode 2, 1
 	//HSPのBMSCR構造体からフォントハンドルを取得
 	mref BMSCR2, 67 : hFont2 = BMSCR2.38
 
-	pos 0, 142
-	mes "  UPDATE HISTORY  "
 
+	pos 0, 142
+	/*****  WebView2  *****/
+	mes "  UPDATE HISTORY  "
 	pEnv = WebView2_CreateEnv()
 	pCtrl = WebView2_CreateCtrl(pEnv, hwnd)
 	WebView2_Size pCtrl, 0, 160, 650, 475
 	pView = WebView2_GetView(pCtrl)
 	WebView2_Navigate pView, dir_cur + "\\text\\09_changelog.html"
-//----------------------------------------------------------サブbutton設置[ID=1]
+
+
 	pos 525, 475 : objsize 125,
 	button gosub "Close", *subw_exi
 
@@ -356,10 +390,9 @@
 	sendmsg hLinktw, $30, hFont3
 	sendmsg hLinkgi, $30, hFont3
 
-	//マウスクリック
-	oncmd gosub *mousclick, $111
-	//カーソルの見た目
-	oncmd gosub *cursorche, $20
+	/*****  割り込み  *****/
+	oncmd gosub *mousclick, $111 //マウスクリック
+	oncmd gosub *cursorche, $20  //カーソルの見た目
 
 //##############################################################################
 
