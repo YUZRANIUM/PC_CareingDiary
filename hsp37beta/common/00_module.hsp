@@ -1,4 +1,17 @@
-//					<<  自作命令･関数の作成  >>
+// INFO ****************************************************
+// FileName : 00_module.hsp
+// Version : 0.2.0
+// Date    : 2022/10/24
+// Author  : YUZURANIUM（ゆずらにうむ）
+// Twitter : https://twitter.com/YUZRANIUM
+// Git Hub : https://github.com/YUZURANIUM/PC_CareingDiary
+//**********************************************************
+/* Description
+このファイルは以降のスクリプトで使用する自作命令･関数やマクロ、
+その他モジュール等を記述しています。
+************************************************************/
+
+
 
 //タブ項目の文字列の長さに関わらずタブつまみの横幅をすべて同じサイズにします
 #define global TCS_FIXEDWIDTH $400
@@ -29,7 +42,22 @@
 	: vsave_put %6\
 	: vsave_end %7
 #global
-
+#module
+//vsave短縮2
+//%1 : ファイル名
+#define global mysave2(%1)\
+	vsave_start\
+	: vsave_put u\
+	: vsave_put st\
+	: vsave_put gt\
+	: vsave_put setting\
+	: vsave_put motimono\
+	: vsave_put logmoni\
+	: vsave_put bfcpu\
+	: vsave_put bfgpu\
+	: vsave_put bfrom\
+	: vsave_end %1
+#global
 #module
 //HSPバージョン"beta文字"付き出力関数
 //hsedsdk.asをインクルードすること

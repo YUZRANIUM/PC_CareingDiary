@@ -1362,7 +1362,10 @@ subgraph bgscr
 	op([Opening Window]) --&gt; ma([Main])
 end
 
-sa([Save & Load])---情報ウィンドウ
+am([Amazoon]) &lt;-.-&gt; db[(SyouhinDB)]
+sa([Save & Load]) &lt;-.-&gt; db[(SyouhinDB)]
+
+sa([Save & Load]) --&gt; info[Information Window]
 
 style id1 fill:#26a, strole:#aaa, stroke-width:3px
 
@@ -1440,7 +1443,7 @@ style id1 fill:#26a, strole:#aaa, stroke-width:3px
 <h2 id="その他">その他</h2>
 <h3 id="動作環境">動作環境</h3>
 <ul>
-<li>動作にはWebView2Loader.dllが必要です。同梱しておりませんのでご了承ください。</li>
+<li>動作には <strong>WebView2Loader.dllが必要</strong> です。<strong>同梱しておりません</strong>のでご了承ください。</li>
 </ul>
 <h3 id="使用言語-codeing-language">使用言語 (Codeing Language)</h3>
 <ul>
@@ -1451,11 +1454,10 @@ style id1 fill:#26a, strole:#aaa, stroke-width:3px
 <ul>
 <li>Windows11 Pro 22H2 x64</li>
 <li>Visual Studio Code</li>
-<li>HSP3.7beta3<br>
-<br /></li>
+<li>HSP3.7beta3</li>
 </ul>
+<br />
 <h1 id="licence">Licence</h1>
-<br>
 <br>
 <ul>
 <li>hsp37beta/common/
@@ -1464,6 +1466,7 @@ style id1 fill:#26a, strole:#aaa, stroke-width:3px
 <li><a href="http://gdi32.as">gdi32.as</a></li>
 <li><a href="http://hsp3util.as">hsp3util.as</a></li>
 <li><a href="http://hspda.as">hspda.as</a></li>
+<li><a href="http://hsedsdk.as">hsedsdk.as</a></li>
 </ul>
 </li>
 </ul>
@@ -1503,12 +1506,20 @@ All rights reserved.</p>
 <h2 id="sqlite--sqlele">SQLite &amp; SQlele</h2>
 <p>All of the code and documentation in SQLite has been dedicated to the public domain by the authors.</p>
 <p>Anyone is free to copy, modify, publish, use, compile, sell, or distribute the original SQLite code, either in source code form or as a compiled binary, for any purpose, commercial or non-commercial, and by any means.</p>
+<blockquote>
+<p><em>ソース、コード形式またはコンパイルされたバイナリとして、目的、商用または非商用、手段を問わず、誰でもオリジナルの SQLiteコードを自由にコピー、変更、公開、使用、コンパイル、販売、配布することができます。</em></p>
+</blockquote>
+<br>
 <ul>
-<li><a href="https://www.sqlite.org">SQLite HP URL</a></li>
-<li><a href="http://spn.php.xdomain.jp/hsp_sqlele.htm">SQlele URL</a></li>
+<li>
+<p><a href="https://www.sqlite.org">SQLite HP URL</a><br>
+SQLite はパブリックドメインです。</p>
+</li>
+<li>
+<p><a href="http://spn.php.xdomain.jp/hsp_sqlele.htm">SQlele URL</a><br>
+SQlele はHSP3でSQLiteを扱えるようにするための支援モジュールです。</p>
+</li>
 </ul>
-<!--*SQLiteはパブリックドメインです。*
-*ソース、コード形式またはコンパイルされたバイナリとして、目的、商用または非商用、手段を問わず、誰でもオリジナルの SQLiteコードを自由にコピー、変更、公開、使用、コンパイル、販売、配布することができます。*-->
 <hr>
 <br />
 <br />
@@ -1557,6 +1568,302 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER<br>
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,<br>
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE<br>
 SOFTWARE.</p>
+<hr>
+<br>
+<br>
+<ul>
+<li>hsp37beta/common/
+<ul>
+<li>webview2_10115038.hsp</li>
+</ul>
+</li>
+</ul>
+<h2 id="thanks">THANKS</h2>
+<p>webview2_10115038 はHSP3でWebView2を扱えるようにするための支援モジュールです。</p>
+<ul>
+<li>Author : eller</li>
+<li><a href="https://blog.goo.ne.jp/hiro239415">HSPメモ帳</a></li>
+</ul>
+<br>
+<br>
+<hr>
+<h2 id="更新履歴">更新履歴</h2>
+<h2 id="ver-020-20221023">ver 0.2.0  <em><sub>(2022/10/23)</sub></em></h2>
+<ul>
+<li>
+<h3 id="修正">修正</h3>
+<ul>
+<li>メインループの動作中、各ウィンドウオブジェクトがちらつく不具合の修正.</li>
+</ul>
+</li>
+<li>
+<h3 id="変更">変更</h3>
+<ul>
+<li>設定画面,お店画面,をそれぞれメインウィンドウから独立させ、bgscr命令での初期化とした.</li>
+<li>各ウィンドウをMasterウィンドウに貼り付けるためメニューバーを廃止</li>
+<li>ウィンドウオブジェクトが激しくちらつく原因の一つとしてredraw命令であったことが確認できたため同命令を廃止. レイヤーオブジェクトによる画面更新は直接整数を渡すことで対応.</li>
+<li>ファイル名の変更.</li>
+<li>情報ウィンドウに表示する09_changelogを.txt形式から.html形式に変更した.</li>
+<li>セーブデータにログを含めるようにした.</li>
+<li>セーブとロードをダイアログを使用せずに独自のウィンドウで行えるようにした.</li>
+</ul>
+</li>
+<li>
+<h3 id="追加実装">追加･実装</h3>
+<ul>
+<li>情報ウィンドウに作者のTwitterとGitHubのハイパーリンクを実装した.</li>
+<li>実行ファイル(.exe)の作成とバージョン情報ファイル(.ini)を作製.</li>
+<li>実績解除実装に向けて商品データベース内のテーブルに新たにセーブスロットごとの実績管理カラムを追加.(マスクデータのためゲーム内では非表示)</li>
+</ul>
+</li>
+<li>
+<h3 id="既知の不具合">既知の不具合</h3>
+</li>
+</ul>
+<br>
+<h2 id="ver-016-20220930">ver 0.1.6  <em><sub>(2022/09/30)</sub></em></h2>
+<ul>
+<li>
+<h3 id="変更">変更</h3>
+<ul>
+<li>ゲーム内の一部表記を英語へ変更.</li>
+<li>タブコントロールの入れ子を廃止</li>
+<li>ほとんどのウィンドウを新たに作成したMasterウィンドウに貼り付ける方式に変更中.</li>
+</ul>
+</li>
+<li>
+<h3 id="追加実装">追加･実装</h3>
+<ul>
+<li>実際にゲーム内で扱うアイテムデータをSQLiteで実装.</li>
+</ul>
+</li>
+<li>
+<h3 id="既知の不具合">既知の不具合</h3>
+<ul>
+<li>まともに表示できない.</li>
+</ul>
+</li>
+</ul>
+<br>
+<h2 id="ver-015-20220930">ver 0.1.5  <em><sub>(2022/09/30)</sub></em></h2>
+<ul>
+<li>
+<h3 id="修正">修正</h3>
+<ul>
+<li>タブコントロールの画面更新時に画面が白飛びし,内容が表示されない不具合.</li>
+<li>ログの表記を見やすいように修正.</li>
+</ul>
+</li>
+<li>
+<h3 id="変更">変更</h3>
+<ul>
+<li>ウィンドウIDの管理を#enumによるマクロ定数列挙に変更.</li>
+<li>ファイル名の変更.</li>
+</ul>
+</li>
+<li>
+<h3 id="追加実装">追加･実装</h3>
+<ul>
+<li>日付変更時にログに表示が出るように追加.</li>
+<li>タブコントロールにお店を追加.</li>
+<li>タブコントロールの倉庫とお店にリストビューを設置.</li>
+</ul>
+</li>
+<li>
+<h3 id="既知の不具合">既知の不具合</h3>
+<ul>
+<li>メインループ動作中にタブコントロールの切り替えが不安定になる.また、bgscr命令での表記もメインループ動作中は不安定になり、特に入れ子のタブコントロールはbgscr画面のちらつき（?）と配置したリストビューが表示されなくなる.</li>
+</ul>
+</li>
+</ul>
+<br>
+<h2 id="ver-014-20220909">ver 0.1.4  <em><sub>(2022/09/09)</sub></em></h2>
+<ul>
+<li>
+<h3 id="変更">変更</h3>
+<ul>
+<li>設定ウィンドウを削除し,タブコントロールに設定タブを追加した.</li>
+</ul>
+</li>
+<li>
+<h3 id="追加実装">追加･実装</h3>
+<ul>
+<li>メインウィンドウにタブコントロールのウィンドウオブジェクトを設置した.</li>
+<li>タブコントロールには持ち物,倉庫,ログ,設定をそれぞれ配置した.</li>
+</ul>
+</li>
+<li>
+<h3 id="既知の不具合">既知の不具合</h3>
+<ul>
+<li>タブコントロールの画面更新時,画面が白飛びする不具合.</li>
+</ul>
+</li>
+</ul>
+<br>
+<h2 id="ver-013-20220906">ver 0.1.3  <em><sub>(2022/09/06)</sub></em></h2>
+<ul>
+<li>
+<h3 id="修正">修正</h3>
+<ul>
+<li>ゲーム内時間の繰り上がり時に表記がずれる現象を修正.</li>
+</ul>
+</li>
+<li>
+<h3 id="変更">変更</h3>
+<ul>
+<li>各ウィンドウの管理が煩雑になったためメニューウィンドウを廃止しメニューバーへ変更.</li>
+<li>オープニング画面の不要なボタンを無くし,デザインを一新した（暫定）.</li>
+<li>メインウィンドウの不要なmes命令とウィンドウオブジェクトを無くした.</li>
+<li>メインウィンドウのスタテックテキストのフォント及びフォントサイズを変更.</li>
+<li>ゲーム内時間の表記をyyyy/mm/dd hh:mm形式に変更.</li>
+<li>ゲーム速度を await命令に続く変数で直接的に変更する方式からゲーム内時間カウンタ変数の剰余算を利用する方式に変更.</li>
+</ul>
+</li>
+<li>
+<h3 id="追加実装">追加･実装</h3>
+<ul>
+<li>ステータス項目のうち,ROMとSSDに繰り上がりと単位変換を実装.</li>
+</ul>
+</li>
+</ul>
+<br>
+<h2 id="ver-012-20220902">ver 0.1.2  <em><sub>(2022/09/02)</sub></em></h2>
+<ul>
+<li>
+<h3 id="修正">修正</h3>
+<ul>
+<li>メインルーチンの制御用ボタンの不具合修正.それに伴うルーチン構造の大幅修正.</li>
+</ul>
+</li>
+<li>
+<h3 id="変更">変更</h3>
+<ul>
+<li>メニューバーがゲーム画面を遮ることと技術的側面から一時的に廃止.</li>
+<li>今まで分けて読込み･保存していたゲーム用セーブファイルと設定ファイルをゲーム側にまとめて読込み･保存するように変更.</li>
+<li>ゲーム内時間のカウンタ変数を専用のものから分を扱っている変数に変更.</li>
+</ul>
+</li>
+<li>
+<h3 id="追加実装">追加･実装</h3>
+<ul>
+<li>メニューバーの廃止に伴い,メニューウィンドウを実装.</li>
+<li>スタート画面の仮実装.</li>
+</ul>
+</li>
+</ul>
+<br>
+<h2 id="ver-011-20220825">ver 0.1.1  <em><sub>(2022/08/25)</sub></em></h2>
+<ul>
+<li>
+<h3 id="修正">修正</h3>
+<ul>
+<li>情報ウィンドウの表示を一部修正.</li>
+<li>設定ファイルの読み込み時,設定ウィンドウのオブジェクトの状態が更新されない不具合の修正.</li>
+</ul>
+</li>
+<li>
+<h3 id="変更">変更</h3>
+<ul>
+<li>メインルーチンの再開専用だったボタンを,スタート/一時停止に変更.</li>
+<li>メインウィンドウのステータス表示をメッセージボックスからスタティックテキストへ変更.</li>
+</ul>
+</li>
+</ul>
+<br>
+<h2 id="ver-010-20220824">ver 0.1.0  <em><sub>(2022/08/24)</sub></em></h2>
+<ul>
+<li>
+<h3 id="修正">修正</h3>
+<ul>
+<li>サブルーチンジャンプ先での割り込み処理や,さらなるサブルーチンジャンプが原因で発生するエラー43への対処のため,非効率なサブルーチンを削除,縮小,修正.</li>
+<li>ゲーム内時間の単位変換がうまくいかない不具合を修正.</li>
+</ul>
+</li>
+<li>
+<h3 id="変更">変更</h3>
+<ul>
+<li>エラー43関連で,メインのループを while から *main ~ goto *main へ変更.</li>
+<li>セーブデータの保存/読み込み方法を note~系 + split 方式から vsave命令系に変更.</li>
+</ul>
+</li>
+<li>
+<h3 id="追加実装">追加･実装</h3>
+<ul>
+<li>ゲームスピードの調整と自動セーブ機能の実装,それに伴う設定ウィンドウの追加,実装.</li>
+</ul>
+</li>
+<li>
+<h3 id="既知の不具合">既知の不具合</h3>
+<ul>
+<li>設定ウィンドウの完了ボタンで設定内容を .var形式ファイルで出力保存できるが,読み込み時,ウィンドウオブジェクト側の表示が反映されない不具合.</li>
+</ul>
+</li>
+</ul>
+<br>
+<h2 id="ver-009-20220820">ver 0.0.9  <em><sub>(2022/08/20)</sub></em></h2>
+<ul>
+<li>ゲーム内時間の実装</li>
+</ul>
+<h2 id="ver-008-20220818">ver 0.0.8  <em><sub>(2022/08/18)</sub></em></h2>
+<ul>
+<li>バージョン情報ウィンドウのUIを変更. メニューバーの項目変更.</li>
+</ul>
+<h2 id="ver-007-20220817">ver 0.0.7  <em><sub>(2022/08/17)</sub></em></h2>
+<ul>
+<li>バージョン情報をコピーライトと更新履歴とに分けて表示させるように修正し,更新履歴に関しては専用のウィンドウを用意した.</li>
+<li>また、それに伴ってメニューバー周りのルーチンジャンプを見直した.</li>
+</ul>
+<h2 id="ver-006-20220815">ver 0.0.6  <em><sub>(2022/08/15)</sub></em></h2>
+<ul>
+<li>一部UIの修正. ステータスの管理に多次元配列を採用したことに伴う処理部の大幅修正.</li>
+<li>プロジェクトファイルを分割し,今後の作業効率化を図った.</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>ファイル</th>
+<th>中身</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>object部</td>
+<td>ウィンドウオブジェクト･UI</td>
+</tr>
+<tr>
+<td>変 数 部</td>
+<td>扱う変数の増加,多次元配列の採用によるスクリプトの煩雑化回避のため処理部から分離.<br>また,オブジェクトの配置もこちらで一括管理.</td>
+</tr>
+<tr>
+<td>処 理 部</td>
+<td>ウィンドウオブジェクトからのラベル処理.<br>今後、こちらはプログラム全体のラベルのジャンプ先とし,メイン処理系を別で新設する予定.</td>
+</tr>
+<tr>
+<td>func部</td>
+<td>自作の命令･関数をまとめて定義したもの.commonフォルダに入れてある.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="ver-005-20220812">ver 0.0.5  <em><sub>(2022/08/12)</sub></em></h2>
+<ul>
+<li>メッセージボックスへの表示と各ステータスの管理,及びセーブデータの出力を一括して行う自作関数の導入に伴う効率化.</li>
+</ul>
+<h2 id="ver-004-20220811">ver 0.0.4  <em><sub>(2022/08/11)</sub></em></h2>
+<ul>
+<li>開発環境がHSPスクリプトエディタからVSCodeへ移行したことに伴うスクリプトの一部修正.</li>
+</ul>
+<h2 id="ver-003α-20220810">ver 0.0.3α  <em><sub>(2022/08/10)</sub></em></h2>
+<ul>
+<li>データの保存と読み込み機能の不具合修正.</li>
+</ul>
+<h2 id="ver-002α-20220808">ver 0.0.2α  <em><sub>(2022/08/08)</sub></em></h2>
+<ul>
+<li>メニューバーの実装.</li>
+</ul>
+<h2 id="ver-001α-20220805">ver 0.0.1α  <em><sub>(2022/08/05)</sub></em></h2>
+<ul>
+<li>製作開始.</li>
+</ul>
 </div>
         </div>
         

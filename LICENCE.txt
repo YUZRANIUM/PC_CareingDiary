@@ -1,10 +1,12 @@
 LICENSE
+
 .
 ├─ hsp37beta
 │   └─ common
 │      ├─ user32.as
 │      ├─ gdi32.as
 │      ├─ hsp3util.as
+│      ├─ hsedsdk.as
 │      └─ hspda.as
 ├─ hsprt
 ├─ hspcmp.dll
@@ -34,6 +36,8 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 本ソフトウェアは、著作権者およびコントリビューターによって「現状のまま」提供されており、明示黙示を問わず、商業的な使用可能性、および特定の目的に対する適合性に関する暗黙の保証も含め、またそれに限定されない、いかなる保証もありません。著作権者もコントリビューターも、事由のいかんを問わず、 損害発生の原因いかんを問わず、かつ責任の根拠が契約であるか厳格責任であるか（過失その他の）不法行為であるかを問わず、仮にそのような損害が発生する可能性を知らされていたとしても、本ソフトウェアの使用によって発生した（代替品または代用サービスの調達、使用の喪失、データの喪失、利益の喪失、業務の中断も含め、またそれに限定されない）直接損害、間接損害、偶発的な損害、特別損害、懲罰的損害、または結果損害について、一切責任を負わないものとします。
 
+
+
 .
 ├─ hsp37beta
 │   └─ common
@@ -44,9 +48,13 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
   All of the code and documentation in SQLite has been dedicated to the public domain by the authors.
   Anyone is free to copy, modify, publish, use, compile, sell, or distribute the original SQLite code, either in source code form or as a compiled binary, for any purpose, commercial or non-commercial, and by any means.
   SQLite URL https://www.sqlite.org
-
   SQLite はパブリックドメインです。
   ソース コード形式またはコンパイルされたバイナリとして、目的、商用または非商用、手段を問わず、誰でもオリジナルの SQLite コードを自由にコピー、変更、公開、使用、コンパイル、販売、配布することができます。
+
+  SQLele URL http://spn.php.xdomain.jp/hsp_sqlele.htm
+  SQLele はHSP3でSQLiteを扱えるようにするための支援モジュールです。
+
+
 
 .
 ├─ hsp37beta
@@ -88,3 +96,17 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+
+
+.
+└─ hsp37beta
+    └─ common
+        └─ webview2_10115038.hsp
+----------------------------------------
+  THANKS
+
+webview2_10115038 はHSP3でWebView2を扱えるようにするための支援モジュールです。
+
+  author : eller
+  HSPメモ帳 https://blog.goo.ne.jp/hiro239415

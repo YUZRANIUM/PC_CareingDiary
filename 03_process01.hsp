@@ -1,8 +1,28 @@
-/***メインループ***/
+// INFO ****************************************************
+// FileName : 03_process01.hsp
+// Version : 0.2.0
+// Date    : 2022/10/24
+// Author  : YUZURANIUM（ゆずらにうむ）
+// Twitter : https://twitter.com/YUZRANIUM
+// Git Hub : https://github.com/YUZURANIUM/PC_CareingDiary
+//**********************************************************
+/* Description
+このファイルはメインループ及び、layerobjを除く
+ほぼ全てのサブルーチンジャンプの処理を行っています。
+************************************************************/
+
+
+
+/**********************  メインループ  **********************/
 *main
 	wait 16
-	gsel ID_WIN_SETI : objprm id_savebut, savebut_text(setting(0, 0))
-	//ループ制御ボタンの表示切り替え
+	gsel ID_WIN_SETI
+	/*****  設定ウィンドウのチェックボックスの表示更新  *****/
+	objprm id_savebut, savebut_text(setting(0, 0))
+	objprm id_chkreamaz, re_amaz(setting(8, 0))
+	objprm id_chkresave, re_save(setting(9, 0))
+	objprm id_chkresett, re_sett(setting(10, 0))
+	/*****  ループ制御ボタンの表示切り替え  *****/
 	if setting(5, 0) == -1 {
 		gsel ID_WIN_MAIN : objprm id_opebut, opebut_text(0)
 		goto *main
@@ -10,83 +30,61 @@
 	else {
 		gsel ID_WIN_MAIN : objprm id_opebut, opebut_text(1)
 	}
-	/***描画更新***/
-	objprm layid0, 2
+	/*****  描画更新  *****/
+	objprm layid0, 1
+//==========================================================
 
-	gt(6, 0) = str(int(gt(6, 0)) + 1) //ゲーム内時間カウンタ
+	/*****  ゲーム内時間カウンターエンジン  *****/
+
+	gt(6, 0) = str(int(gt(6, 0)) + 1)
 	if int(gt(6, 0)) > 500 : gt(6, 0) = "1"
-
 	//カウンター変速機
 	gtcontrol = int(gt(6, 0)) \ setting(4, 0)
 
-	if gtcontrol == 0 {
-		gt(5, 0) = strf("%02d", int(gt(5, 0)) + 1)
-		st(2, 0) = str(double(st(2, 0)) + 0.07)
-		st(3, 0) = str(double(st(3, 0)) + 0.1)
-		st(6, 0) = str(double(st(6, 0)) - 0.01)
+
+	/*****  過給機付き  *****/
+	if setting(3, 0) == 1 {
+		/*****  エンジン  *****/
+		gt(5, 0) = str(int(gt(5, 0)) + 1)
+		if int(gt(5, 0)) > 500 : gt(5, 0) = "1"
+		/*****  変速機  *****/
+		gtcontrol = int(gt(5, 0)) \ setting(4, 0)
 	}
 
-	/***単位変換チェック***/
+	/*****  ステータス変動  *****/
+	if gtcontrol == 0 {
+		gt(5, 0) = strf("%02d", int(gt(5, 0)) + 1)
+		/*****  過給機  *****/
+		if setting(3, 0) == 1 {
+			gt(4, 0) = strf("%02d", int(gt(4, 0)) + 1)
+		}
+		st(2, 0) = str(double(st(2, 0)) + 0.5)  //ROM
+		st(3, 0) = str(double(st(3, 0)) + 1)    //SSD
+		st(6, 0) = str(double(st(6, 0)) - 0.01) //Power
+	}
+
+	/*****   単位変換チェック  *****/
 	if int(st(2, 0)) > 1023 : objprm layid0, 0
-	if int(st(3, 0)) > 1023 : objprm layid0, 1
+	if int(st(3, 0)) > 1023 : objprm layid0, 0
+
 
 	//オートセーブ設定が有効かどうか
 	if setting(0, 0) == 1 {
 		savecontrol = int(gt(6, 0)) \ 5
 		if savecontrol == 0 : savec = 1 + savec
+		/*****  オートセーブ  *****/
 		if savec > 100 {
-			//ファイルの確認
-			vsave_start
-			vsave_put u
-			vsave_put st
-			vsave_put gt
-			vsave_put setting
-			vsave_put motimono
-			vsave_put logmoni
-			vsave_put bfcpu
-			vsave_put bfgpu
-			vsave_put bfrom
-			vsave_end fname(saveID)
-			gsel ID_WIN_MAIN
-			objprm layid0, "asc"
+			mysave2 (fname(saveID))
+			gsel ID_WIN_MAIN : objprm layid0, "log,asc"
 			savec = 0
 		}
 	}
 	goto *main
+/******************  メインループここまで  ******************/
 
-//メニューバー
-//*OnCommand
-//	cmd = wparam & 0xFFFF
-//	switch cmd
-//		//ファイル(F) >> 開く
-//		case CMD_OPEN
-//			setting(5, 0) = -1
-//			gsel ID_WIN_SAVE
-//			//メインウィンドウ更新
-//			gsel ID_WIN_MAIN, 0 : redraw 0 : redraw 1
-//			gsel ID_TAB_MOTI, 0 : objprm id_motimono, motimono
-//			gsel ID_WIN_SETI, 0
-//			objprm id_savebut, setting(0, 0)
-//			objprm id_chkosoi, setting(1, 0)
-//			objprm id_chkfutu, setting(2, 0)
-//			objprm id_chkhaya, setting(3, 0)
-//			gsel ID_WIN_MAIN, 0 : objprm layid0, "load"
-//			gsel ID_TAB_LOG, 0 : objprm id_logmoni, logmoni
-//			gsel ID_WIN_MAIN
-//			swbreak
 
-//		//ファイル(F) >> 保存
-//		case CMD_SAVE
-//			setting(5, 0) = -1
-//			mysave u, st, gt, setting, motimono, logmoni, fname(0)
-//			gsel ID_WIN_MAIN, 0 : objprm layid0, "Save"
-//			gsel ID_TAB_LOG, 0 : objprm id_logmoni, logmoni
-//			gsel ID_WIN_MAIN
-//			swbreak
-//	swend
-//	return
 
-//スタート/ストップ
+//メインループ制御トグルボタン
 *ope
 	setting(5, 0) = setting(5, 0) * -1
 	gsel ID_TAB_MOTI, 0 : objprm id_motimono, motimono
@@ -94,8 +92,11 @@
 	gsel ID_WIN_MAIN
 	return
 
-//ここの処理はamazと統合できるのでは?
+
+/***************  タブコントロールタブ切り替え  ***************/
+
 //mainタブコントロールの処理
+//ここの処理はamazと統合できるのでは?
 *noti_main
 	dupptr nmhdr, lparam, 12, 4
 	if (nmhdr(2) == -551) {
@@ -103,8 +104,8 @@
 	}
 	return
 
-//ここの処理はmainと統合できるのでは?
 //amazタブコントロールの処理
+//ここの処理はmainと統合できるのでは?
 *noti_amaz
 	dupptr nmhdr, lparam, 12, 4
 	if (nmhdr(2) == -551) {
@@ -112,17 +113,22 @@
 	}
 	return
 
+
+/******************  リストビュー並べ替え  ******************/
+
 //amazoonリストビュー昇降順の処理
 *notify
 	setting(5, 0) = -1
+	//タブコントロールのオブジェクトハンドル取得
 	dupptr nmhdr, lparam, 12, 4 : tabhwnd = nmhdr(0)
 	if (nmhdr(2) == LVN_COLUMNCLICK) {
+		//タブコントロールのクリックされたカラム取得
 		dupptr nmlv, lparam, 40, 4 : index = nmlv(4)
 
 		sql_open db
 		sql_q "BEGIN;"
 		switch tabhwnd
-			/***CPU***/
+			/*****  CPU  *****/
 			case hLVCPU
 				sdim cpu, 2048
 				swc = swc * -1
@@ -133,7 +139,7 @@
 				myinitem id_LVCPU, cpu, rec_cnum, col_num
 				swbreak
 
-			/***GPU***/
+			/*****  GPU  *****/
 			case hLVGPU
 				sdim gpu, 2048
 				swg = swg * -1
@@ -144,7 +150,7 @@
 				myinitem id_LVGPU, gpu, rec_gnum, col_num
 				swbreak
 
-			/***ROM***/
+			/*****  ROM  *****/
 			case hLVROM
 				sdim rom, 2048
 				swr = swr * -1
@@ -160,6 +166,9 @@
 	}
 	return
 
+
+/****************  カスタムオブジェクトmylmb  ****************/
+
 //mylmbによる割り込み
 *mousclick
 	//ハイパーリンクのオブジェクトハンドル
@@ -171,27 +180,23 @@
 		case hLinkgi //情報githubハイパーリンク
 			exec infa(5), 16
 			swbreak
-		/*** Save & Load ***/
+		/*****   Save & Load   *****/
 		case hSave1
 			dialog "Save Data 1 にセーブしますか?", 2, "SAVE"
 			if stat == 6 {
 				saveID = 1
-				vsave_start
-				vsave_put u
-				vsave_put st
-				vsave_put gt
-				vsave_put setting
-				vsave_put motimono
-				vsave_put logmoni
-				vsave_put bfcpu
-				vsave_put bfgpu
-				vsave_put bfrom
-				vsave_end fname(saveID)
-				gsel ID_WIN_MAIN, 1 : objprm layid0, "save"
+				mysave2 (fname(saveID))
+				gsel ID_WIN_MAIN, 1 : objprm layid0, "log,save"
 			}
 			swbreak
 		case hLoad1
-			vload fname(1)
+			dialog "Save Data 1 をロードしますか?", 2, "LOAD"
+			if stat == 6 {
+				saveID = 1
+				vload fname(saveID)
+				gsel ID_WIN_MAIN : objprm layid0, 2
+				gsel ID_WIN_MAIN, 1
+			}
 			swbreak
 	swend
 	return
@@ -216,7 +221,9 @@
 	}
 	return
 
-//################################################OP画面処理
+/******************  各ウィンドウボタン処理  ******************/
+
+/*** Opening Window ***/
 
 *OP新規
 	gsel ID_WIN_OPEN, -1
@@ -224,37 +231,39 @@
 	return
 
 *OPload
-	setting(5, 0) = -1
-	gsel ID_WIN_SAVE, 1
-	//メインウィンドウ更新
-	gsel ID_WIN_MAIN, 0 : redraw 0 : redraw 1
-	gsel ID_TAB_MOTI, 0 : objprm id_motimono, motimono
-
-	gsel ID_WIN_SETI, 0
-	sendmsg hButton, $F1, setting(0, 0)
-	objprm id_chkosoi, setting(1, 0)
-	objprm id_chkfutu, setting(2, 0)
-	objprm id_chkhaya, setting(3, 0)
-
 	gsel ID_WIN_OPEN, -1
-	gsel ID_TAB_LOG, 0 : objprm id_logmoni, logmoni
-	gsel ID_WIN_MAIN, 1 : objprm layid0, "load"
+	gsel ID_WIN_SAVE, 1
 	return
 
-//======================================
 
-//main>>>amazoon
+
+//main >>> amazoon
 *amazoon
 	setting(5, 0) = -1
 	gsel ID_WIN_MAIN, -1
 	gsel ID_WIN_AMAZ, 1
+	remain_code = "re,amaz"
 	return
 
-//main>>>setting
+//main >>> save
+*saveload
+	setting(5, 0) = -1
+	gsel ID_WIN_MAIN, -1
+	gsel ID_WIN_SAVE, 1
+	remain_code = "re,save"
+	return
+
+//main >>> setting
 *settei
 	setting(5, 0) = -1
 	gsel ID_WIN_MAIN, -1
 	gsel ID_WIN_SETI, 1
+	remain_code = "re,set"
+	return
+
+//main <<< amazoon, save, setting
+*remain
+	gsel ID_WIN_MAIN : objprm layid0, remain_code
 	return
 
 *infomation
@@ -267,71 +276,34 @@
 	gsel ID_WIN_INFO, -1
 	return
 
-//main<<<amazoon,save
-*remain
-	gsel ID_WIN_SAVE, -1
-	gsel ID_WIN_AMAZ, -1
-	gsel ID_WIN_MAIN, 1
-	return
 
 //save,setting>>>open
 *retitle
 	setting(5, 0) = -1
 	dialog "Return to Opening Really?", 2, "Return to Opening"
 	if stat == 6 {
-		vsave_start
-		vsave_put u
-		vsave_put st
-		vsave_put gt
-		vsave_put setting
-		vsave_put motimono
-		vsave_put logmoni
-		vsave_put bfcpu
-		vsave_put bfgpu
-		vsave_put bfrom
-		vsave_end fname(saveID)
+		mysave2 (fname(saveID))
 		vload "savedata\\Save7.var"
-		//メインウィンドウ更新
-		gsel ID_TAB_MOTI, 0 : objprm id_motimono, motimono
-		gsel ID_TAB_LOG, 0 : objprm id_logmoni, logmoni
-		gsel ID_WIN_SETI, -1
-		objprm id_savebut, setting(0, 0)
-		objprm id_chkosoi, setting(1, 0)
-		objprm id_chkfutu, setting(2, 0)
-		objprm id_chkhaya, setting(3, 0)
-		/*** AMAZリストビューリセット ***/
-		gsel ID_WIN_AMAZ, -1
-		/*** CPU ***/
-		gsel ID_OMTAB_CPU : mydelitem id_LVCPU
-		myinitem id_LVCPU, bfcpu, rec_cnum, col_num
-		/*** GPU ***/
-		gsel ID_OMTAB_GPU : mydelitem id_LVGPU
-		myinitem id_LVGPU, bfgpu, rec_gnum, col_num
-		/*** ROM ***/
-		gsel ID_OMTAB_ROM : mydelitem id_LVROM
-		myinitem id_LVROM, bfrom, rec_rnum, col_num
-		gsel ID_OMTAB_CPU, 1
-
-		gsel ID_WIN_SAVE, -1
-		gsel ID_WIN_INFO, -1
-		gsel ID_WIN_MAIN, -1 : objprm layid0, 2
+		gsel ID_WIN_MAIN : objprm layid0, 2
+		gsel ID_WIN_MAIN, -1
 		gsel ID_WIN_OPEN, 1
 	}
 	return
 
-*saveload
-	setting(5, 0) = -1
-	gsel ID_WIN_MAIN, -1
-	gsel ID_WIN_SAVE, 1
-	return
-
-//======================================設定タブ処理
+//======================================設定処理
 
 *tekiou
+	//チェックボックスの値取得
+	//ゲーム速度
 	sendmsg hChkbox1, $F0 : setting(1, 0) = stat
 	sendmsg hChkbox2, $F0 : setting(2, 0) = stat
 	sendmsg hChkbox3, $F0 : setting(3, 0) = stat
+	//remain
+	sendmsg hChkbox4, $F0 : setting(8, 0) = stat
+	sendmsg hChkbox5, $F0 : setting(9, 0) = stat
+	sendmsg hChkbox6, $F0 : setting(10, 0) = stat
 
+	/*****  ゲーム内のログ表示（設定変更）  *****/
 	if setting(1, 0) == 1 {
 		setting(4, 0) = 6
 		string2 = " GameSpeed [Slowest]"
@@ -341,14 +313,22 @@
 		string2 = " GameSpeed [Normal]"
 	}
 	if setting(3, 0) == 1 {
-		setting(4, 0) = 1
+		setting(4, 0) = 4
 		string2 = " GameSpeed [Fastest]"
 	}
-	gsel ID_WIN_MAIN : objprm layid0, "auto_chk"
-	gsel ID_TAB_LOG, 0 : objprm id_logmoni, logmoni
-	gsel ID_WIN_SETI, -1
-	gsel ID_WIN_MAIN, 1
+	//logstr = {"
+	//*** Settings Change ***
+	//aa
+	//bb
+	//cc
+	//"}
+	strrep logstr, "aa", savebut_text(setting(0, 0))
+	strrep logstr, "bb", string2
+	strrep logstr, "cc", "" + re_amaz(setting(8, 0)) + "\n" + re_save(setting(9, 0)) + "\n" + re_sett(setting(10, 0))
+	gsel ID_WIN_MAIN : objprm layid0, "log,auto_chk"
+	logmes logstr
 	return
+
 
 //終了の処理
 *exit
@@ -357,18 +337,10 @@
 	switch winID
 		//------------------------------Master Window
 		case ID_WIN_MASTER
-			vsave_start
-			vsave_put u
-			vsave_put st
-			vsave_put gt
-			vsave_put setting
-			vsave_put motimono
-			vsave_put logmoni
-			vsave_put bfcpu
-			vsave_put bfgpu
-			vsave_put bfrom
-			vsave_end fname(saveID)
+			/*****  自動保存  *****/
+			mysave2 (fname(saveID))
 			vsave "" + dir_cur + "\\savedata\\backup.var"
+			/*****  WebView2の後処理  *****/
 			gsel ID_WIN_INFO
 			WebView2_Release pView
 			WebView2_Release pCtrl

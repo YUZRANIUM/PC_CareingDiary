@@ -1,14 +1,28 @@
+// INFO ****************************************************
+// FileName : 04_process02.hsp
+// Version : 0.2.0
+// Date    : 2022/10/24
+// Author  : YUZURANIUM（ゆずらにうむ）
+// Twitter : https://twitter.com/YUZRANIUM
+// Git Hub : https://github.com/YUZURANIUM/PC_CareingDiary
+//**********************************************************
+/* Description
+このファイルは各モジュールのインクルードとlayerobjのサブルーチン処理を行っています。
+************************************************************/
 
-/*** Packfile ***/
+
+
 #packopt name "PC Careing Diary"
 #packopt type 0
+#packopt version "version.txt"
+
 	/*** 外部モジュール ***/
 	#include "user32.as"
 	#include "gdi32.as"
-	#include "mod_WebView2_10115038.hsp"
+	#include "WebView2_10115038.hsp"
 	#include "hsp3util.as"
-	#include "hsedsdk.as"
-	#include "hspda.as"	//vsave系
+	#include "hsedsdk.as" //hspver
+	#include "hspda.as"	  //vsave系
 	#include "sqlele.hsp"
 	/*** 分割ファイル ***/
 	#include "00_module.hsp"
@@ -16,6 +30,9 @@
 	#include "01_variable.hsp"
 	#include "02_interface.hsp"
 	#include "03_process01.hsp"
+
+
+
 /*********************layerobjの処理************************/
 
 //ゲーム内時間とステータス
@@ -29,47 +46,88 @@
 		case objlayer_cmdprmi
 			layint = iparam
 			switch layint
+				//メインループ>>ROM & SSD unit convert
 				case 0
 					gosub *hlay_u
 					swbreak
+				//メインループ>>ゲーム内時間
 				case 1
-					gosub *hlay_u
-					swbreak
-				case 2
 					gosub *hlay_gt
+					swbreak
+				//loadの処理
+				case 2
+					gosub *hlay_saveload
 					swbreak
 			swend
 			swbreak
 		//文字列を渡された
 		case objlayer_cmdprms
 			//layerobjに渡す文字列
-			string = refstr
-			notesel logmoni : noteadd "\n", 1, 0
-			//ログ表示用の時間
-			time = "" + gettime(1) + "/" + gettime(3) + " " + gettime(4) + ":" + gettime(5) + ":" + gettime(6)
-			if string == "asc" {
-				noteadd time + " : AutoSave Successed! " + fname(saveID), 1, 0
+			laystr = refstr
+			split laystr, ",", laystr
+			/*** Mainウィンドウログ表示内容 ***/
+			if laystr(0) == "log" {
+				notesel logmoni : noteadd "\n", 1, 0
+				time = "" + gettime(1) + "/" + gettime(3) + " " + gettime(4) + ":" + gettime(5) + ":" + gettime(6)
+				/*オートセーブ事後報告*/
+				if laystr(1) == "asc" {
+					noteadd time + " : AutoSave Successed! " + fname(saveID), 1, 0
+				}
+				/*ゲーム速度設定変更報告*/
+				if laystr(1) == "auto_chk" {
+					noteadd time + "\n" + logstr, 1, 0
+				}
+				/*ロードの事後報告*/
+				if laystr(1) == "load" {
+					noteadd time + " : Load Successed! " + fname(saveID), 1, 0
+				}
+				/*セーブの事後報告*/
+				if laystr(1) == "save" {
+					noteadd time + " : Save Successed! " + fname(saveID), 1, 0
+				}
+				/*日付変更線*/
+				if laystr(1) == "dd" {
+					noteadd "------------------------------------------------------------------------------------", 1, 0
+					noteadd time + " : Game times " + gt(2, 0) + "/" + gt(3, 0) + " になりました.", 1, 0
+				}
+				/*あけおめ*/
+				if laystr(1) == "yy" {
+					noteadd time + " : Happy New Year!!", 1, 0
+				}
+				noteunsel
+				gsel ID_TAB_LOG : objprm id_logmoni, logmoni : gsel ID_WIN_MAIN
 			}
-			if string == "auto_chk" {
-				noteadd time + " : Settings Change [" + savebut_text(setting(0, 0)) + "]" + string2, 1, 0
+			/*****  Mainウィンドウに戻る際のメインループ自走設定  *****/
+			if laystr(0) == "re" {
+				switch laystr(1)
+					case "amaz"
+						if setting(8, 0) == 1 {
+							sdim remain_code
+							gsel ID_WIN_AMAZ, -1 : gsel ID_WIN_MAIN, 1 : setting(5, 0) = 1
+						}
+						sdim remain_code
+						gsel ID_WIN_AMAZ, -1 : gsel ID_WIN_MAIN, 1
+						swbreak
+					case "save"
+						if setting(9, 0) == 1 {
+							sdim remain_code
+							gsel ID_WIN_SAVE, -1 : gsel ID_WIN_MAIN, 1 : setting(5, 0) = 1
+						}
+						sdim remain_code
+						gsel ID_WIN_SAVE, -1 : gsel ID_WIN_MAIN, 1
+						swbreak
+					case "set"
+						if setting(10, 0) == 1 {
+							sdim remain_code
+							gsel ID_WIN_SETI, -1 : gsel ID_WIN_MAIN, 1 : setting(5, 0) = 1
+						}
+						sdim remain_code
+						gsel ID_WIN_SETI, -1 : gsel ID_WIN_MAIN, 1
+						swbreak
+				swend
 			}
-			if string == "load" {
-				noteadd time + " : Load Successed! " + fname(saveID), 1, 0
-			}
-			if string == "save" {
-				noteadd time + " : Save Successed! " + fname(saveID), 1, 0
-			}
-			if string == "dd" {
-				noteadd "------------------------------------------------------------------------------------", 1, 0
-				noteadd time + " : Game times " + gt(2, 0) + "/" + gt(3, 0) + " になりました.", 1, 0
-			}
-			if string == "yy" {
-				noteadd time + " : Happy New Year!!", 1, 0
-			}
-			noteunsel
-			gsel ID_TAB_LOG : objprm id_logmoni, logmoni : gsel ID_WIN_MAIN
 			swbreak
-		//redraw命令が実行されたとき
+		//redraw命令が実行されたとき(利用しない)
 		case objlayer_cmddraw
 			swbreak
 	swend
@@ -123,20 +181,26 @@
 		gt(0, 0) = strf("%3d", int(gt(0, 0)) + 1)
 		setting(7, 0) = 1
 	}
-	repeat 6
+	/*****  過給機  *****/
+	if setting(3, 0) == 1 {
+		nn = 5 : gt(4, 1) = ""
+	}
+	else : nn = 6
+	repeat nn
 		hmoni += "" + gt(cnt, 0) + gt(cnt, 1)
 	loop
-
 	//表示文字列の変更 (WM_SETTEXT)
 	sendmsg hStatic_h, $C, , hmoni
-	//day change log
+
+
+	//日付変更線
 	if setting(6, 0) == 1 {
-		gsel ID_WIN_MAIN : objprm layid0, "dd"
+		gsel ID_WIN_MAIN : objprm layid0, "log,dd"
 		setting(6, 0) = 0
 	}
-	//year change log
+	//あけおめ
 	if setting(7, 0) == 1 {
-		gsel ID_WIN_MAIN : objprm layid0, "yy"
+		gsel ID_WIN_MAIN : objprm layid0, "log,yy"
 		setting(7, 0) = 0
 	}
 //======================================ステータス
@@ -152,6 +216,8 @@
 	//表示文字列の変更 (WM_SETTEXT)
 	sendmsg hStatic_m, $C, , mesmoni
 	return
+
+
 
 //ROM,SSD単位変換
 *hlay_u
@@ -170,4 +236,45 @@
 	}
 	mesmoni_u += " " + st(2, 1) + "\n" + " " + st(3, 1)
 	sendmsg hStatic_u, $C, , mesmoni_u
+	return
+
+
+
+//セーブデータのロード･各変数とオブジェクトの更新
+*hlay_saveload
+	/*** Mainウィンドウ各変数読み込み ***/
+	gsel ID_TAB_MOTI, 0 : objprm id_motimono, motimono
+	gsel ID_TAB_LOG, 0 : objprm id_logmoni, logmoni
+
+	/*** Settingウィンドウ各項目読み込み ***/
+	gsel ID_WIN_SETI, -1
+	objprm id_savebut, setting(0, 0)
+	objprm id_chkosoi, setting(1, 0)
+	objprm id_chkfutu, setting(2, 0)
+	objprm id_chkhaya, setting(3, 0)
+	objprm id_chkreamaz, setting(8, 0)
+	objprm id_chkresave, setting(9, 0)
+	objprm id_chkresett, setting(10, 0)
+
+	/*** Amazoonリストビュー読み込み ***/
+	gsel ID_WIN_AMAZ, -1
+	/*** CPU ***/
+	gsel ID_OMTAB_CPU : mydelitem id_LVCPU
+	myinitem id_LVCPU, bfcpu, rec_cnum, col_num
+	/*** GPU ***/
+	gsel ID_OMTAB_GPU : mydelitem id_LVGPU
+	myinitem id_LVGPU, bfgpu, rec_gnum, col_num
+	/*** ROM ***/
+	gsel ID_OMTAB_ROM : mydelitem id_LVROM
+	myinitem id_LVROM, bfrom, rec_rnum, col_num
+	gsel ID_OMTAB_CPU, 1
+
+	/*** 各ウィンドウの非表示切り替え ***/
+	gsel ID_WIN_SAVE, -1
+	gsel ID_WIN_INFO, -1
+
+	gsel ID_WIN_MAIN
+	objprm layid0, 1
+	objprm layid0, 0
+	objprm layid0, "log,load"
 	return
