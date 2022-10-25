@@ -2,7 +2,7 @@
     <html>
     <head>
         <meta charset="UTF-8">
-        <title>ver 0&period;2&period;0 &amp;nbsp&semi;&lowbar;&lt;sub&gt;&lpar;2022&sol;10&sol;23&rpar;&lt;&sol;sub&gt;&lowbar;</title>
+        <title>ver 0&period;2&period;0 &amp;nbsp&semi;&lowbar;&lt;sub&gt;&lpar;2022&sol;10&sol;25&rpar;&lt;&sol;sub&gt;&lowbar;</title>
         <style>
 /* From extension vscode.github */
 /*---------------------------------------------------------------------------------------------
@@ -1314,7 +1314,7 @@ body,
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css">
 <style>
             body {
-                font-family: MyricaM M;
+                font-family: 'Fira Code', Consolas, 'Courier New', monospace;
                 font-size: 10px;
                 line-height: 1.5;
             }
@@ -1336,7 +1336,7 @@ body,
             <div class="github-markdown-content"><span id="markdown-mermaid" aria-hidden="true"
                     data-dark-mode-theme="dark"
                     data-light-mode-theme="dark"></span>
-                <h2 id="ver-020-20221023">ver 0.2.0  <em><sub>(2022/10/23)</sub></em></h2>
+                <h2 id="ver-020-20221025">ver 0.2.0  <em><sub>(2022/10/25)</sub></em></h2>
 <ul>
 <li>
 <h3 id="修正">修正</h3>
@@ -1360,12 +1360,16 @@ body,
 <h3 id="追加実装">追加･実装</h3>
 <ul>
 <li>情報ウィンドウに作者のTwitterとGitHubのハイパーリンクを実装した.</li>
-<li>実行ファイル(.exe)の作成とバージョン情報ファイル(.ini)を作製.</li>
 <li>実績解除実装に向けて商品データベース内のテーブルに新たにセーブスロットごとの実績管理カラムを追加.(マスクデータのためゲーム内では非表示)</li>
+<li>遷移後の各画面からMainウィンドウに戻る際に自動でメインループ（ゲーム）を再開できる設定を追加.</li>
 </ul>
 </li>
 <li>
 <h3 id="既知の不具合">既知の不具合</h3>
+<ul>
+<li>タイトル画面に戻る際に各ウィンドウオブジェクトの表示内容や変数の初期化が未実装.</li>
+<li>情報ウィンドウのWebView2の表示がオブジェクトサイズに対して大きすぎる.</li>
+</ul>
 </li>
 </ul>
 <br>
