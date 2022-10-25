@@ -375,6 +375,7 @@
 	pos 0, 142
 	/*****  WebView2  *****/
 	mes "  UPDATE HISTORY  "
+	font "ÉÅÉCÉäÉI", 10
 	pEnv = WebView2_CreateEnv()
 	pCtrl = WebView2_CreateCtrl(pEnv, hwnd)
 	WebView2_Size pCtrl, 0, 160, 650, 475
