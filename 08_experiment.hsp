@@ -4,8 +4,10 @@
 // Author : YUZURANIUM（ゆずらにうむ）
 // URL    : https://twitter.com/YUZRANIUM
 //******************************************************
-#packopt name "05_ver016ex"
+#packopt name "08_ver020"
 #packopt type 0
+#packopt version "08version.txt"
+
 #if 0
 /*##############################################################################
 							画面切り替え機能実験
@@ -30,9 +32,9 @@
 	/*** 各種変数定義 ***/
 
 	//HSPのバージョン
-	hspv = "" : hsed_cnvverstr __hspver__ : hspv += refstr
+	hspv = "" : hsed_cnvverstr hspver : hspv += refstr
 	if instr(hspv, 0, "b") != -1 : strrep hspv, "b", "beta"
-	title " 05_ver0.1.6experiment  for  HSP " + hspv
+	title " 05_ver0.2.0experiment  for  HSP " + hspv
 	sdim logfile_ex, 2048
 	notesel logfile_ex
 	noteload "text/05_ver000ex.txt" : noteunsel
@@ -171,7 +173,7 @@
 	mesbox logfile_ex, 845, 500, 0
 
 	pos 10, 555
-	mylmb "Git Hub", 150, 25, hlink, $1
+	mylmb "Git Hub", 150, 25, hlink
 
 	sendmsg hlink, $30, ,hFontn
 
@@ -415,7 +417,6 @@
 
 	/***Create Dummy DB***/
 	sql_open f
-
 	sql_q "BEGIN;"
 	sql_q "SELECT * FROM sqlite_master;"
 	repeat length(tmparr)
@@ -424,7 +425,6 @@
 	split tz3, ",", tz3
 	myincol id_dbinfo, tz3, length(tmparr), tzw, 0
 	sql_q "COMMIT;"
-
 	sql_close
 
 	/***フォントの適用***/
@@ -515,36 +515,41 @@
 /*##############################################################################
 						hspバージョン確認
 ###############################################################################*/
-//#ifdef _debug
 #if 1
 	#include "hsedsdk.as"
 	#include "00_module.hsp"
+	#include "00_mylv.hsp"
 
 #module
 #define global ctype myhspver2(%1)\
 	mes " " + %1
 #global
 
-	/*** __hspver__ ***/
-	mes " __hspver__ = " + __hspver__ + "\n strf(\"%4X\", __hspver__) = " + strf("%4X", __hspver__)
-	hspv = ""  :  hsed_cnvverstr __hspver__  :  hspv += refstr
-	mes "\n hsed_cnvverstr __hspver__ = " + hspv
-	if instr(hspv, 0, "b") != -1  :  strrep hspv, "b", "beta"
-	mes "\n " + hspv + "\n"
-	mes "----------------------------------\n"
+	screen 0, 500, 300
+	font "メイリオ", 16
+	mref BMSCR, 67 : hFont = BMSCR(38)
 
-	/*** hspver ***/
-	mes " hspver = " + hspver + "\n strf(\"%4X\", hspver) = " + strf("%4X", hspver)
-	hspv = ""  :  hsed_cnvverstr hspver  :  hspv += refstr
-	mes "\n hsed_cnvverstr hspver = " + hspv
-	if instr(hspv, 0, "b") != -1  :  strrep hspv, "b", "beta"
-	mes "\n " + hspv + "\n"
+	sdim d1  :  sdim d2, 20, 8  :  dim d3  :  sdim aa  :  sdim bb
+	hsed_cnvverstr __hspver__  :  aa += refstr
+	hsed_cnvverstr hspver      :  bb += refstr
 
-	/*** HSPのバージョン自作関数 ***/
-	mes " " + myhspver()
+	d1 = "macro", "int", "hsed_cnvverstr", "myhspver()"
+	d2(0) = "__hspver__"
+	d2(1) = str(__hspver__)
+	d2(2) = aa
+	d2(3) = myhspver (__hspver__)
+	d2(4) = "hspver"
+	d2(5) = str(hspver)
+	d2(6) = bb
+	d2(7) = myhspver (hspver)
+	d3 = 110, 75, 140, 110
+
+	mycrelv 440, 120, id_lv, hLv
+	myincol id_lv, d1, 4, d3
+	myinitem id_lv, d2, 2, 4
+
+	sendmsg objinfo(id_lv, 2), $30, hFont
+
 	/*** マクロ ***/
-	myhspver2 (myhspver())
-
-	mes "a\Sa\ta\na"
-
+	myhspver2 (myhspver(hspver))
 #endif
