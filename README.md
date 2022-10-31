@@ -71,18 +71,15 @@ style id1 fill:#26a, strole:#aaa, stroke-width:3px
 	- また、SQLの処理部もこちらで扱う予定です.
 <br />
 
-* 05_experiment.hsp
-	- 上記6つのスクリプトに変更を加える前にこちらで、加える変更箇所の動作確認や部分的な仮構築などを行います.
+* 05, 06, 07 拡張用のため欠番
+<br />
+
+* 08_experiment.hsp
+	- 上記のスクリプトに変更を加える前にこちらで、加える変更箇所の動作確認や部分的な仮構築などを行います.
 	- その他、思いつきや実験的な取り組みなどが中心でプロジェクトとはさほど関係ありません.
 <br />
 
-* 06, 07 拡張用のため欠番
-<br />
-
-* 08_myhelp.hs 別リポジトリへ
-<br />
-
-* 09_changelog.txt
+* changelog.html
 	- 更新履歴です. ゲーム内で表示可能
 
 以下略.
@@ -93,7 +90,7 @@ style id1 fill:#26a, strole:#aaa, stroke-width:3px
 ## その他
 
 ### 動作環境
-* 動作には **WebView2Loader.dllが必要** です。**同梱しておりません**のでご了承ください。
+* 動作には **WebView2Loader.dllが必要** です。 **同梱しておりません** のでご了承ください。
 
 
 ### 使用言語 (Codeing Language)
@@ -119,7 +116,6 @@ style id1 fill:#26a, strole:#aaa, stroke-width:3px
 	* hspda.as
 	* hsedsdk.as
 <!--  -->
-* hsprt
 * hspcmp.dll
 * hspda.dll
 
@@ -179,16 +175,16 @@ SQlele はHSP3でSQLiteを扱えるようにするための支援モジュール
 	* 00_module.hsp
 <!--  -->
 * text/
-	* 09_changelog.html
-	* 05_ver000ex.txt
+	* changelog.html
+	* 08_ver000ex.txt
 	* README.html
 <!--  -->
 * 01_variable.hsp
 * 02_interface.hsp
 * 03_process01.hsp
 * 04_process02.hsp
-* 05_experiment.hsp
-* 05_ver016ex.exe
+* 08_experiment.hsp
+* 08_ver020ex.exe
 * PC Careing Diary.exe
 * README.md
 
@@ -222,7 +218,7 @@ SOFTWARE.
 
 ## THANKS
 webview2_10115038 はHSP3でWebView2を扱えるようにするための支援モジュールです。
-* Author : eller
+* Author : eller様
 * [HSPメモ帳](https://blog.goo.ne.jp/hiro239415)
 
 <br>
@@ -264,6 +260,12 @@ webview2_10115038 はHSP3でWebView2を扱えるようにするための支援�
 
 * ### 既知の不具合
 	* まともに表示できない.
+
+<br>
+
+<details>
+
+<summary>以下略</summary>
 
 <br>
 
@@ -394,3 +396,5 @@ webview2_10115038 はHSP3でWebView2を扱えるようにするための支援�
 
 ## ver 0.0.1α &nbsp;_<sub>(2022/08/05)</sub>_
 * 製作開始.
+
+</details>
