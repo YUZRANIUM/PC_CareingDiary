@@ -2,7 +2,7 @@
     <html>
     <head>
         <meta charset="UTF-8">
-        <title>ver 0&period;2&period;0 &amp;nbsp&semi;&lowbar;&lt;sub&gt;&lpar;2022&sol;10&sol;25&rpar;&lt;&sol;sub&gt;&lowbar;</title>
+        <title>ver 0&period;3&period;0 &amp;nbsp&semi;&lowbar;&lt;sub&gt;&lpar;2022&sol;11&sol;02&rpar;&lt;&sol;sub&gt;&lowbar;</title>
         <style>
 /* From extension vscode.github */
 /*---------------------------------------------------------------------------------------------
@@ -1310,15 +1310,7 @@ body,
 
 </style>
         
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css">
-<style>
-            body {
-                font-family: 'Fira Code', Consolas, 'Courier New', monospace;
-                font-size: 10px;
-                line-height: 1.5;
-            }
-        </style>
+        
         <style>
 .task-list-item {
     list-style-type: none;
@@ -1332,11 +1324,33 @@ body,
         
     </head>
     <body class="vscode-body vscode-dark">
-        <div class="github-markdown-body github-markdown-system">
+        <div class="github-markdown-body github-markdown-dark">
             <div class="github-markdown-content"><span id="markdown-mermaid" aria-hidden="true"
                     data-dark-mode-theme="dark"
                     data-light-mode-theme="dark"></span>
-                <h2 id="ver-020-20221025">ver 0.2.0  <em><sub>(2022/10/25)</sub></em></h2>
+                <h2 id="ver-030-20221102">ver 0.3.0  <em><sub>(2022/11/02)</sub></em></h2>
+<h3 id="修正">修正</h3>
+<ul>
+<li>ソースコードの不要部分削除, 効率化.</li>
+</ul>
+<h3 id="変更">変更</h3>
+<ul>
+<li>Amazoon画面, 商品一覧のリストビューのオブジェクトIDとハンドルを受け取る変数を配列変数に変更.</li>
+<li>フォントハンドルを受け取る変数を配列変数に変更.</li>
+<li>セーブ, ロード, オートセーブ, 変数の初期値設定を専用のlayerobjを用いて1か所で行なうように変更.</li>
+</ul>
+<h3 id="追加実装">追加･実装</h3>
+<ul>
+<li>タイトル画面に戻る際, 必要な変数を初期値に設定する機能を実装.内部では変数の宣言直後にvsaveで初期値をファイル出力し、読み込むことで変数の再設定を実現.</li>
+<li>設定項目が増えたことに伴い、ログ表示を一部変更.</li>
+</ul>
+<h3 id="既知の不具合">既知の不具合</h3>
+<ul>
+<li>実行ファイルを別ディレクトリに移動させるとエラー:Startup default となり起動できない不具合. 現段階では WebView2 によるのもと推測.</li>
+</ul>
+<br>
+<br>
+<h2 id="ver-020-20221025">ver 0.2.0  <em><sub>(2022/10/25)</sub></em></h2>
 <ul>
 <li>
 <h3 id="修正">修正</h3>
@@ -1372,6 +1386,9 @@ body,
 </ul>
 </li>
 </ul>
+<br>
+<details>
+<summary>以下略</summary>
 <br>
 <h2 id="ver-016-20220930">ver 0.1.6  <em><sub>(2022/09/30)</sub></em></h2>
 <ul>
@@ -1428,9 +1445,6 @@ body,
 </ul>
 </li>
 </ul>
-<br>
-<details>
-<summary>以下略</summary>
 <br>
 <h2 id="ver-014-20220909">ver 0.1.4  <em><sub>(2022/09/09)</sub></em></h2>
 <ul>

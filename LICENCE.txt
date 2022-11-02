@@ -8,8 +8,6 @@ LICENSE
 │      ├─ hsp3util.as
 │      ├─ hsedsdk.as
 │      └─ hspda.as
-├─ hsprt
-├─ hspcmp.dll
 └─ hspda.dll
 ----------------------------------------
 Hot Soup Processor (HSP)
@@ -62,16 +60,16 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 │       └─ 00_module.hsp
 │
 ├─ text
-│   ├─ 05_ver000ex.txt
-│   ├─ 09_changelog.html
+│   ├─ 08_ver000ex.txt
+│   ├─ changelog.html
 │   └─ README.html
 │
 ├─ 01_variable.hsp
 ├─ 02_interface.hsp
 ├─ 03_process01.hsp
 ├─ 04_process02.hsp
-├─ 05_experiment.hsp
-├─ 05_ver016ex.exe
+├─ 08_experiment.hsp
+├─ 08_ver020ex.exe
 ├─ PC Careing Diary.exe
 └─ README.md
 ----------------------------------------
@@ -102,11 +100,11 @@ SOFTWARE.
 .
 └─ hsp37beta
     └─ common
-        └─ webview2_10115038.hsp
+        └─ webview2_10115038.as
 ----------------------------------------
   THANKS
 
 webview2_10115038 はHSP3でWebView2を扱えるようにするための支援モジュールです。
 
-  author : eller
+  author : eller様
   HSPメモ帳 https://blog.goo.ne.jp/hiro239415

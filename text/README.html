@@ -1310,15 +1310,7 @@ body,
 
 </style>
         
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css">
-<style>
-            body {
-                font-family: 'Fira Code', Consolas, 'Courier New', monospace;
-                font-size: 10px;
-                line-height: 1.5;
-            }
-        </style>
+        
         <style>
 .task-list-item {
     list-style-type: none;
@@ -1332,7 +1324,7 @@ body,
         
     </head>
     <body class="vscode-body vscode-dark">
-        <div class="github-markdown-body github-markdown-system">
+        <div class="github-markdown-body github-markdown-dark">
             <div class="github-markdown-content"><span id="markdown-mermaid" aria-hidden="true"
                     data-dark-mode-theme="dark"
                     data-light-mode-theme="dark"></span>
@@ -1344,7 +1336,7 @@ It's still under development.</p>
 In this repository, I practice the repository itself while publishing my personal work.<br>
 <br /></p>
 <h2 id="現在の仕様">現在の仕様</h2>
-<details open>
+<details>
 <summary>画面遷移</summary>
 <pre style="all:unset;"><div class="mermaid">
 flowchart TB
@@ -1377,7 +1369,7 @@ style id1 fill:#26a, strole:#aaa, stroke-width:3px
 <br>
 <ul>
 <li>
-<p>00_module.hsp</p>
+<p>common / 00_module.hsp</p>
 <ul>
 <li>ユーザー定義命令･関数、一部のWin32API定数のマクロ登録、その他外部から導入したモジュールなどをまとめたファイル.<br>
 <br /></li>
@@ -1455,22 +1447,25 @@ style id1 fill:#26a, strole:#aaa, stroke-width:3px
 <br />
 <h1 id="licence">Licence</h1>
 <br>
-<ul>
-<li>hsp37beta/common/
-<ul>
-<li><a href="http://user32.as">user32.as</a></li>
-<li><a href="http://gdi32.as">gdi32.as</a></li>
-<li><a href="http://hsp3util.as">hsp3util.as</a></li>
-<li><a href="http://hspda.as">hspda.as</a></li>
-<li><a href="http://hsedsdk.as">hsedsdk.as</a></li>
-</ul>
-</li>
-</ul>
+<pre><code>.
+├── hsp37beta
+│   └── common
+│       ├── user32.as
+│       ├── gdi32.as
+│       ├── hsp3util.as
+│       ├── hspda.as
+│       └── hsedsdk.as
+└── hspda.dll
+</code></pre>
+<!--
+* hsp37beta/common/
+	* user32.as
+	* gdi32.as
+	* hsp3util.as
+	* hspda.as
+	* hsedsdk.as-->
 <!--  -->
-<ul>
-<li>hspcmp.dll</li>
-<li>hspda.dll</li>
-</ul>
+<!--* hspda.dll-->
 <h3 id="hot-soup-processor-hsp">Hot Soup Processor (HSP)</h3>
 <p>Copyright (C) 1997-2021, Onion Software/onitama, all rights reserved.<br>
 Made with base technology of OpenHSP.</p>
@@ -1482,22 +1477,30 @@ All rights reserved.</p>
 <p>Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.</p>
 <p>Neither the name of the Onion Software nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.</p>
 <p>THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS &quot;AS IS&quot; AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</p>
+<blockquote>
 <p>ソースコード形式かバイナリ形式か、変更するかしないかを問わず、以下の条件を満たす場合に限り、再頒布および使用が許可されます。</p>
+</blockquote>
+<blockquote>
 <p>ソースコードを再頒布する場合、上記の著作権表示、本条件一覧、および下記免責条項を含めること。<br>
 バイナリ形式で再頒布する場合、頒布物に付属のドキュメント等の資料に、上記の著作権表示、本条件一覧、および下記免責条項を含めること。<br>
 書面による特別の許可なしに、本ソフトウェアから派生した製品の宣伝または販売促進に、Onion Softwareの名前またはコントリビューターの名前を使用してはならない。</p>
+</blockquote>
+<blockquote>
 <p>本ソフトウェアは、著作権者およびコントリビューターによって「現状のまま」提供されており、明示黙示を問わず、商業的な使用可能性、および特定の目的に対する適合性に関する暗黙の保証も含め、またそれに限定されない、いかなる保証もありません。著作権者もコントリビューターも、事由のいかんを問わず、 損害発生の原因いかんを問わず、かつ責任の根拠が契約であるか厳格責任であるか（過失その他の）不法行為であるかを問わず、仮にそのような損害が発生する可能性を知らされていたとしても、本ソフトウェアの使用によって発生した（代替品または代用サービスの調達、使用の喪失、データの喪失、利益の喪失、業務の中断も含め、またそれに限定されない）直接損害、間接損害、偶発的な損害、特別損害、懲罰的損害、または結果損害について、一切責任を負わないものとします。</p>
+</blockquote>
 <hr>
 <br />
 <br />
-<ul>
-<li>hsp37beta/common/
-<ul>
-<li>sqlele.hsp</li>
-</ul>
-</li>
-<li>sqlite3.dll</li>
-</ul>
+<pre><code>.
+├── hsp37beta
+│   └── common
+│       └── sqlele.hsp
+└── sqlite3.dll
+</code></pre>
+<!--
+* hsp37beta/common/
+	* sqlele.hsp
+* sqlite3.dll-->
 <h2 id="sqlite--sqlele">SQLite &amp; SQlele</h2>
 <p>All of the code and documentation in SQLite has been dedicated to the public domain by the authors.</p>
 <p>Anyone is free to copy, modify, publish, use, compile, sell, or distribute the original SQLite code, either in source code form or as a compiled binary, for any purpose, commercial or non-commercial, and by any means.</p>
@@ -1518,34 +1521,40 @@ SQlele はHSP3でSQLiteを扱えるようにするための支援モジュール
 <hr>
 <br />
 <br />
-<ul>
-<li>hsp37beta/common/
-<ul>
-<li>00_module.hsp</li>
-</ul>
-</li>
-</ul>
+<pre><code>.
+├── hsp37beta
+│   └── common
+│       └── 00_module.hsp
+├── text
+│   ├── changelog.html
+│   ├── 08_ver000ex.txt
+│   └── README.html
+├── 01_variable.hsp
+├── 02_interface.hsp
+├── 03_process01.hsp
+├── 04_process02.hsp
+├── 08_experiment.hsp
+├── 08_ver020ex.exe
+├── PC Careing Diary.exe
+└── README.md
+</code></pre>
+<!--
+* hsp37beta/common/
+	* 00_module.hsp-->
 <!--  -->
-<ul>
-<li>text/
-<ul>
-<li>changelog.html</li>
-<li>08_ver000ex.txt</li>
-<li>README.html</li>
-</ul>
-</li>
-</ul>
+<!--* text/
+	* changelog.html
+	* 08_ver000ex.txt
+	* README.html-->
 <!--  -->
-<ul>
-<li>01_variable.hsp</li>
-<li>02_interface.hsp</li>
-<li>03_process01.hsp</li>
-<li>04_process02.hsp</li>
-<li>08_experiment.hsp</li>
-<li>08_ver020ex.exe</li>
-<li>PC Careing Diary.exe</li>
-<li><a href="http://README.html">README.md</a></li>
-</ul>
+<!--* 01_variable.hsp
+* 02_interface.hsp
+* 03_process01.hsp
+* 04_process02.hsp
+* 08_experiment.hsp
+* 08_ver020ex.exe
+* PC Careing Diary.exe
+* README.md-->
 <h2 id="mit-license">MIT License</h2>
 <p>Copyright (c) 2022 YUZURANIUM</p>
 <p>Permission is hereby granted, free of charge, to any person obtaining a copy<br>
@@ -1566,24 +1575,57 @@ SOFTWARE.</p>
 <hr>
 <br>
 <br>
-<ul>
-<li>hsp37beta/common/
-<ul>
-<li>webview2_10115038.hsp</li>
-</ul>
-</li>
-</ul>
+<pre><code>.
+└── hsp37beta
+	└── common
+		└── webview2_10115038.as
+</code></pre>
+<!--* hsp37beta/common/
+	* webview2_10115038.as-->
 <h2 id="thanks">THANKS</h2>
 <p>webview2_10115038 はHSP3でWebView2を扱えるようにするための支援モジュールです。</p>
 <ul>
-<li>Author : eller様</li>
+<li>Original Author : eller様</li>
 <li><a href="https://blog.goo.ne.jp/hiro239415">HSPメモ帳</a></li>
 </ul>
 <br>
 <br>
 <hr>
-<h2 id="更新履歴">更新履歴</h2>
-<h2 id="ver-020-20221023">ver 0.2.0  <em><sub>(2022/10/23)</sub></em></h2>
+<br>
+<h2 id="change-log">Change Log</h2>
+<h2 id="ver-030-20221102">ver 0.3.0  <em><sub>(2022/11/02)</sub></em></h2>
+<ul>
+<li>
+<h3 id="修正">修正</h3>
+<ul>
+<li>ソースコードの不要部分削除, 効率化.</li>
+</ul>
+</li>
+<li>
+<h3 id="変更">変更</h3>
+<ul>
+<li>Amazoon画面, 商品一覧のリストビューのオブジェクトIDとハンドルを受け取る変数を配列変数に変更.</li>
+<li>フォントハンドルを受け取る変数を配列変数に変更.</li>
+<li>セーブ, ロード, オートセーブ, 変数の初期値設定を専用のlayerobjを用いて1か所で行なうように変更.</li>
+</ul>
+</li>
+<li>
+<h3 id="追加実装">追加･実装</h3>
+<ul>
+<li>タイトル画面に戻る際, 必要な変数を初期値に設定する機能を実装.内部では変数の宣言直後にvsaveで初期値をファイル出力し、読み込むことで変数の再設定を実現.</li>
+<li>設定項目が増えたことに伴い、ログ表示を一部変更.</li>
+</ul>
+</li>
+<li>
+<h3 id="既知の不具合">既知の不具合</h3>
+<ul>
+<li>実行ファイルを別ディレクトリに移動させるとエラー:Startup default となり起動できない不具合. 現段階では WebView2 によるのもと推測.</li>
+</ul>
+</li>
+</ul>
+<br>
+<br>
+<h2 id="ver-020-20221025">ver 0.2.0  <em><sub>(2022/10/25)</sub></em></h2>
 <ul>
 <li>
 <h3 id="修正">修正</h3>
@@ -1607,262 +1649,21 @@ SOFTWARE.</p>
 <h3 id="追加実装">追加･実装</h3>
 <ul>
 <li>情報ウィンドウに作者のTwitterとGitHubのハイパーリンクを実装した.</li>
-<li>実行ファイル(.exe)の作成とバージョン情報ファイル(.ini)を作製.</li>
 <li>実績解除実装に向けて商品データベース内のテーブルに新たにセーブスロットごとの実績管理カラムを追加.(マスクデータのためゲーム内では非表示)</li>
-</ul>
-</li>
-<li>
-<h3 id="既知の不具合">既知の不具合</h3>
-</li>
-</ul>
-<br>
-<h2 id="ver-016-20220930">ver 0.1.6  <em><sub>(2022/09/30)</sub></em></h2>
-<ul>
-<li>
-<h3 id="変更">変更</h3>
-<ul>
-<li>ゲーム内の一部表記を英語へ変更.</li>
-<li>タブコントロールの入れ子を廃止</li>
-<li>ほとんどのウィンドウを新たに作成したMasterウィンドウに貼り付ける方式に変更中.</li>
-</ul>
-</li>
-<li>
-<h3 id="追加実装">追加･実装</h3>
-<ul>
-<li>実際にゲーム内で扱うアイテムデータをSQLiteで実装.</li>
+<li>遷移後の各画面からMainウィンドウに戻る際に自動でメインループ（ゲーム）を再開できる設定を追加.</li>
 </ul>
 </li>
 <li>
 <h3 id="既知の不具合">既知の不具合</h3>
 <ul>
-<li>まともに表示できない.</li>
+<li>タイトル画面に戻る際に各ウィンドウオブジェクトの表示内容や変数の初期化が未実装.</li>
+<li>情報ウィンドウのWebView2の表示がオブジェクトサイズに対して大きすぎる.</li>
 </ul>
 </li>
 </ul>
 <br>
-<details>
-<summary>以下略</summary>
-<br>
-<h2 id="ver-015-20220930">ver 0.1.5  <em><sub>(2022/09/30)</sub></em></h2>
-<ul>
-<li>
-<h3 id="修正">修正</h3>
-<ul>
-<li>タブコントロールの画面更新時に画面が白飛びし,内容が表示されない不具合.</li>
-<li>ログの表記を見やすいように修正.</li>
-</ul>
-</li>
-<li>
-<h3 id="変更">変更</h3>
-<ul>
-<li>ウィンドウIDの管理を#enumによるマクロ定数列挙に変更.</li>
-<li>ファイル名の変更.</li>
-</ul>
-</li>
-<li>
-<h3 id="追加実装">追加･実装</h3>
-<ul>
-<li>日付変更時にログに表示が出るように追加.</li>
-<li>タブコントロールにお店を追加.</li>
-<li>タブコントロールの倉庫とお店にリストビューを設置.</li>
-</ul>
-</li>
-<li>
-<h3 id="既知の不具合">既知の不具合</h3>
-<ul>
-<li>メインループ動作中にタブコントロールの切り替えが不安定になる.また、bgscr命令での表記もメインループ動作中は不安定になり、特に入れ子のタブコントロールはbgscr画面のちらつき（?）と配置したリストビューが表示されなくなる.</li>
-</ul>
-</li>
-</ul>
-<br>
-<h2 id="ver-014-20220909">ver 0.1.4  <em><sub>(2022/09/09)</sub></em></h2>
-<ul>
-<li>
-<h3 id="変更">変更</h3>
-<ul>
-<li>設定ウィンドウを削除し,タブコントロールに設定タブを追加した.</li>
-</ul>
-</li>
-<li>
-<h3 id="追加実装">追加･実装</h3>
-<ul>
-<li>メインウィンドウにタブコントロールのウィンドウオブジェクトを設置した.</li>
-<li>タブコントロールには持ち物,倉庫,ログ,設定をそれぞれ配置した.</li>
-</ul>
-</li>
-<li>
-<h3 id="既知の不具合">既知の不具合</h3>
-<ul>
-<li>タブコントロールの画面更新時,画面が白飛びする不具合.</li>
-</ul>
-</li>
-</ul>
-<br>
-<h2 id="ver-013-20220906">ver 0.1.3  <em><sub>(2022/09/06)</sub></em></h2>
-<ul>
-<li>
-<h3 id="修正">修正</h3>
-<ul>
-<li>ゲーム内時間の繰り上がり時に表記がずれる現象を修正.</li>
-</ul>
-</li>
-<li>
-<h3 id="変更">変更</h3>
-<ul>
-<li>各ウィンドウの管理が煩雑になったためメニューウィンドウを廃止しメニューバーへ変更.</li>
-<li>オープニング画面の不要なボタンを無くし,デザインを一新した（暫定）.</li>
-<li>メインウィンドウの不要なmes命令とウィンドウオブジェクトを無くした.</li>
-<li>メインウィンドウのスタテックテキストのフォント及びフォントサイズを変更.</li>
-<li>ゲーム内時間の表記をyyyy/mm/dd hh:mm形式に変更.</li>
-<li>ゲーム速度を await命令に続く変数で直接的に変更する方式からゲーム内時間カウンタ変数の剰余算を利用する方式に変更.</li>
-</ul>
-</li>
-<li>
-<h3 id="追加実装">追加･実装</h3>
-<ul>
-<li>ステータス項目のうち,ROMとSSDに繰り上がりと単位変換を実装.</li>
-</ul>
-</li>
-</ul>
-<br>
-<h2 id="ver-012-20220902">ver 0.1.2  <em><sub>(2022/09/02)</sub></em></h2>
-<ul>
-<li>
-<h3 id="修正">修正</h3>
-<ul>
-<li>メインルーチンの制御用ボタンの不具合修正.それに伴うルーチン構造の大幅修正.</li>
-</ul>
-</li>
-<li>
-<h3 id="変更">変更</h3>
-<ul>
-<li>メニューバーがゲーム画面を遮ることと技術的側面から一時的に廃止.</li>
-<li>今まで分けて読込み･保存していたゲーム用セーブファイルと設定ファイルをゲーム側にまとめて読込み･保存するように変更.</li>
-<li>ゲーム内時間のカウンタ変数を専用のものから分を扱っている変数に変更.</li>
-</ul>
-</li>
-<li>
-<h3 id="追加実装">追加･実装</h3>
-<ul>
-<li>メニューバーの廃止に伴い,メニューウィンドウを実装.</li>
-<li>スタート画面の仮実装.</li>
-</ul>
-</li>
-</ul>
-<br>
-<h2 id="ver-011-20220825">ver 0.1.1  <em><sub>(2022/08/25)</sub></em></h2>
-<ul>
-<li>
-<h3 id="修正">修正</h3>
-<ul>
-<li>情報ウィンドウの表示を一部修正.</li>
-<li>設定ファイルの読み込み時,設定ウィンドウのオブジェクトの状態が更新されない不具合の修正.</li>
-</ul>
-</li>
-<li>
-<h3 id="変更">変更</h3>
-<ul>
-<li>メインルーチンの再開専用だったボタンを,スタート/一時停止に変更.</li>
-<li>メインウィンドウのステータス表示をメッセージボックスからスタティックテキストへ変更.</li>
-</ul>
-</li>
-</ul>
-<br>
-<h2 id="ver-010-20220824">ver 0.1.0  <em><sub>(2022/08/24)</sub></em></h2>
-<ul>
-<li>
-<h3 id="修正">修正</h3>
-<ul>
-<li>サブルーチンジャンプ先での割り込み処理や,さらなるサブルーチンジャンプが原因で発生するエラー43への対処のため,非効率なサブルーチンを削除,縮小,修正.</li>
-<li>ゲーム内時間の単位変換がうまくいかない不具合を修正.</li>
-</ul>
-</li>
-<li>
-<h3 id="変更">変更</h3>
-<ul>
-<li>エラー43関連で,メインのループを while から *main ~ goto *main へ変更.</li>
-<li>セーブデータの保存/読み込み方法を note~系 + split 方式から vsave命令系に変更.</li>
-</ul>
-</li>
-<li>
-<h3 id="追加実装">追加･実装</h3>
-<ul>
-<li>ゲームスピードの調整と自動セーブ機能の実装,それに伴う設定ウィンドウの追加,実装.</li>
-</ul>
-</li>
-<li>
-<h3 id="既知の不具合">既知の不具合</h3>
-<ul>
-<li>設定ウィンドウの完了ボタンで設定内容を .var形式ファイルで出力保存できるが,読み込み時,ウィンドウオブジェクト側の表示が反映されない不具合.</li>
-</ul>
-</li>
-</ul>
-<br>
-<h2 id="ver-009-20220820">ver 0.0.9  <em><sub>(2022/08/20)</sub></em></h2>
-<ul>
-<li>ゲーム内時間の実装</li>
-</ul>
-<h2 id="ver-008-20220818">ver 0.0.8  <em><sub>(2022/08/18)</sub></em></h2>
-<ul>
-<li>バージョン情報ウィンドウのUIを変更. メニューバーの項目変更.</li>
-</ul>
-<h2 id="ver-007-20220817">ver 0.0.7  <em><sub>(2022/08/17)</sub></em></h2>
-<ul>
-<li>バージョン情報をコピーライトと更新履歴とに分けて表示させるように修正し,更新履歴に関しては専用のウィンドウを用意した.</li>
-<li>また、それに伴ってメニューバー周りのルーチンジャンプを見直した.</li>
-</ul>
-<h2 id="ver-006-20220815">ver 0.0.6  <em><sub>(2022/08/15)</sub></em></h2>
-<ul>
-<li>一部UIの修正. ステータスの管理に多次元配列を採用したことに伴う処理部の大幅修正.</li>
-<li>プロジェクトファイルを分割し,今後の作業効率化を図った.</li>
-</ul>
-<table>
-<thead>
-<tr>
-<th>ファイル</th>
-<th>中身</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>object部</td>
-<td>ウィンドウオブジェクト･UI</td>
-</tr>
-<tr>
-<td>変 数 部</td>
-<td>扱う変数の増加,多次元配列の採用によるスクリプトの煩雑化回避のため処理部から分離.<br>また,オブジェクトの配置もこちらで一括管理.</td>
-</tr>
-<tr>
-<td>処 理 部</td>
-<td>ウィンドウオブジェクトからのラベル処理.<br>今後、こちらはプログラム全体のラベルのジャンプ先とし,メイン処理系を別で新設する予定.</td>
-</tr>
-<tr>
-<td>func部</td>
-<td>自作の命令･関数をまとめて定義したもの.commonフォルダに入れてある.</td>
-</tr>
-</tbody>
-</table>
-<h2 id="ver-005-20220812">ver 0.0.5  <em><sub>(2022/08/12)</sub></em></h2>
-<ul>
-<li>メッセージボックスへの表示と各ステータスの管理,及びセーブデータの出力を一括して行う自作関数の導入に伴う効率化.</li>
-</ul>
-<h2 id="ver-004-20220811">ver 0.0.4  <em><sub>(2022/08/11)</sub></em></h2>
-<ul>
-<li>開発環境がHSPスクリプトエディタからVSCodeへ移行したことに伴うスクリプトの一部修正.</li>
-</ul>
-<h2 id="ver-003α-20220810">ver 0.0.3α  <em><sub>(2022/08/10)</sub></em></h2>
-<ul>
-<li>データの保存と読み込み機能の不具合修正.</li>
-</ul>
-<h2 id="ver-002α-20220808">ver 0.0.2α  <em><sub>(2022/08/08)</sub></em></h2>
-<ul>
-<li>メニューバーの実装.</li>
-</ul>
-<h2 id="ver-001α-20220805">ver 0.0.1α  <em><sub>(2022/08/05)</sub></em></h2>
-<ul>
-<li>製作開始.</li>
-</ul>
-</details></div>
+<p><a href="C:/HSP.git/text/changelog.html">changelog</a></p>
+</div>
         </div>
         
         <script async type="text/javascript">
