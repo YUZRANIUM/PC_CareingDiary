@@ -1,14 +1,15 @@
 // INFO ************************************************
 // FileName : 08_experiment.hsp
-// Date   : 2022/10/30
+// Date   : 2022/11/02
 // Author : YUZURANIUM（ゆずらにうむ）
 // URL    : https://twitter.com/YUZRANIUM
 //******************************************************
-#packopt name "08_ver020"
-#packopt type 0
-#packopt version "08version.txt"
 
-#if 0
+#packopt name "08_ver030"
+#packopt type 0
+#packopt version "text/08version.txt"
+
+#if 1
 /*##############################################################################
 							画面切り替え機能実験
 ###############################################################################*/
@@ -34,10 +35,10 @@
 	//HSPのバージョン
 	hspv = "" : hsed_cnvverstr hspver : hspv += refstr
 	if instr(hspv, 0, "b") != -1 : strrep hspv, "b", "beta"
-	title " 05_ver0.2.0experiment  for  HSP " + hspv
+	title " 08_ver0.3.0experiment  for  HSP " + hspv
 	sdim logfile_ex, 2048
 	notesel logfile_ex
-	noteload "text/05_ver000ex.txt" : noteunsel
+	noteload "text\\08_ver000ex.txt" : noteunsel
 	link = "https://github.com/YUZURANIUM/PC_CareingDiary"
 /*******************************************************************************
 								MASTER_ex
@@ -515,7 +516,7 @@
 /*##############################################################################
 						hspバージョン確認
 ###############################################################################*/
-#if 1
+#if 0
 	#include "hsedsdk.as"
 	#include "00_module.hsp"
 	#include "00_mylv.hsp"
@@ -551,5 +552,5 @@
 	sendmsg objinfo(id_lv, 2), $30, hFont
 
 	/*** マクロ ***/
-	myhspver2 (myhspver(hspver))
+	//myhspver2 (myhspver(hspver))
 #endif
