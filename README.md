@@ -9,7 +9,7 @@ In this repository, I practice the repository itself while publishing my persona
 
 ## 現在の仕様
 
-<details>
+<details open>
 
 <summary>画面遷移</summary>
 
