@@ -1,7 +1,7 @@
 // INFO ****************************************************
 // FileName : 02_interface.hsp
-// Version : 0.2.0
-// Date    : 2022/10/24
+// Version : 0.3.0
+// Date    : 2022/11/02
 // Author  : YUZURANIUM（ゆずらにうむ）
 // Twitter : https://twitter.com/YUZRANIUM
 // Git Hub : https://github.com/YUZURANIUM/PC_CareingDiary
@@ -11,8 +11,6 @@
 また、ウィンドウメッセージや割り込み設定も扱っています。
 ************************************************************/
 
-
-
 /*******************************************************************************
 								Master Window
 ********************************************************************************/
@@ -21,8 +19,11 @@
 	title titlemes
 	font "メイリオ", 16 : objmode 2, 1
 	//HSPのBMSCR構造体からフォントハンドルを取得
-	mref BMSCR, 67 : hFont = BMSCR.38
+	mref BMSCR, 67 : hFont(0) = BMSCR.38
 
+//--------------------------------------変数･データ操作用レイヤーオブジェクト
+	layerobj ,,1, *master_layer_var, 1
+	master_layer = stat
 
 /*******************************************************************************
 								Opening Window
@@ -56,7 +57,7 @@
 
 	font "メイリオ", 13
 	//HSPのBMSCR構造体からフォントハンドルを取得
-	mref BMSCR3, 67 : hFont3 = BMSCR3.38
+	mref BMSCR3, 67 : hFont(2) = BMSCR3.38
 
 
 
@@ -74,28 +75,28 @@
 	hx = 590 : hy = 15
 	pos hx, hy
 	winobj "static", "ゲーム内時間を表記します", , $50000000 | $1 | $800000, 200, 28
-	hStatic_h = objinfo(stat, 2)
+	hStatic(0) = objinfo(stat, 2)
 
 	/***ステータス項目表示***/
 	mx = 15 : my = 15
 	pos mx, my
 	winobj "static", " C P U\n G P U\n R O M\n S S D\n F a n\n 温 度\n Power", , $50000000 | $800000, 170, 170
-	hStatic_i = objinfo(stat, 2)
+	hStatic(1) = objinfo(stat, 2)
 
 	/***ステータス数値表示***/
 	pos mx + 58, my + 1
 	winobj "static", "", , $50000000 | $2, 70, 168
-	hStatic_m = objinfo(stat, 2)
+	hStatic(2) = objinfo(stat, 2)
 
 	/***ステータス単位表示(変動用)***/
-	pos mx + 126, my + 50
+	pos mx + 127, my + 50
 	winobj "static", " B\n B", , $50000000, 40, 50
-	hStatic_u = objinfo(stat, 2)
+	hStatic(3) = objinfo(stat, 2)
 
 	/***ステータス単位表示(固定用)***/
-	pos mx + 126, my + 96
+	pos mx + 127, my + 96
 	winobj "static", " rpm\n deg\n %", , $50000000, 40, 70
-	hStatic_u2 = objinfo(stat, 2)
+	hStatic(4) = objinfo(stat, 2)
 
 /*******************************************************************************/
 
@@ -127,7 +128,7 @@
 
 
 
-//--------------------------------------レイヤーオブジェクトlay0
+//--------------------------------------各種描画更新用レイヤーオブジェクト
 	pos 0, 0
 	layerobj 800, 200, 3, *lay, 0
 	layid0 = stat
@@ -147,17 +148,17 @@
 	gsel ID_WIN_MAIN
 
 	/******フォントの反映******/
-	sendmsg hStatic_h, $30, hFont
-	sendmsg hStatic_i, $30, hFont
-	sendmsg hStatic_m, $30, hFont
-	sendmsg hStatic_u, $30, hFont
-	sendmsg hStatic_u2, $30, hFont
+	sendmsg hStatic(0), $30, hFont(0)
+	sendmsg hStatic(1), $30, hFont(0)
+	sendmsg hStatic(2), $30, hFont(0)
+	sendmsg hStatic(3), $30, hFont(0)
+	sendmsg hStatic(4), $30, hFont(0)
 	/******フォントの反映******/
-	sendmsg hTab_main, $30, hFont2
-	sendmsg hLVsouko, $30, hFont3
+	sendmsg hTab_main, $30, hFont(1)
+	sendmsg hLVsouko, $30, hFont(2)
 
 	/*****  割り込み  *****/
-	oncmd gosub *noti_main, WM_NOTIFY //タブ項目切り替え処理時のメッセージ
+	oncmd gosub *tabchange, WM_NOTIFY //タブ項目切り替え処理時のメッセージ
 
 
 
@@ -181,9 +182,9 @@
 //==========================================================
 	InsertTab "C P U", ID_OMTAB_CPU, 5, hTabOMI
 	pos 2, 2
-	mycrelv listx, listy, id_LVCPU, hLVCPU
-	myincol id_LVCPU, col_list, col_num, column_w
-	myinitem id_LVCPU, bfcpu, rec_cnum, col_num
+	mycrelv listx, listy, LVidh(0, 0), LVidh(0, 1)
+	myincol LVidh(0, 0), col_list, col_num, column_w
+	myinitem LVidh(0, 0), bfcpu, rec_cnum, col_num
 	/*****  割り込み  *****/
 	oncmd gosub *notify, WM_NOTIFY
 
@@ -191,9 +192,9 @@
 //==========================================================
 	InsertTab "G P U", ID_OMTAB_GPU, 6, hTabOMI
 	pos 2, 2
-	mycrelv listx, listy, id_LVGPU, hLVGPU
-	myincol id_LVGPU, col_list, col_num, column_w
-	myinitem id_LVGPU, bfgpu, rec_gnum, col_num
+	mycrelv listx, listy, LVidh(1, 0), LVidh(1, 1)
+	myincol LVidh(1, 0), col_list, col_num, column_w
+	myinitem LVidh(1, 0), bfgpu, rec_gnum, col_num
 	/*****  割り込み  *****/
 	oncmd gosub *notify, WM_NOTIFY
 
@@ -201,9 +202,9 @@
 //==========================================================
 	InsertTab "R O M", ID_OMTAB_ROM, 7, hTabOMI
 	pos 2, 2
-	mycrelv listx, listy, id_LVROM, hLVROM
-	myincol id_LVROM, col_list, col_num, column_w
-	myinitem id_LVROM, bfrom, rec_rnum, col_num
+	mycrelv listx, listy, LVidh(2, 0), LVidh(2, 1)
+	myincol LVidh(2, 0), col_list, col_num, column_w
+	myinitem LVidh(2, 0), bfrom, rec_rnum, col_num
 	/*****  割り込み  *****/
 	oncmd gosub *notify, WM_NOTIFY
 
@@ -211,21 +212,21 @@
 //==========================================================
 	InsertTab "S S D", ID_OMTAB_SSD, 8, hTabOMI
 	pos 2, 2
-	//mycrelv listx, listy, id_LVSSD, hLVSSD
+	//mycrelv listx, listy, LVidh(3, 0), LVidh(3, 1)
 	//oncmd gosub *notify, WM_NOTIFY
 
 
 //==========================================================
 	InsertTab "F A N", ID_OMTAB_FAN, 9, hTabOMI
 	pos 2, 2
-	//mycrelv listx, listy, id_LVFAN, hLVFAN
+	//mycrelv listx, listy, LVidh(4, 0), LVidh(4, 1)
 	//oncmd gosub *notify, WM_NOTIFY
 
 
 //==========================================================
 	InsertTab "Power", ID_OMTAB_POW, 10, hTabOMI
 	pos 2, 2
-	//mycrelv listx, listy, id_LVPOW, hLVPOW
+	//mycrelv listx, listy, LVidh(5, 0), LVidh(5, 1)
 	//oncmd gosub *notify, WM_NOTIFY
 
 
@@ -233,9 +234,9 @@
 	gsel ID_OMTAB_CPU, 1 : gsel ID_WIN_AMAZ
 
 	/******フォントの反映******/
-	sendmsg hTabOMI, $30, hFont3
+	sendmsg hTabOMI, $30, hFont(2)
 	/*****  割り込み  *****/
-	oncmd gosub *noti_amaz, WM_NOTIFY //タブ項目切り替え処理時のメッセージ
+	oncmd gosub *tabchange, WM_NOTIFY //タブ項目切り替え処理時のメッセージ
 
 
 
@@ -297,7 +298,7 @@
 	button gosub "Title", *retitle
 
 	pos 20, 20 : objsize 110, 20
-	chkbox "AutoSave OFF", setting(0, 0)
+	chkbox "AutoSave OFF", setting(0)
 	id_savebut = stat : hButton = objinfo(id_savebut, 2)
 
 
@@ -308,19 +309,19 @@
 
 	//----------------------------------chkbox
 	pos 20, 90
-	chkbox "Slowest", setting(1, 0)
+	chkbox "Slowest", setting(1)
 	id_chkosoi = stat : hChkbox1 = objinfo(id_chkosoi, 2)
 	sendmsg hChkbox1, $F4, $9 //ラジオボタングループ化
 
 	//----------------------------------chkbox
 	pos 110, 90
-	chkbox "Normal", setting(2, 0)
+	chkbox "Normal", setting(2)
 	id_chkfutu = stat : hChkbox2 = objinfo(id_chkfutu, 2)
 	sendmsg hChkbox2, $F4, $9
 
 	//----------------------------------chkbox
 	pos 200, 90
-	chkbox "Fastest", setting(3, 0)
+	chkbox "Fastest", setting(3)
 	id_chkhaya = stat : hChkbox3 = objinfo(id_chkhaya, 2)
 	sendmsg hChkbox3, $F4, $9
 
@@ -332,13 +333,13 @@
 	mes "Auto starting Game when return to Main" : font "メイリオ", 13
 
 	pos 20, 160
-	chkbox re_amaz(setting(8, 0)), setting(8, 0)
+	chkbox re_amaz(setting(8)), setting(8)
 	id_chkreamaz = stat : hChkbox4 = objinfo(id_chkreamaz, 2)
 
-	chkbox re_save(setting(9, 0)), setting(9, 0)
+	chkbox re_save(setting(9)), setting(9)
 	id_chkresave = stat : hChkbox5 = objinfo(id_chkresave, 2)
 
-	chkbox re_sett(setting(10, 0)), setting(10, 0)
+	chkbox re_sett(setting(10)), setting(10)
 	id_chkresett = stat : hChkbox6 = objinfo(id_chkresett, 2)
 
 
@@ -354,8 +355,11 @@
 ********************************************************************************/
 	screen ID_WIN_INFO, 650, 500, 6 : title "Information ver" + ver
 	font "メイリオ", 15 : objmode 2, 0
-	pos 10, 2 : mes "N A M E\nVERSION\nHSP ver\nAUTHOR\nU  R  L\nGit Hub", 1
-	pos 100,
+	pos 10, 2
+	repeat 4, 6
+		mes infa(cnt)
+	loop
+	pos 90, 2
 	repeat 4
 		mes infa(cnt)
 	loop
@@ -363,24 +367,28 @@
 //						<<  オブジェクトの設置  >>
 //==============================================================================
 
-	mylmb "作者ついった～", 150, 20, hLinktw, $1
-	pos ginfo_cx, ginfo_cy + 5
-	mylmb "作者ぎっとはぶぅ", 150, 20, hLinkgi, $1
+	pos 310, ginfo_cy - 23
+	mylmb "Twitter", 100, 25, hLinktw, SS_CENTER | WS_BORDER
+	pos ginfo_cx + 110, ginfo_cy - 25
+	mylmb "GitHub", 100, 25, hLinkgi, SS_CENTER | WS_BORDER
 
 	font "メイリオ", 14 : objmode 2, 1
 	//HSPのBMSCR構造体からフォントハンドルを取得
-	mref BMSCR2, 67 : hFont2 = BMSCR2.38
+	mref BMSCR2, 67 : hFont(1) = BMSCR2.38
 
 
-	pos 0, 142
+	pos 0, 110
+	//Mycolor 0.25, 0.25, 0.25, 0
+	//boxf 0, 150, 650, 485
 	/*****  WebView2  *****/
 	mes "  UPDATE HISTORY  "
 	font "メイリオ", 10
+
 	pEnv = WebView2_CreateEnv()
 	pCtrl = WebView2_CreateCtrl(pEnv, hwnd)
-	WebView2_Size pCtrl, 0, 160, 650, 475
+	WebView2_Size pCtrl, 0, 130, 650, 475
 	pView = WebView2_GetView(pCtrl)
-	WebView2_Navigate pView, dir_cur + "\\text\\09_changelog.html"
+	WebView2_Navigate pView, changelog
 
 
 	pos 525, 475 : objsize 125,
@@ -388,8 +396,8 @@
 
 
 	/***ハイパーリンクフォントの適用***/
-	sendmsg hLinktw, $30, hFont3
-	sendmsg hLinkgi, $30, hFont3
+	sendmsg hLinktw, $30, hFont(0)
+	sendmsg hLinkgi, $30, hFont(0)
 
 	/*****  割り込み  *****/
 	oncmd gosub *mousclick, $111 //マウスクリック
