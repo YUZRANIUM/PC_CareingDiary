@@ -325,4 +325,4 @@ webview2_10115038 はHSP3でWebView2を扱えるようにするための支援�
 
 <br>
 
-[changelog](C:/HSP.git/text/changelog.html)
+[changelog]()
