@@ -1,7 +1,7 @@
 // INFO ****************************************************
 // FileName : 00_module.hsp
-// Version : 0.2.0
-// Date    : 2022/10/24
+// Version : 0.3.0
+// Date    : 2022/11/02
 // Author  : YUZURANIUM（ゆずらにうむ）
 // Twitter : https://twitter.com/YUZRANIUM
 // Git Hub : https://github.com/YUZURANIUM/PC_CareingDiary
@@ -47,10 +47,11 @@
 //%1 : ファイル名
 #define global mysave2(%1)\
 	vsave_start\
+	: vsave_put setting\
+	: vsave_put saveID\
 	: vsave_put u\
 	: vsave_put st\
 	: vsave_put gt\
-	: vsave_put setting\
 	: vsave_put motimono\
 	: vsave_put logmoni\
 	: vsave_put bfcpu\
@@ -58,17 +59,25 @@
 	: vsave_put bfrom\
 	: vsave_end %1
 #global
+
 #module
 //HSPバージョン"beta文字"付き出力関数
 //hsedsdk.asをインクルードすること
-#defcfunc myhspver
-	hsed_cnvverstr hspver
+#defcfunc myhspver_ int p1
 	sdim a
+	hsed_cnvverstr p1
 	a += refstr
 	if instr(a, 0, "b") != -1 {
 		strrep a, "b", "beta"
 	}
 	return a
+#global
+
+#module
+//HSPバージョン"beta文字"付き出力
+//%1 : __hspver__ もしくは hspver
+//hsedsdk.asをインクルードすること
+#define global myhspver(%1) myhspver_ %1
 #global
 
 #module
