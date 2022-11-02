@@ -1,7 +1,7 @@
 // INFO ****************************************************
 // FileName : 01_variable.hsp
-// Version : 0.2.0
-// Date    : 2022/10/24
+// Version : 0.3.0
+// Date    : 2022/11/02
 // Author  : YUZURANIUM（ゆずらにうむ）
 // Twitter : https://twitter.com/YUZRANIUM
 // Git Hub : https://github.com/YUZURANIUM/PC_CareingDiary
@@ -14,8 +14,6 @@ SQL関係もデータを変数に格納するということでこちらで扱っています。
 使用しているエディタとそれに導入している拡張機能によって、ツールヒントの様に
 変数直上のコメントを表示させるためです。
 ************************************************************/
-
-
 
 	/*** 各ウィンドウID ***/
 	#enum ID_WIN_MASTER = 0
@@ -36,50 +34,65 @@ SQL関係もデータを変数に格納するということでこちらで扱っています。
 	#enum ID_OMTAB_SSD //SSD
 	#enum ID_OMTAB_FAN //FAN
 	#enum ID_OMTAB_POW //Power
+
+	/***  master layerobjのswitch用  ***/
+	#enum lay_autosave = 0
+	#enum lay_save
+	#enum lay_load
+	/***  描画用layerobjのswitch用  ***/
+	#enum gameh = 0
+	#enum unitc
+
+	// \\text\\changelog.html
+	#define changelog dir_cur + "\\text\\changelog.html"
+	// \\savedata\\backup.var
+	#define backupdir dir_cur + "\\savedata\\backup.var"
+
 	//バージョン
 	ver = "0.2.0"
 	//titleバー
-	titlemes = "PC CareingDiary ver" + ver + " /HSP" + myhspver()
+	titlemes = "PC CareingDiary ver" + ver + " /HSP" + myhspver(hspver)
 	//バージョン情報
 	infa = "" : sdim infa, 128, 5
-	infa(0) = "PC Careing Diary ver vv"
-	infa(1) = "ver vv"
-	infa(2) = "ver hh"
-	infa(3) = "YUZRANIUM ( ゆずらにうむ )"
-	infa(4) = "https://twitter.com/YUZRANIUM"
-	infa(5) = "https://github.com/YUZURANIUM/PC_CareingDiary"
-	strrep infa(0), "vv", ver : strrep infa(1), "vv", ver : strrep infa(2), "hh", myhspver()
-	//フォントハンドル:メイリオ, 16
-	hFont = 0 : dim hFont
-	//フォントハンドル:メイリオ, 14
-	hFont2 = 0 : dim hFont2
-	//フォントハンドル:メイリオ, 13
-	hFont3 = 0 : dim hFont3
+	notesel infa
+	noteload "text\\verinfo.txt" : split infa, "\n", infa
+	strrep infa(1), "vv", ver : strrep infa(2), "hh", myhspver(hspver)
+
+	//フォントハンドル:メイリオ
+	//hFont(0):メイリオ, 16
+	//hFont(1):メイリオ, 14
+	//hFont(2):メイリオ, 13
+	hFont = 0 : dim hFont, 3
+	hFont(0) = 0
+	hFont(1) = 0
+	hFont(2) = 0
 
 	//設定項目配列
-	//setting(0, 0):オートセーブON/OFF
-	//setting(1, 0):ゲーム速度項目[遅  め]
-	//setting(2, 0):ゲーム速度項目[ふつう]
-	//setting(3, 0):ゲーム速度項目[早  め]
-	//setting(4, 0):ゲーム速度剰余算
-	//setting(5, 0):めいんるーてん制御
-	//setting(6, 0):日付変更フラグ
-	//setting(7, 0):新年あけおめフラグ
-	//setting(8, 0):amzo auto start
-	//setting(9, 0):save auto start
-	//setting(10, 0):sett auto start
+	//setting(0):オートセーブON/OFF
+	//setting(1):ゲーム速度項目[遅  め]
+	//setting(2):ゲーム速度項目[ふつう]
+	//setting(3):ゲーム速度項目[早  め]
+	//setting(4):ゲーム速度剰余算
+	//setting(5):めいんるーてん制御
+	//setting(6):日付変更フラグ
+	//setting(7):新年あけおめフラグ
+	//setting(8):amzo auto start
+	//setting(9):save auto start
+	//setting(10):sett auto start
 	setting = "" : dim setting, 11, 0
-	setting(0, 0) = 0
-	setting(1, 0) = 0
-	setting(2, 0) = 1
-	setting(3, 0) = 0
-	setting(4, 0) = 6
-	setting(5, 0) = -1
-	setting(6, 0) = 0
-	setting(7, 0) = 0
-	setting(8, 0) = 0
-	setting(9, 0) = 0
-	setting(10, 0) = 0
+	setting(0) = 0
+	setting(1) = 0
+	setting(2) = 1
+	setting(3) = 0
+	setting(4) = 6
+	setting(5) = -1
+	setting(6) = 0
+	setting(7) = 0
+	setting(8) = 0
+	setting(9) = 0
+	setting(10) = 0
+	//スタートストップボタン
+	opebut_text = "START", "STOP", "あ"
 	//オートセーブボタン
 	savebut_text = "AutoSave OFF", "AutoSave ON"
 	//return amaz
@@ -89,7 +102,7 @@ SQL関係もデータを変数に格納するということでこちらで扱っています。
 	//return setteing
 	re_sett = "Setting Return OFF", "Setting Return ON"
 	//ログの設定変更時のフォーマット
-	logstr = "" : sdim logstr
+	logstr = ""
 	logstr = {"
 	*** Settings Change ***
 	aa
@@ -114,7 +127,7 @@ SQL関係もデータを変数に格納するということでこちらで扱っています。
 	if flist == "" : mkdir "savedata"
 	sdim flist
 	//ファイル名変数
-	fname = "" : sdim fname, 64
+	fname = "" : sdim fname, 512, 8
 	fname(0) = "" + dir_cur + "\\savedata\\Save0.var"
 	fname(1) = "" + dir_cur + "\\savedata\\Save1.var"
 	fname(2) = "" + dir_cur + "\\savedata\\Save2.var"
@@ -122,9 +135,9 @@ SQL関係もデータを変数に格納するということでこちらで扱っています。
 	fname(4) = "" + dir_cur + "\\savedata\\Save4.var"
 	fname(5) = "" + dir_cur + "\\savedata\\Save5.var"
 	fname(6) = "" + dir_cur + "\\savedata\\Save6.var"
-	fname(7) = "" + dir_cur + "\\savedata\\Save7.var"
-	//saveIDスロット番号
-	saveID = 0 : dim saveID
+	fname(7) = "" + dir_cur + "\\savedata\\Reset.var"
+	//saveスロット番号
+	saveID = 0
 
 	//単位変換
 	u = "" : sdim u, 32, 11
@@ -172,8 +185,6 @@ SQL関係もデータを変数に格納するということでこちらで扱っています。
 	gt(4, 0) = "08"  : gt(4, 1) = ":"  : gt(4, 2) = strf("%02d", int(gt(4, 0)))
 	gt(5, 0) = "00"  : gt(5, 1) = ""   : gt(5, 2) = strf("%02d", int(gt(5, 0)))
 	gt(6, 0) = "0"
-	//スタートストップボタン
-	opebut_text = "START", "STOP"
 	sdim motimono, 2048 : sdim soukomoni, 2048 : sdim logmoni, 2048 : sdim omisemoni, 2048
 	//持ち物表示用その他1
 	motimono += "持ち物一覧です\n\n"
@@ -183,6 +194,28 @@ SQL関係もデータを変数に格納するということでこちらで扱っています。
 	omisemoni = ""
 	//ログ表示用
 	logmoni = "\n\n"
+	//レイヤーオブジェクトlparam受け取り
+	layl = "" : dim layl, 2
+
+/*******************************************************************************
+								SQL
+********************************************************************************/
+
+	//商品リストビューのオブジェクトIDとハンドル
+	//第2次元要素 0 = ID, 1 = objct hWnd
+	//LVidh(0, 0):CPU
+	//LVidh(1, 0):GPU
+	//LVidh(2, 0):ROM
+	//LVidh(3, 0):SSD
+	//LVidh(4, 0):FAN
+	//LVidh(5, 0):POWER
+	LVidh = "" : dim LVidh, 6, 2
+	LVidh(0, 0) = 0  :  LVidh(0, 1) = 0
+	LVidh(1, 0) = 0  :  LVidh(1, 1) = 0
+	LVidh(2, 0) = 0  :  LVidh(2, 1) = 0
+	LVidh(3, 0) = 0  :  LVidh(3, 1) = 0
+	LVidh(4, 0) = 0  :  LVidh(4, 1) = 0
+	LVidh(5, 0) = 0  :  LVidh(5, 1) = 0
 
 	//アイテムDB
 	db = "SQL\\Syouhin.db"
@@ -230,3 +263,6 @@ SQL関係もデータを変数に格納するということでこちらで扱っています。
 
 	sql_q "COMMIT;"
 	sql_close
+
+	//変数リセット用ファイル
+	mysave2 fname(7)
