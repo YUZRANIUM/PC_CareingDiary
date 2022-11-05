@@ -12,7 +12,6 @@
 ************************************************************/
 
 
-
 //タブ項目の文字列の長さに関わらずタブつまみの横幅をすべて同じサイズにします
 #define global TCS_FIXEDWIDTH $400
 //スタティックテキスト
@@ -20,13 +19,20 @@
 //<拡張ウィンドウスタイル> : 深い凹み
 #define global WS_EX_WINDOWEDGE $200
 //<ウィンドウスタイル>
-#define global WS_BORDER        $800000		//境界枠線
-#define global WS_DISABLED      $8000000	//無効
-#define global WS_DLGFRAME      $400000		//膨らみ
-#define global SS_CENTER        $1			//中央揃え
-#define global SS_RIGHT         $2			//右揃え
-#define global SS_SUNKEN        $1000		//浅い凹み
+#define global WS_BORDER     $800000    //境界枠線
+#define global WS_DISABLED   $8000000   //無効
+#define global WS_DLGFRAME   $400000    //膨らみ
+#define global SS_CENTER     $1         //中央揃え
+#define global SS_RIGHT      $2         //右揃え
+#define global SS_SUNKEN     $1000      //浅い凹み
+
+#define global WS_VISIBLE    0x10000000
+#define global WS_CHILD      0x40000000
+
 /*******************************************************************************/
+
+
+
 #module
 //vsave短縮
 //%1,%2,%3,%4,%5,%6
@@ -60,6 +66,8 @@
 	: vsave_end %1
 #global
 
+
+
 #module
 //HSPバージョン"beta文字"付き出力関数
 //hsedsdk.asをインクルードすること
@@ -72,13 +80,14 @@
 	}
 	return a
 #global
-
 #module
 //HSPバージョン"beta文字"付き出力
 //%1 : __hspver__ もしくは hspver
 //hsedsdk.asをインクルードすること
 #define global myhspver(%1) myhspver_ %1
 #global
+
+
 
 #module
 #deffunc rm_init
@@ -94,6 +103,10 @@
 	y1 = ginfo(1) - ginfo(5) - TabSize
 	return y1
 #global
+
+
+
+
 /*******************************************************************************
 					タブコントロールモジュール
 ********************************************************************************/
