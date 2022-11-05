@@ -13,13 +13,15 @@
 
 //######################  メインループ  #######################/
 *main
-	wait 16
+	await 64
+	gsel ID_WIN_MASTER
+	title titlemes + "   fps = " + d3getfps()
 	gsel ID_WIN_SETI
 	/*****  設定ウィンドウのチェックボックスの表示更新  *****/
 	objprm id_savebut, savebut_text(setting(0))
-	objprm id_chkreamaz, re_amaz(setting(8))
-	objprm id_chkresave, re_save(setting(9))
-	objprm id_chkresett, re_sett(setting(10))
+	objprm Shkidh(3, 0), re_amaz(setting(8))
+	objprm Shkidh(4, 0), re_save(setting(9))
+	objprm Shkidh(5, 0), re_sett(setting(10))
 	/*****  ループ制御ボタンの表示切り替え  *****/
 	gsel ID_WIN_MAIN
 	objprm id_opebut, opebut_text(int(opebut_text(2)))
@@ -53,7 +55,7 @@
 
 	//オートセーブ設定が有効かどうか
 	if setting(0) == 1 {
-		savecontrol = int(gt(gid, 0)) \ 5
+		savecontrol = int(gt(gid, 0)) \ 16
 		if savecontrol == 0 : savec = 1 + savec
 		/*****  オートセーブ  *****/
 		if savec > 100 {
@@ -259,6 +261,7 @@
 	setting(5) = -1
 	dialog "Return to Opening Really?", 2, "Return to Opening"
 	if stat == 6 {
+		mysave2 fname(saveID)
 		saveID = 7
 		gsel ID_WIN_MASTER : objprm master_layer, lay_load
 		gsel ID_WIN_MAIN, -1
@@ -272,17 +275,17 @@
 	sdim string2 : sdim logstr
 	//チェックボックスの値取得
 	//ゲーム速度
-	sendmsg hChkbox1, $F0 : setting(1) = stat
-	sendmsg hChkbox2, $F0 : setting(2) = stat
-	sendmsg hChkbox3, $F0 : setting(3) = stat
+	sendmsg Shkidh(0, 1), $F0 : setting(1) = stat
+	sendmsg Shkidh(1, 1), $F0 : setting(2) = stat
+	sendmsg Shkidh(2, 1), $F0 : setting(3) = stat
 	//remain
-	sendmsg hChkbox4, $F0 : setting(8) = stat
-	sendmsg hChkbox5, $F0 : setting(9) = stat
-	sendmsg hChkbox6, $F0 : setting(10) = stat
+	sendmsg Shkidh(3, 1), $F0 : setting(8) = stat
+	sendmsg Shkidh(4, 1), $F0 : setting(9) = stat
+	sendmsg Shkidh(5, 1), $F0 : setting(10) = stat
 
 	/*****  ゲーム内のログ表示（設定変更）  *****/
 	if setting(1) == 1 {
-		setting(4) = 6
+		setting(4) = 8
 		string2 = "GameSpeed [Slowest]"
 	}
 	if setting(2) == 1 {
@@ -290,7 +293,7 @@
 		string2 = "GameSpeed [Normal]"
 	}
 	if setting(3) == 1 {
-		setting(4) = 1
+		setting(4) = 2
 		string2 = "GameSpeed [Fastest]"
 	}
 	logstr = {"
