@@ -310,20 +310,20 @@
 	//----------------------------------chkbox
 	pos 20, 90
 	chkbox "Slowest", setting(1)
-	id_chkosoi = stat : hChkbox1 = objinfo(id_chkosoi, 2)
-	sendmsg hChkbox1, $F4, $9 //ラジオボタングループ化
+	Shkidh(0, 0) = stat : Shkidh(0, 1) = objinfo(Shkidh(0, 0), 2)
+	sendmsg Shkidh(0, 1), $F4, $9 //ラジオボタングループ化
 
 	//----------------------------------chkbox
 	pos 110, 90
 	chkbox "Normal", setting(2)
-	id_chkfutu = stat : hChkbox2 = objinfo(id_chkfutu, 2)
-	sendmsg hChkbox2, $F4, $9
+	Shkidh(1, 0) = stat : Shkidh(1, 1) = objinfo(Shkidh(1, 0), 2)
+	sendmsg Shkidh(1, 1), $F4, $9
 
 	//----------------------------------chkbox
 	pos 200, 90
 	chkbox "Fastest", setting(3)
-	id_chkhaya = stat : hChkbox3 = objinfo(id_chkhaya, 2)
-	sendmsg hChkbox3, $F4, $9
+	Shkidh(2, 0) = stat : Shkidh(2, 1) = objinfo(Shkidh(2, 0), 2)
+	sendmsg Shkidh(2, 1), $F4, $9
 
 
 
@@ -334,13 +334,13 @@
 
 	pos 20, 160
 	chkbox re_amaz(setting(8)), setting(8)
-	id_chkreamaz = stat : hChkbox4 = objinfo(id_chkreamaz, 2)
+	Shkidh(3, 0) = stat : Shkidh(3, 1) = objinfo(Shkidh(3, 0), 2)
 
 	chkbox re_save(setting(9)), setting(9)
-	id_chkresave = stat : hChkbox5 = objinfo(id_chkresave, 2)
+	Shkidh(4, 0) = stat : Shkidh(4, 1) = objinfo(Shkidh(4, 0), 2)
 
 	chkbox re_sett(setting(10)), setting(10)
-	id_chkresett = stat : hChkbox6 = objinfo(id_chkresett, 2)
+	Shkidh(5, 0) = stat : Shkidh(5, 1) = objinfo(Shkidh(5, 0), 2)
 
 
 
