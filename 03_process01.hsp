@@ -11,47 +11,63 @@
 ほぼ全てのサブルーチンジャンプの処理を行っています。
 ************************************************************/
 
+
+
 //######################  メインループ  #######################/
 *main
 	await 64
-	gsel ID_WIN_MASTER
-	title titlemes + "   fps = " + d3getfps()
+
+	;===================================================
+	; メインループの制御
+	;===================================================
+	gsel ID_WIN_MASTER  :  title titlemes + "   fps = " + d3getfps()
+
 	gsel ID_WIN_SETI
 	/*****  設定ウィンドウのチェックボックスの表示更新  *****/
 	objprm id_savebut, savebut_text(setting(0))
 	objprm Shkidh(3, 0), re_amaz(setting(8))
 	objprm Shkidh(4, 0), re_save(setting(9))
 	objprm Shkidh(5, 0), re_sett(setting(10))
+
 	/*****  ループ制御ボタンの表示切り替え  *****/
-	gsel ID_WIN_MAIN
-	objprm id_opebut, opebut_text(int(opebut_text(2)))
-	if setting(5) == -1 {
-		opebut_text(2) = "あ"  :  goto *main
-	} else : opebut_text(2) = "1"
+	gsel ID_WIN_MAIN  :  objprm id_opebut, opebut_text(int(opebut_text(2)))
+
+	if setting(5) == -1 {opebut_text(2) = "あ"  :  goto *main}
+	else:                opebut_text(2) = "1"
+
+
+	;===================================================
+	; 描画処理
+	;===================================================
 
 	/*****  描画更新  *****/
-	objprm layid0, gameh
-//==========================================================
+	objprm layid(1), gameh
 
 	if setting(3) == 1 {gid = 5 : glim = 59} else {gid = 6 : glim = 500}
 
 	/*****  ゲーム内時間カウンターエンジン  *****/
 	gt(gid, 0) = str(int(gt(gid, 0)) + 1)
 	if int(gt(gid, 0)) > glim : gt(gid, 0) = "1"
-	//カウンター変速機
+
+	//カウンター変速機（ゲーム速度の変更）
 	gtcontrol = int(gt(gid, 0)) \ setting(4)
+
 
 	/*****  ステータス変動  *****/
 	if gtcontrol == 0 {
 		gt(gid - 1, 0) = strf("%02d", int(gt(gid - 1, 0)) + 1)
-		st(2, 0) = str(double(st(2, 0)) + 0.5)  //ROM
-		st(3, 0) = str(double(st(3, 0)) + 1)    //SSD
-		st(6, 0) = str(double(st(6, 0)) - 0.01) //Power
+		st(2, 0) = str(double(st(2, 0)) + double(dsta(2)))  //ROM
+		st(3, 0) = str(double(st(3, 0)) + double(dsta(3)))  //SSD
+		st(6, 0) = str(double(st(6, 0)) - double(dsta(6)))  //Power
+
+		/***  プログレスバー  ***/
+		pbsetpos hPb(0), int(double(st(6, 0)) * 100), 0
 	}
 
 	/*****   単位変換チェック  *****/
-	if int(st(2, 0)) > 1023 : objprm layid0, unitc
-	if int(st(3, 0)) > 1023 : objprm layid0, unitc
+	if int(st(2, 0)) > 1023 : objprm layid(1), unitc
+	if int(st(3, 0)) > 1023 : objprm layid(1), unitc
+
 
 	//オートセーブ設定が有効かどうか
 	if setting(0) == 1 {
@@ -59,7 +75,7 @@
 		if savecontrol == 0 : savec = 1 + savec
 		/*****  オートセーブ  *****/
 		if savec > 100 {
-			gsel ID_WIN_MASTER : objprm master_layer, lay_autosave
+			gsel ID_WIN_MASTER : objprm layid(0), lay_autosave
 			savec = 0
 		}
 	}
@@ -165,7 +181,7 @@
 			dialog "Save Data 1 にセーブしますか?", 2, "SAVE"
 			if stat == 6 {
 				saveID = 1
-				gsel ID_WIN_MASTER : objprm master_layer, lay_save
+				gsel ID_WIN_MASTER : objprm layid(0), lay_save
 				gsel ID_WIN_MAIN, 1
 			}
 			swbreak
@@ -173,7 +189,7 @@
 			dialog "Save Data 1 をロードしますか?", 2, "LOAD"
 			if stat == 6 {
 				saveID = 1
-				gsel ID_WIN_MASTER : objprm master_layer, lay_load
+				gsel ID_WIN_MASTER : objprm layid(0), lay_load
 				gsel ID_WIN_MAIN, 1
 			}
 			swbreak
@@ -242,7 +258,7 @@
 
 //main <<< amazoon, save, setting
 *remain
-	gsel ID_WIN_MAIN : objprm layid0, remain_code
+	gsel ID_WIN_MAIN : objprm layid(1), remain_code
 	return
 
 *infomation
@@ -263,7 +279,7 @@
 	if stat == 6 {
 		mysave2 fname(saveID)
 		saveID = 7
-		gsel ID_WIN_MASTER : objprm master_layer, lay_load
+		gsel ID_WIN_MASTER : objprm layid(0), lay_load
 		gsel ID_WIN_MAIN, -1
 		gsel ID_WIN_OPEN, 1
 	}
@@ -305,7 +321,7 @@
 	strrep logstr, "aa", savebut_text(setting(0))
 	strrep logstr, "bb", string2
 	strrep logstr, "cc", "" + re_amaz(setting(8)) + "\n" + re_save(setting(9)) + "\n" + re_sett(setting(10))
-	gsel ID_WIN_MAIN : objprm layid0, "log,auto_chk"
+	gsel ID_WIN_MAIN : objprm layid(1), "log,auto_chk"
 	return
 
 

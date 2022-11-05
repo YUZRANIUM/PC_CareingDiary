@@ -37,10 +37,10 @@
 /******************************  layerobjの処理  *********************************/
 
 //##########################################################
-//						<<  描画用  >>
+//                     <<  描画用  >>
 //##########################################################
 
-//ゲーム内時間とステータス
+//ゲーム内時間とログ
 *lay
 	layl(0) = lparam
 	switch layl(0)
@@ -172,12 +172,9 @@
 		setting(7) = 1
 	}
 	/*****  過給機  *****/
-	if setting(3) == 1 {
-		nn = 5 : gt(4, 1) = ""
-	}
-	else {
-		nn = 6 : gt(4, 1) = ":"
-	}
+	if setting(3) == 1 {nn = 5 : gt(4, 1) = ""}
+	else               {nn = 6 : gt(4, 1) = ":"}
+
 	repeat nn
 		hmoni += "" + gt(cnt, 0) + gt(cnt, 1)
 	loop
@@ -187,12 +184,12 @@
 
 	//日付変更線
 	if setting(6) == 1 {
-		gsel ID_WIN_MAIN : objprm layid0, "log,dd"
+		gsel ID_WIN_MAIN : objprm layid(1), "log,dd"
 		setting(6) = 0
 	}
 	//あけおめ
 	if setting(7) == 1 {
-		gsel ID_WIN_MAIN : objprm layid0, "log,yy"
+		gsel ID_WIN_MAIN : objprm layid(1), "log,yy"
 		setting(7) = 0
 	}
 //======================================ステータス
@@ -230,7 +227,7 @@
 
 
 //##########################################################
-//						<<  変数操作用  >>
+//                  <<  変数操作用  >>
 //##########################################################
 
 //変数･データ操作用レイヤーオブジェクト
@@ -250,12 +247,12 @@
 				/*****  autosave  *****/
 				case lay_autosave
 					mysave2 fname(saveID)
-					gsel ID_WIN_MAIN : objprm layid0, "log,asc"
+					gsel ID_WIN_MAIN : objprm layid(1), "log,asc"
 					swbreak
 				/*****    save    *****/
 				case lay_save
 					mysave2 fname(saveID)
-					gsel ID_WIN_MAIN : objprm layid0, "log,save"
+					gsel ID_WIN_MAIN : objprm layid(1), "log,save"
 					swbreak
 				/*****    load    *****/
 				case lay_load
@@ -281,8 +278,9 @@
 	setting(5) = -1
 
 	/*** Mainウィンドウ各変数読み込み ***/
-	gsel ID_TAB_MOTI, 1 : objprm id_motimono, motimono
-	gsel ID_TAB_LOG, -1 : objprm id_logmoni, logmoni
+	gsel ID_WIN_MAIN, -1 : pbsetpos hPb(0), int(dsta(7)), 0
+	gsel ID_TAB_MOTI, 1  : objprm id_motimono, motimono
+	gsel ID_TAB_LOG, -1  : objprm id_logmoni, logmoni
 	gsel ID_TAB_SOUKO, -1
 
 	/*** Settingウィンドウ各項目読み込み ***/
@@ -320,7 +318,7 @@
 	gsel ID_WIN_INFO, -1
 
 	gsel ID_WIN_MAIN
-	objprm layid0, gameh
-	objprm layid0, unitc
-	objprm layid0, "log,load"
+	objprm layid(1), gameh
+	objprm layid(1), unitc
+	objprm layid(1), "log,load"
 	return

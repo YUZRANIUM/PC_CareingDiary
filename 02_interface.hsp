@@ -22,8 +22,8 @@
 	mref BMSCR, 67 : hFont(0) = BMSCR.38
 
 //--------------------------------------変数･データ操作用レイヤーオブジェクト
-	layerobj ,,1, *master_layer_var, 1
-	master_layer = stat
+	layerobj ,,1, *master_layer_var, 0
+	layid(0) = stat
 
 /*******************************************************************************
 								Opening Window
@@ -98,6 +98,11 @@
 	winobj "static", " rpm\n deg\n %", , $50000000, 40, 70
 	hStatic(4) = objinfo(stat, 2)
 
+	/*****  Power用プログレスバー  *****/
+	pos 15, 200
+	mypb 200, 15, hPb(0)
+	pbset hPb(0), 0, 1000, int(double(dsta(6)) * -100), 1000
+
 /*******************************************************************************/
 
 
@@ -130,8 +135,11 @@
 
 //--------------------------------------各種描画更新用レイヤーオブジェクト
 	pos 0, 0
-	layerobj 800, 200, 3, *lay, 0
-	layid0 = stat
+	layerobj 800, 200, 3, *lay, 1
+	layid(1) = stat
+
+	layerobj ,,1, *laystat, 2
+	layid(2) = stat
 
 //--------------------------------------再開ボタン
 	pos hx + 90, hy + 50 : objsize 110, 30, 30

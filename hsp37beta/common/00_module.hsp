@@ -58,6 +58,7 @@
 	: vsave_put u\
 	: vsave_put st\
 	: vsave_put gt\
+	: vsave_put dsta\
 	: vsave_put motimono\
 	: vsave_put logmoni\
 	: vsave_put bfcpu\

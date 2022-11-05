@@ -17,29 +17,29 @@ SQL関係もデータを変数に格納するということでこちらで扱っています。
 
 	/*** 各ウィンドウID ***/
 	#enum ID_WIN_MASTER = 0
-	#enum ID_WIN_OPEN	//OPウィンドウ
-	#enum ID_WIN_MAIN	//メインウィンドウ
-	#enum ID_WIN_AMAZ	//Amaz
-	#enum ID_WIN_SAVE	//Save $ Load
-	#enum ID_WIN_SETI	//Setting
-	#enum ID_WIN_INFO	//情報ウィンドウ
+	#enum ID_WIN_OPEN          //OPウィンドウ
+	#enum ID_WIN_MAIN          //メインウィンドウ
+	#enum ID_WIN_AMAZ          //Amaz
+	#enum ID_WIN_SAVE          //Save $ Load
+	#enum ID_WIN_SETI          //Setting
+	#enum ID_WIN_INFO          //情報ウィンドウ
 	/*** bgscr命令のウィンドウID ***/
-	#enum ID_TAB_MOTI	//タブid持ち物
-	#enum ID_TAB_SOUKO	//タブid倉庫
-	#enum ID_TAB_LOG	//タブidログ
+	#enum ID_TAB_MOTI          //タブid持ち物
+	#enum ID_TAB_SOUKO         //タブid倉庫
+	#enum ID_TAB_LOG           //タブidログ
 	//お店タブ
-	#enum ID_OMTAB_CPU //CPU
-	#enum ID_OMTAB_GPU //GPU
-	#enum ID_OMTAB_ROM //ROM
-	#enum ID_OMTAB_SSD //SSD
-	#enum ID_OMTAB_FAN //FAN
-	#enum ID_OMTAB_POW //Power
+	#enum ID_OMTAB_CPU     //CPU
+	#enum ID_OMTAB_GPU     //GPU
+	#enum ID_OMTAB_ROM     //ROM
+	#enum ID_OMTAB_SSD     //SSD
+	#enum ID_OMTAB_FAN     //FAN
+	#enum ID_OMTAB_POW     //Power
 
-	/***  master layerobjのswitch用  ***/
+	/***  master layerobjのswitch/case用  ***/
 	#enum lay_autosave = 0
 	#enum lay_save
 	#enum lay_load
-	/***  描画用layerobjのswitch用  ***/
+	/***  描画用layerobjのswitch/case用  ***/
 	#enum gameh = 0
 	#enum unitc
 
@@ -157,16 +157,16 @@ SQL関係もデータを変数に格納するということでこちらで扱っています。
 
 	//単位変換
 	u = "" : sdim u, 32, 11
-	u(0) = "2"   //u(0):rom変換カウンタ
-	u(1) = "2"   //u(1):ssd変換カウンタ
-	u(2) = "B"   //u(2):"B"
-	u(3) = "KB"  //u(3):"KB"
-	u(4) = "MB"  //u(4):"MB"
-	u(5) = "GB"  //u(5):"GB"
-	u(6) = "TB"  //u(6):"TB"
-	u(7) = "PB"  //u(7):"PB"
-	u(8) = "EB"  //u(8):"EB"
-	u(9) = "ZB"  //u(9):"ZB"
+	u(0) = "2"   //u(0) :rom変換カウンタ
+	u(1) = "2"   //u(1) :ssd変換カウンタ
+	u(2) = "B"   //u(2) :"B"
+	u(3) = "KB"  //u(3) :"KB"
+	u(4) = "MB"  //u(4) :"MB"
+	u(5) = "GB"  //u(5) :"GB"
+	u(6) = "TB"  //u(6) :"TB"
+	u(7) = "PB"  //u(7) :"PB"
+	u(8) = "EB"  //u(8) :"EB"
+	u(9) = "ZB"  //u(9) :"ZB"
 	u(10) = "YB" //u(10):"YB"
 
 	//ステータス管理
@@ -177,7 +177,7 @@ SQL関係もデータを変数に格納するということでこちらで扱っています。
 	//st(4, 0):FAN
 	//st(5, 0):温度
 	//st(6, 0):Power
-	st = "" : sdim st, 32, 7
+	st = "" : sdim st, 32, 7, 3
 	st(0, 0) = "1"   : st(0, 1) = ""    : st(0, 2) = "Core i" + st(0, 0)
 	st(1, 0) = "0"   : st(1, 1) = ""    : st(1, 2) = st(1, 0)
 	st(2, 0) = "1"   : st(2, 1) = u(2)  : st(2, 2) = strf("%.1f", st(2, 0))
@@ -193,7 +193,7 @@ SQL関係もデータを変数に格納するということでこちらで扱っています。
 	//gt(3, 0):日
 	//gt(4, 0):時間
 	//gt(5, 0):分
-	gt = "" : sdim gt, 125, 7
+	gt = "" : sdim gt, 125, 7, 3
 	gt(0, 0) = "0"   : gt(0, 1) = "/"  : gt(0, 2) = gt(0, 0)
 	gt(1, 0) = "1st" : gt(1, 1) = "Q/" : gt(1, 2) = gt(1, 0)
 	gt(2, 0) = " 4"  : gt(2, 1) = "/"  : gt(2, 2) = strf("%2d", int(gt(2, 0)))
@@ -210,8 +210,43 @@ SQL関係もデータを変数に格納するということでこちらで扱っています。
 	omisemoni = ""
 	//ログ表示用
 	logmoni = "\n\n"
+
+	//レイヤーオブジェクトID
+	//layid(0):MASTER/セーブ・ロード用
+	//layid(1):MAIN  /時間・ログ表示用
+	//layid(2):MAIN  /ステータス管理用
+	layid = "", dim layid, 3
+	layid(0) = 0
+	layid(1) = 0
+	layid(2) = 0
+
+
 	//レイヤーオブジェクトlparam受け取り
 	layl = "" : dim layl, 2
+	//プログレスバーオブジェクトハンドル
+	hPb = "" : dim hPb, 1
+	hPb(0) = 0
+
+	//各種ステータス変動値
+	//dsta(0):CPU
+	//dsta(1):GPU
+	//dsta(2):ROM
+	//dsta(3):SSD
+	//dsta(4):FAN
+	//dsta(5):温度
+	//dsta(6):Power
+	//dsta(7):powerプログレスバー
+	dsta = "" : sdim dsta, 7
+	dsta(0) = "0"
+	dsta(1) = "0"
+	dsta(2) = "0.5"
+	dsta(3) = "1.0"
+	dsta(4) = "0"
+	dsta(5) = "0"
+	dsta(6) = "0.01"
+	dsta(7) = "1000"
+
+
 
 //******************************************************************************
 //                                    S Q L
