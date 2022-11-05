@@ -21,12 +21,15 @@
 	#include "gdi32.as"
 	#include "WebView2_10115038.as"
 	#include "hsp3util.as"
-	#include "hsedsdk.as" //hspver
-	#include "hspda.as"	  //vsave系
+	#include "hsedsdk.as"      //hspver
+	#include "hspda.as"        //vsave系
+	#include "d3m.hsp"         //fps
 	#include "sqlele.hsp"
-	/*** 分割ファイル ***/
+	/*** 分割自作モジュール ***/
 	#include "00_module.hsp"
 	#include "00_mylv.hsp"
+	#include "01_mypb.hsp"
+	/*** 分割ファイル ***/
 	#include "01_variable.hsp"
 	#include "02_interface.hsp"
 	#include "03_process01.hsp"
@@ -212,19 +215,14 @@
 *hlay_u
 	sdim mesmoni_u, 16
 	/***ROM***/
-	if int(st(2, 0)) > 1023 {
-		//st(2, 0) = "1"
-		st(2, 0) = str(double(st(2, 0)) / 1024)
-		u(0) = str(int(u(0)) + 1)
-		st(2, 1) = u(int(u(0)))
-	}
+	if int(st(2, 0)) > 1023 : u1 = 2
 	/***SSD***/
-	if int(st(3, 0)) > 1023 {
-		//st(3, 0) = "1"
-		st(3, 0) = str(double(st(3, 0)) / 1024)
-		u(1) = str(int(u(1)) + 1)
-		st(3, 1) = u(int(u(1)))
-	}
+	if int(st(3, 0)) > 1023 : u1 = 3
+
+	st(u1, 0) = str(double(st(u1, 0)) / 1024)
+	u(u1 - 2) = str(int(u(u1 - 2)) + 1)
+	st(u1, 1) = u(int(u(u1 - 2)))
+
 	mesmoni_u += " " + st(2, 1) + "\n" + " " + st(3, 1)
 	sendmsg hStatic(3), $C, , mesmoni_u
 	return
@@ -290,12 +288,12 @@
 	/*** Settingウィンドウ各項目読み込み ***/
 	gsel ID_WIN_SETI, -1
 	objprm id_savebut, setting(0)
-	objprm id_chkosoi, setting(1)
-	objprm id_chkfutu, setting(2)
-	objprm id_chkhaya, setting(3)
-	objprm id_chkreamaz, setting(8)
-	objprm id_chkresave, setting(9)
-	objprm id_chkresett, setting(10)
+	objprm Shkidh(0, 0), setting(1)
+	objprm Shkidh(1, 0), setting(2)
+	objprm Shkidh(2, 0), setting(3)
+	objprm Shkidh(3, 0), setting(8)
+	objprm Shkidh(4, 0), setting(9)
+	objprm Shkidh(5, 0), setting(10)
 
 	/*** Amazoonリストビュー読み込み ***/
 	gsel ID_WIN_AMAZ, -1
