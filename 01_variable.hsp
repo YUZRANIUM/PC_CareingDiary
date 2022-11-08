@@ -35,12 +35,14 @@ SQL関係もデータを変数に格納するということでこちらで扱っています。
 	#enum ID_OMTAB_FAN     //FAN
 	#enum ID_OMTAB_POW     //Power
 
-	/***  master layerobjのswitch/case用  ***/
+	/***  master layerobjのswitch/case  ***/
 	#enum lay_autosave = 0
 	#enum lay_save
 	#enum lay_load
-	/***  描画用layerobjのswitch/case用  ***/
+	/***  描画用layerobjのswitch/case  ***/
 	#enum gameh = 0
+	/*****  ステ管理用layerobjのswitch/case  *****/
+	#enum newst = 0
 	#enum unitc
 
 	// \\text\\changelog.html
@@ -101,14 +103,18 @@ SQL関係もデータを変数に格納するということでこちらで扱っています。
 	re_save = "Save & Load Return OFF", "Save & Load Return ON"
 	//return setteing
 	re_sett = "Setting Return OFF", "Setting Return ON"
-	//ログの設定変更時のフォーマット
-	logstr = ""
-	logstr = {"
-	*** Settings Change ***
-	aa
-	bb
-	cc
-	"}
+	//設定変更時のログ表示
+	logstr = "" : sdim logstr, 1000, 9
+	logstr(0) = "\n*** Settings Change ***"
+	logstr(1) = " : AutoSave Successed! "
+	logstr(2) = " : Load Successed! "
+	logstr(3) = " : Save Successed! "
+	logstr(4) = ""
+	logstr(5) = " : Happy New Year!!"
+	logstr(6) = ""
+	logstr(7) = ""
+	logstr(8) = ""
+
 	//設定変更時のゲーム速度
 	string2 = ""
 	//設定画面チェックボックスオブジェクトIDとハンドル
@@ -156,18 +162,22 @@ SQL関係もデータを変数に格納するということでこちらで扱っています。
 	saveID = 0
 
 	//単位変換
-	u = "" : sdim u, 32, 11
-	u(0) = "2"   //u(0) :rom変換カウンタ
-	u(1) = "2"   //u(1) :ssd変換カウンタ
-	u(2) = "B"   //u(2) :"B"
-	u(3) = "KB"  //u(3) :"KB"
-	u(4) = "MB"  //u(4) :"MB"
-	u(5) = "GB"  //u(5) :"GB"
-	u(6) = "TB"  //u(6) :"TB"
-	u(7) = "PB"  //u(7) :"PB"
-	u(8) = "EB"  //u(8) :"EB"
-	u(9) = "ZB"  //u(9) :"ZB"
-	u(10) = "YB" //u(10):"YB"
+	//第２次元要素 = 1 : 変換・実績解除フラグ
+	//第２次元要素 = 0
+	//u(0) :rom変換カウンタ
+	//u(1) :ssd変換カウンタ
+	u = "" : sdim u, 32, 11, 2
+	u(0, 0) = "2"   : u(0, 1) = "0"
+	u(1, 0) = "2"   : u(1, 1) = "0"
+	u(2, 0) = "B"   : u(2, 1) = "0"  //u(2) :"B"
+	u(3, 0) = "KB"  : u(3, 1) = "0"  //u(3) :"KB"
+	u(4, 0) = "MB"  : u(4, 1) = "0"  //u(4) :"MB"
+	u(5, 0) = "GB"  : u(5, 1) = "0"  //u(5) :"GB"
+	u(6, 0) = "TB"  : u(6, 1) = "0"  //u(6) :"TB"
+	u(7, 0) = "PB"  : u(7, 1) = "0"  //u(7) :"PB"
+	u(8, 0) = "EB"  : u(8, 1) = "0"  //u(8) :"EB"
+	u(9, 0) = "ZB"  : u(9, 1) = "0"  //u(9) :"ZB"
+	u(10, 0) = "YB" : u(10, 1) = "0" //u(10):"YB"
 
 	//ステータス管理
 	//st(0, 0):CPU
@@ -178,13 +188,13 @@ SQL関係もデータを変数に格納するということでこちらで扱っています。
 	//st(5, 0):温度
 	//st(6, 0):Power
 	st = "" : sdim st, 32, 7, 3
-	st(0, 0) = "1"   : st(0, 1) = ""    : st(0, 2) = "Core i" + st(0, 0)
-	st(1, 0) = "0"   : st(1, 1) = ""    : st(1, 2) = st(1, 0)
-	st(2, 0) = "1"   : st(2, 1) = u(2)  : st(2, 2) = strf("%.1f", st(2, 0))
-	st(3, 0) = "1"   : st(3, 1) = u(2)  : st(3, 2) = strf("%.1f", st(3, 0))
-	st(4, 0) = "10"  : st(4, 1) = "rpm" : st(4, 2) = strf("%.1f", st(4, 0))
-	st(5, 0) = "30"  : st(5, 1) = "deg" : st(5, 2) = strf("%.1f", st(5, 0))
-	st(6, 0) = "100" : st(6, 1) = "%"   : st(6, 2) = strf("%.1f", st(6, 0))
+	st(0, 0) = "1"   : st(0, 1) = ""      : st(0, 2) = "Core i" + st(0, 0)
+	st(1, 0) = "0"   : st(1, 1) = ""      : st(1, 2) = st(1, 0)
+	st(2, 0) = "1"   : st(2, 1) = u(2, 0) : st(2, 2) = strf("%.1f", st(2, 0))
+	st(3, 0) = "1"   : st(3, 1) = u(2, 0) : st(3, 2) = strf("%.1f", st(3, 0))
+	st(4, 0) = "10"  : st(4, 1) = "rpm"   : st(4, 2) = strf("%.1f", st(4, 0))
+	st(5, 0) = "30"  : st(5, 1) = "deg"   : st(5, 2) = strf("%.1f", st(5, 0))
+	st(6, 0) = "100" : st(6, 1) = "%"     : st(6, 2) = strf("%.1f", st(6, 0))
 
 	//日付管理
 	//gt(0, 0):年
@@ -201,6 +211,7 @@ SQL関係もデータを変数に格納するということでこちらで扱っています。
 	gt(4, 0) = "08"  : gt(4, 1) = ":"  : gt(4, 2) = strf("%02d", int(gt(4, 0)))
 	gt(5, 0) = "00"  : gt(5, 1) = ""   : gt(5, 2) = strf("%02d", int(gt(5, 0)))
 	gt(6, 0) = "0"
+	gid = 6
 	sdim motimono, 2048 : sdim soukomoni, 2048 : sdim logmoni, 2048 : sdim omisemoni, 2048
 	//持ち物表示用その他1
 	motimono += "持ち物一覧です\n\n"
@@ -215,14 +226,14 @@ SQL関係もデータを変数に格納するということでこちらで扱っています。
 	//layid(0):MASTER/セーブ・ロード用
 	//layid(1):MAIN  /時間・ログ表示用
 	//layid(2):MAIN  /ステータス管理用
-	layid = "", dim layid, 3
+	layid = "" : dim layid, 3
 	layid(0) = 0
 	layid(1) = 0
 	layid(2) = 0
 
 
 	//レイヤーオブジェクトlparam受け取り
-	layl = "" : dim layl, 2
+	layl = "" : dim layl, 3
 	//プログレスバーオブジェクトハンドル
 	hPb = "" : dim hPb, 1
 	hPb(0) = 0
@@ -316,4 +327,4 @@ SQL関係もデータを変数に格納するということでこちらで扱っています。
 	sql_close
 
 	//変数リセット用ファイル
-	mysave2 fname(7)
+	//mysave2 fname(7)
