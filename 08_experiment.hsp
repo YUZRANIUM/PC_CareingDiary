@@ -390,7 +390,7 @@
 		SQLite DB Table Schema Infomation for HSP3.7beta (SQLele)
 		対象となるDBファイル内のテーブルスキーマを確認するスクリプト
 ********************************************************************************/
-#if 0
+#if 1
 	#include "hsp3util.as"
 	#include "hsedsdk.as"
 	#include "sqlele.hsp"
@@ -554,8 +554,8 @@
 /*******************************************************************************
 								プログレスバー
 ********************************************************************************/
-#if 1
-	#include "01_mypb.hsp"
+#if 0
+	#include "C:\\gitproject\\01_mypb\\common\\01_mypb.hsp"
 
 	screen 0, 450, 300
 	safe = 40 : deng = 20
