@@ -15,13 +15,11 @@
 
 //######################  メインループ  #######################/
 *main
-	await 64
+	await 64  :  gsel ID_WIN_MASTER  :  title titlemes + "   fps = " + d3getfps()
 
 	;===================================================
 	; メインループの制御
-	;===================================================
-	gsel ID_WIN_MASTER  :  title titlemes + "   fps = " + d3getfps()
-
+	;
 	gsel ID_WIN_SETI
 	/*****  設定ウィンドウのチェックボックスの表示更新  *****/
 	objprm id_savebut, savebut_text(setting(0))
@@ -35,47 +33,36 @@
 	if setting(5) == -1 {opebut_text(2) = "あ"  :  goto *main}
 	else:                opebut_text(2) = "1"
 
-
 	;===================================================
 	; 描画処理
-	;===================================================
+	;
 
-	/*****  描画更新  *****/
-	objprm layid(1), gameh
+	/*****  ゲーム内時間更新  *****/
+	if setting(3) == 1 {gid = 5 : gt(4, 1) = ""}
+	else               {gid = 6 : gt(4, 1) = ":"}
 
-	if setting(3) == 1 {gid = 5 : glim = 59} else {gid = 6 : glim = 500}
+	// ゲーム内時間カウンターエンジン
+	gt(gid, 0) = str(int(gt(gid, 0)) + 1)  :  if int(gt(gid, 0)) > 59 : gt(gid, 0) = "00"
 
-	/*****  ゲーム内時間カウンターエンジン  *****/
-	gt(gid, 0) = str(int(gt(gid, 0)) + 1)
-	if int(gt(gid, 0)) > glim : gt(gid, 0) = "1"
-
-	//カウンター変速機（ゲーム速度の変更）
-	gtcontrol = int(gt(gid, 0)) \ setting(4)
+	gtcontrol = int(gt(gid, 0)) \ setting(4)        // カウンター変速機（ゲーム速度の変更）
 
 
 	/*****  ステータス変動  *****/
 	if gtcontrol == 0 {
 		gt(gid - 1, 0) = strf("%02d", int(gt(gid - 1, 0)) + 1)
-		st(2, 0) = str(double(st(2, 0)) + double(dsta(2)))  //ROM
-		st(3, 0) = str(double(st(3, 0)) + double(dsta(3)))  //SSD
-		st(6, 0) = str(double(st(6, 0)) - double(dsta(6)))  //Power
-
-		/***  プログレスバー  ***/
-		pbsetpos hPb(0), int(double(st(6, 0)) * 100), 0
+		objprm layid(1), gameh
+		objprm layid(2), newst
 	}
 
-	/*****   単位変換チェック  *****/
-	if int(st(2, 0)) > 1023 : objprm layid(1), unitc
-	if int(st(3, 0)) > 1023 : objprm layid(1), unitc
 
-
+	/*****  オートセーブ  *****/
 	//オートセーブ設定が有効かどうか
 	if setting(0) == 1 {
 		savecontrol = int(gt(gid, 0)) \ 16
-		if savecontrol == 0 : savec = 1 + savec
-		/*****  オートセーブ  *****/
+		if savecontrol == 0  :  savec = 1 + savec
+		/*****  セーブ  *****/
 		if savec > 100 {
-			gsel ID_WIN_MASTER : objprm layid(0), lay_autosave
+			gsel ID_WIN_MASTER  :  objprm layid(0), lay_autosave
 			savec = 0
 		}
 	}
@@ -288,7 +275,7 @@
 //======================================設定処理
 
 *tekiou
-	sdim string2 : sdim logstr
+	sdim string2
 	//チェックボックスの値取得
 	//ゲーム速度
 	sendmsg Shkidh(0, 1), $F0 : setting(1) = stat
@@ -302,25 +289,28 @@
 	/*****  ゲーム内のログ表示（設定変更）  *****/
 	if setting(1) == 1 {
 		setting(4) = 8
-		string2 = "GameSpeed [Slowest]"
+		string2 = "GameSpeed\t[Slowest]"
 	}
 	if setting(2) == 1 {
 		setting(4) = 4
-		string2 = "GameSpeed [Normal]"
+		string2 = "GameSpeed\t[Normal]"
 	}
 	if setting(3) == 1 {
 		setting(4) = 2
-		string2 = "GameSpeed [Fastest]"
+		string2 = "GameSpeed\t[Fastest]"
 	}
-	logstr = {"
-	*** Settings Change ***
-	aa
-	bb
-	cc
-	"}
-	strrep logstr, "aa", savebut_text(setting(0))
-	strrep logstr, "bb", string2
-	strrep logstr, "cc", "" + re_amaz(setting(8)) + "\n" + re_save(setting(9)) + "\n" + re_sett(setting(10))
+	logstr(7) = "\n" + string2
+
+	if setting(0) == 1  {logstr(6) = "\nAutoSave\t\t[ ON ]"}
+	else                {logstr(6) = "\nAutoSave\t\t[ OFF ]"}
+	if setting(8) == 1  {logstr(8) = "\nAmazoon Reture\t[ ON ]"}
+	else                {logstr(8) = "\nAmazoon Reture\t[ OFF ]"}
+	if setting(9) == 1  {logstr(8) += "\nSave & Load Reture\t[ ON ]"}
+	else                {logstr(8) += "\nSave & Load Reture\t[ OFF ]"}
+	if setting(10) == 1 {logstr(8) += "\nSetting Reture\t[ ON ]"}
+	else                {logstr(8) += "\nSetting Reture\t[ OFF ]"}
+
+	logstr(0) = "\n*** Settings Change ***" + logstr(6) + logstr(7) + logstr(8)
 	gsel ID_WIN_MAIN : objprm layid(1), "log,auto_chk"
 	return
 
