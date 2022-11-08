@@ -33,7 +33,7 @@
 
 
 
-#module
+#module "myvsave"
 //vsave短縮
 //%1,%2,%3,%4,%5,%6
 //%1～%6:保存したい配列変数
@@ -47,8 +47,8 @@
 	: vsave_put %5\
 	: vsave_put %6\
 	: vsave_end %7
-#global
-#module
+
+
 //vsave短縮2
 //%1 : ファイル名
 #define global mysave2(%1)\
@@ -58,6 +58,7 @@
 	: vsave_put u\
 	: vsave_put st\
 	: vsave_put gt\
+	: vsave_put gid\
 	: vsave_put dsta\
 	: vsave_put motimono\
 	: vsave_put logmoni\
@@ -69,10 +70,10 @@
 
 
 
-#module
+#module "myversion"
 //HSPバージョン"beta文字"付き出力関数
 //hsedsdk.asをインクルードすること
-#defcfunc myhspver_ int p1
+#defcfunc local myhspver_ int p1
 	sdim a
 	hsed_cnvverstr p1
 	a += refstr
@@ -80,12 +81,11 @@
 		strrep a, "b", "beta"
 	}
 	return a
-#global
-#module
+
 //HSPバージョン"beta文字"付き出力
 //%1 : __hspver__ もしくは hspver
 //hsedsdk.asをインクルードすること
-#define global myhspver(%1) myhspver_ %1
+#define global myhspver(%1) myhspver_@myversion %1
 #global
 
 
@@ -188,13 +188,14 @@
 				マウスクリックに反応するスタティックテキスト
 					(完成度ビミョー)
 ********************************************************************************/
-#module
+
+#module "mylmbc"
 //マウスクリックに反応するオブジェクト
 //p1 : 表示する文字列
 //p2,p3 : マウスが反応するXサイズ,Yサイズ
 //p4 : オブジェクトハンドルを受け取る変数
 //p5 : ウィンドウスタイル($1:中央揃え, $2:右揃え)
-#deffunc mylmb_ str p1, int p2, int p3, var p4, int p5
+#deffunc local mylmb_ str p1, int p2, int p3, var p4, int p5
 	dim RECT, 4
 	winobj "static", p1, , $50000000 | $100 | p5, p2, p3
 	p4 = objinfo(stat, 2)
@@ -204,12 +205,12 @@
 	LoadCursor 0, 32649
 	SetClassLong p4, -12, stat
 	return
-#global
-#module
+
+
 //マウスクリックに反応するオブジェクト
 //p1 : 表示する文字列
 //p2,p3 : マウスが反応するXサイズ,Yサイズ
 //p4 : オブジェクトハンドルを受け取る変数
 //p5 : ウィンドウスタイル($1:中央揃え, $2:右揃え)
-#define global mylmb(%1, %2, %3, %4, %5 = $0) mylmb_ %1,%2,%3,%4,%5
+#define global mylmb(%1, %2, %3, %4, %5 = $0) mylmb_@mylmbc %1,%2,%3,%4,%5
 #global
