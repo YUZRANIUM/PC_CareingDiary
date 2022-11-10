@@ -16,313 +16,359 @@
 #packopt hide 1
 #pack "text\\verinfo.txt"
 
-	/*** 外部モジュール ***/
-	#include "user32.as"
-	#include "gdi32.as"
-	#include "WebView2_10115038.as"
-	#include "hsp3util.as"
-	#include "hsedsdk.as" //hspver
-	#include "hspda.as"	  //vsave系
-	#include "sqlele.hsp"
-	/*** 分割ファイル ***/
-	#include "00_module.hsp"
-	#include "00_mylv.hsp"
-	#include "01_variable.hsp"
-	#include "02_interface.hsp"
-	#include "03_process01.hsp"
+    /*** 外部モジュール ***/
+    #include "user32.as"
+    #include "gdi32.as"
+    #include "WebView2_10115038.as"
+    #include "hsp3util.as"
+    #include "hsedsdk.as"      //hspver
+    #include "hspda.as"        //vsave系
+    #include "d3m.hsp"         //fps
+    #include "sqlele.hsp"
+    /*** 分割自作モジュール ***/
+    #include "00_module.hsp"
+    #include "00_mylv.hsp"
+    #include "01_mypb.hsp"
+    /*** 分割ファイル ***/
+    #include "01_variable.hsp"
+    #include "02_interface.hsp"
+    #include "03_process01.hsp"
 
 /******************************  layerobjの処理  *********************************/
 
-//##########################################################
-//						<<  描画用  >>
-//##########################################################
+//##############################################################################
+//                               <<  描画用  >>
+//##############################################################################
 
-//ゲーム内時間とステータス
+//ゲーム内時間とログ
 *lay
-	layl(0) = lparam
-	switch layl(0)
-		//レイヤー設置直後の処理
-		case objlayer_cmdinit
-			swbreak
-		//int値を渡された
-		case objlayer_cmdprmi
-			layint0 = iparam
-			switch layint0
-				//メインループ>>ゲーム内時間
-				case gameh
-					gosub *hlay_gt
-					swbreak
-				//メインループ>>ROM & SSD unit convert
-				case unitc
-					gosub *hlay_u
-					swbreak
-			swend
-			swbreak
-		//文字列を渡された
-		case objlayer_cmdprms
-			//layerobjに渡す文字列
-			laystr0 = refstr
-			split laystr0, ",", laystr0
-			/*** Mainウィンドウログ表示内容 ***/
-			if laystr0(0) == "log" {
-				notesel logmoni : noteadd "\n", 1, 0
-				time = "" + gettime(1) + "/" + gettime(3) + " " + gettime(4) + ":" + gettime(5) + ":" + gettime(6)
-				/*オートセーブ事後報告*/
-				if laystr0(1) == "asc" {
-					noteadd time + " : AutoSave Successed! " + fname(saveID), 1, 0
-				}
-				/*ゲーム速度設定変更報告*/
-				if laystr0(1) == "auto_chk" {
-					noteadd time + "\n" + logstr, 1, 0
-				}
-				/*ロードの事後報告*/
-				if laystr0(1) == "load" {
-					noteadd time + " : Load Successed! " + fname(saveID), 1, 0
-				}
-				/*セーブの事後報告*/
-				if laystr0(1) == "save" {
-					noteadd time + " : Save Successed! " + fname(saveID), 1, 0
-				}
-				/*日付変更線*/
-				if laystr0(1) == "dd" {
-					noteadd "------------------------------------------------------------------------------------", 1, 0
-					noteadd time + " : Game times " + gt(2, 0) + "/" + gt(3, 0) + " になりました.", 1, 0
-				}
-				/*あけおめ*/
-				if laystr0(1) == "yy" {
-					noteadd time + " : Happy New Year!!", 1, 0
-				}
-				noteunsel
-				gsel ID_TAB_LOG : objprm id_logmoni, logmoni : gsel ID_WIN_MAIN
-			}
-			/*****  Mainウィンドウに戻る際のメインループ自走設定  *****/
-			if laystr0(0) == "re" {
-				switch laystr0(1)
-					case "amaz"
-						if setting(8) == 1 : setting(5) = 1
-						sdim remain_code
-						gsel ID_WIN_AMAZ, -1 : gsel ID_WIN_MAIN, 1
-						swbreak
-					case "save"
-						if setting(9) == 1 : setting(5) = 1
-						sdim remain_code
-						gsel ID_WIN_SAVE, -1 : gsel ID_WIN_MAIN, 1
-						swbreak
-					case "set"
-						if setting(10) == 1 : setting(5) = 1
-						sdim remain_code
-						gsel ID_WIN_SETI, -1 : gsel ID_WIN_MAIN, 1
-						swbreak
-				swend
-			}
-			swbreak
-	swend
-	return
+    layl(1) = lparam
+    switch layl(1)
+//-----  レイヤー設置直後の処理  --------
+        case objlayer_cmdinit
+            swbreak
 
-/*******************************************************************************/
+//--------  int値を渡された  ------------
+        case objlayer_cmdprmi
+            layint0 = iparam
+            switch layint0
+                //メインループ>>ゲーム内時間
+                case gameh
+                    gosub *hlay_gt
+                    swbreak
+            swend
+            swbreak
+
+//--------  文字列を渡された  -----------
+        case objlayer_cmdprms
+            //layerobjに渡す文字列
+            laystr0 = refstr  :  split laystr0, ",", laystr0
+
+            /*** Mainウィンドウログ表示内容 ***/
+            if laystr0(0) == "log" {
+                notesel logmoni : noteadd "\n", 1, 0
+                time = "" + gettime(1) + "/" + gettime(3) + " " + gettime(4) + ":" + gettime(5) + ":" + gettime(6)
+                if      (laystr0(1) == "auto_chk") {noteadd time + logstr(0), 1, 0}                    //設定変更報告
+                else:if (laystr0(1) == "asc")      {noteadd time + logstr(1) + fname(saveID), 1, 0}    //オートセーブ事後報告
+                else:if (laystr0(1) == "load")     {noteadd time + logstr(2) + fname(saveID), 1, 0}    //ロードの事後報告
+                else:if (laystr0(1) == "save")     {noteadd time + logstr(3) + fname(saveID), 1, 0}    //セーブの事後報告
+                else:if (laystr0(1) == "dd")       {noteadd time + logstr(4), 1, 0}                    //日付変更線
+                else:if (laystr0(1) == "yy")       {noteadd time + logstr(5), 1, 0}                    //あけおめ
+                noteunsel
+                gsel ID_TAB_LOG : objprm id_logmoni, logmoni : gsel ID_WIN_MAIN
+            }
+
+            /*****  Mainウィンドウに戻る際のメインループ自走設定  *****/
+            if laystr0(0) == "re" {
+                switch laystr0(1)
+                    case "amaz"
+                        if setting(8) == 1 : setting(5) = 1
+                        sdim remain_code
+                        gsel ID_WIN_AMAZ, -1 : gsel ID_WIN_MAIN, 1
+                        swbreak
+                    case "save"
+                        if setting(9) == 1 : setting(5) = 1
+                        sdim remain_code
+                        gsel ID_WIN_SAVE, -1 : gsel ID_WIN_MAIN, 1
+                        swbreak
+                    case "set"
+                        if setting(10) == 1 : setting(5) = 1
+                        sdim remain_code
+                        gsel ID_WIN_SETI, -1 : gsel ID_WIN_MAIN, 1
+                        swbreak
+                swend
+            }
+
+            swbreak
+    swend
+    return
+
+/***********************************************************/
 //ゲーム内時間
 *hlay_gt
-	sdim hmoni, 64 : sdim mesmoni, 128
-	//時間
-	if int(gt(5, 0)) == 59 {
-		gt(5, 0) = "00"
-		gt(4, 0) = strf("%02d", int(gt(4, 0)) + 1)
-	}
-	//日数
-	if int(gt(4, 0)) == 24 {
-		gt(4, 0) = "00"
-		gt(3, 0) = strf("%2d", int(gt(3, 0)) + 1)
-		setting(6) = 1
-	}
-	//月
-	if int(gt(3, 0)) > 31 {
-		gt(3, 0) = " 1"
-		gt(2, 0) = strf("%2d", int(gt(2, 0)) + 1)
-	}
-	//四半期
-	switch int(gt(2, 0))
-		case 4
-		case 5
-		case 6
-			gt(1, 0) = "1st"
-			swbreak
-		case 7
-		case 8
-		case 9
-			gt(1, 0) = "2nd"
-			swbreak
-		case 10
-		case 11
-		case 12
-			gt(1, 0) = "3rd"
-			swbreak
-		case 1
-		case 2
-		case 3
-			gt(1, 0) = "4th"
-			swbreak
-	swend
-	//年
-	if int(gt(2, 0)) > 12 {
-		gt(2, 0) = " 1"
-		gt(0, 0) = strf("%3d", int(gt(0, 0)) + 1)
-		setting(7) = 1
-	}
-	/*****  過給機  *****/
-	if setting(3) == 1 {
-		nn = 5 : gt(4, 1) = ""
-	}
-	else {
-		nn = 6 : gt(4, 1) = ":"
-	}
-	repeat nn
-		hmoni += "" + gt(cnt, 0) + gt(cnt, 1)
-	loop
-	//表示文字列の変更 (WM_SETTEXT)
-	sendmsg hStatic(0), $C, , hmoni
+    sdim hmoni, 64 : sdim mesmoni, 128
+    //時間
+    if int(gt(5, 0)) > 59 {
+        gt(5, 0) = "00"
+        gt(4, 0) = strf("%02d", int(gt(4, 0)) + 1)
+    }
+    //日数
+    if int(gt(4, 0)) > 23 {
+        gt(4, 0) = "00"
+        gt(3, 0) = strf("%2d", int(gt(3, 0)) + 1)  :  setting(6) = 1
+    }
+    //月
+    if int(gt(3, 0)) > 30 {
+        gt(3, 0) = " 1"
+        gt(2, 0) = strf("%2d", int(gt(2, 0)) + 1)
+    }
+    //四半期
+    switch int(gt(2, 0))
+        case 4
+        case 5
+        case 6
+            gt(1, 0) = "1st"
+            swbreak
+        case 7
+        case 8
+        case 9
+            gt(1, 0) = "2nd"
+            swbreak
+        case 10
+        case 11
+        case 12
+            gt(1, 0) = "3rd"
+            swbreak
+        case 1
+        case 2
+        case 3
+            gt(1, 0) = "4th"
+            swbreak
+    swend
+    //年
+    if int(gt(2, 0)) > 12 {
+        gt(2, 0) = " 1"
+        gt(0, 0) = strf("%3d", int(gt(0, 0)) + 1)  :  setting(7) = 1
+    }
+
+    repeat gid
+        hmoni += "" + gt(cnt, 0) + gt(cnt, 1)
+    loop
+    //表示文字列の変更 (WM_SETTEXT)
+    sendmsg hStatic(0), $C, , hmoni
 
 
-	//日付変更線
-	if setting(6) == 1 {
-		gsel ID_WIN_MAIN : objprm layid0, "log,dd"
-		setting(6) = 0
-	}
-	//あけおめ
-	if setting(7) == 1 {
-		gsel ID_WIN_MAIN : objprm layid0, "log,yy"
-		setting(7) = 0
-	}
-//======================================ステータス
+    //日付変更線
+    if setting(6) == 1 {
+        logstr(4) = " : Game times " + gt(2, 0) + "/" + gt(3, 0) + " になりました."
+        gsel ID_WIN_MAIN : objprm layid(1), "log,dd"
+        setting(6) = 0
+    }
+    //あけおめ
+    if setting(7) == 1 {
+        gsel ID_WIN_MAIN : objprm layid(1), "log,yy"
+        setting(7) = 0
+    }
 
-	repeat 5, 2
-		st(cnt, 2) = strf("%.1f", st(cnt, 0))
-	loop
-
-	repeat 7
-		mesmoni += st(cnt, 2) + "\n"
-	loop
-
-	//表示文字列の変更 (WM_SETTEXT)
-	sendmsg hStatic(2), $C, , mesmoni
-	return
-
-
-/*******************************************************************************/
-//ROM,SSD単位変換
-*hlay_u
-	sdim mesmoni_u, 16
-	/***ROM***/
-	if int(st(2, 0)) > 1023 {
-		//st(2, 0) = "1"
-		st(2, 0) = str(double(st(2, 0)) / 1024)
-		u(0) = str(int(u(0)) + 1)
-		st(2, 1) = u(int(u(0)))
-	}
-	/***SSD***/
-	if int(st(3, 0)) > 1023 {
-		//st(3, 0) = "1"
-		st(3, 0) = str(double(st(3, 0)) / 1024)
-		u(1) = str(int(u(1)) + 1)
-		st(3, 1) = u(int(u(1)))
-	}
-	mesmoni_u += " " + st(2, 1) + "\n" + " " + st(3, 1)
-	sendmsg hStatic(3), $C, , mesmoni_u
-	return
+    return
 
 
 
-//##########################################################
-//						<<  変数操作用  >>
-//##########################################################
 
-//変数･データ操作用レイヤーオブジェクト
+//##############################################################################
+//                          <<  ステータス管理用  >>
+//##############################################################################
+
+
+//ステータス管理用
+*laystat
+
+    layl(2) = lparam
+    switch layl(2)
+//-----  レイヤー設置直後の処理  --------
+        case objlayer_cmdinit
+            swbreak
+//--------  int値を渡された  ------------
+        case objlayer_cmdprmi
+            layint2 = iparam
+            switch layint2
+                //ステータス更新
+                case newst
+                    gosub *updatestatus
+                    swbreak
+                //
+                case unitc
+                    swbreak
+            swend
+            swbreak
+//--------  文字列を渡された  -----------
+        case objlayer_cmdprms
+            laystr2 = refstr
+            swbreak
+    swend
+    return
+
+
+/***********************************************************/
+//ステータス更新
+*updatestatus
+    gsel ID_WIN_MAIN
+
+    st(2, 0) = str(double(st(2, 0)) + double(dsta(2)))  //ROM
+    st(3, 0) = str(double(st(3, 0)) + double(dsta(3)))  //SSD
+    st(6, 0) = str(double(st(6, 0)) - double(dsta(6)))  //Power
+
+    /***  プログレスバー  ***/
+    dsta(7) = str(int(double(st(6, 0)) * 10))
+    pbsetpos hPb(0), int(dsta(7)), 0
+
+    //ステータス代入
+    repeat 5, 2
+        st(cnt, 2) = strf("%.1f", st(cnt, 0))
+    loop
+
+    repeat 7
+        mesmoni += st(cnt, 2) + "\n"
+    loop
+
+    /*****   単位変換チェック  *****/
+    if ((int(st(2, 0)) > 1023) | (int(st(3, 0)) > 1023)) {
+        sdim mesmoni_u, 16
+
+        /***ROM***/
+        if (int(st(2, 0)) > 1023) {
+            st(2, 0) = str(double(st(2, 0)) / 1024)
+            u(0, 0) = str(int(u(0, 0)) + 1)
+            st(2, 1) = u(int(u(0, 0)), 0)
+        }
+
+        /***SSD***/
+        if (int(st(3, 0)) > 1023) {
+            st(3, 0) = str(double(st(3, 0)) / 1024)
+            u(1, 0) = str(int(u(1, 0)) + 1)
+            st(3, 1) = u(int(u(1, 0)), 0)
+        }
+
+        mesmoni_u += " " + st(2, 1) + "\n" + " " + st(3, 1)
+        //表示文字列の変更 (WM_SETTEXT)
+        sendmsg hStatic(3), $C, , mesmoni_u
+    }
+
+    //表示文字列の変更 (WM_SETTEXT)
+    sendmsg hStatic(2), $C, , mesmoni
+
+    return
+
+
+
+
+//##############################################################################
+//                           <<  セーブ・ロード用  >>
+//##############################################################################
+
+//セーブ・ロード用レイヤーオブジェクト
 *master_layer_var
-	layl(1) = lparam
-	switch layl(1)
-//--------------------------------------
-		//レイヤー設置直後の処理
-		case objlayer_cmdinit
-			swbreak
-//--------------------------------------
-		//int値を渡された
-		case objlayer_cmdprmi
-			layint1 = iparam
-			logmes "saveID = " + saveID
-			switch layint1
-				/*****  autosave  *****/
-				case lay_autosave
-					mysave2 fname(saveID)
-					gsel ID_WIN_MAIN : objprm layid0, "log,asc"
-					swbreak
-				/*****    save    *****/
-				case lay_save
-					mysave2 fname(saveID)
-					gsel ID_WIN_MAIN : objprm layid0, "log,save"
-					swbreak
-				/*****    load    *****/
-				case lay_load
-					vload fname(saveID)
-					gosub *hlay_saveload
-					swbreak
-				//--------------------------------------
-			swend
-			swbreak
-//--------------------------------------
-		//文字列を渡された
-		case objlayer_cmdprms
-			laystr1 = refstr
-			swbreak
-//--------------------------------------
-	swend
-	return
+    layl(0) = lparam
+    switch layl(0)
+//-----  レイヤー設置直後の処理  --------
+        case objlayer_cmdinit
+            //変数リセット用ファイル
+            mysave2 fname(7)
+            swbreak
+//--------  int値を渡された  ------------
+        case objlayer_cmdprmi
+            layint1 = iparam
+            logmes "saveID = " + saveID
+            switch layint1
+                /*****  autosave  *****/
+                case lay_autosave
+                    mysave2 fname(saveID)
+                    gsel ID_WIN_MAIN : objprm layid(1), "log,asc"
+                    swbreak
+                /*****    save    *****/
+                case lay_save
+                    mysave2 fname(saveID)
+                    gsel ID_WIN_MAIN : objprm layid(1), "log,save"
+                    swbreak
+                /*****    load    *****/
+                case lay_load
+                    logmes "vload fname(saveID) = " + saveID
+                    vload fname(saveID)
+                    gosub *hlay_saveload
+                    swbreak
+            swend
+            swbreak
+//--------  文字列を渡された  -----------
+        case objlayer_cmdprms
+            laystr1 = refstr
+            swbreak
+    swend
+    return
 
 
-/*******************************************************************************/
+
+/***********************************************************/
 //セーブデータのロード･各変数とオブジェクトの更新
 *hlay_saveload
-	setting(5) = -1
+    setting(5) = -1
+    logmes "fname(saveID) = " + saveID
+    /*** Mainウィンドウ各変数読み込み ***/
+    gsel ID_WIN_MAIN, -1 : pbsetpos hPb(0), int(dsta(7)), 0
+    gsel ID_TAB_MOTI, 1  : objprm id_motimono, motimono
+    gsel ID_TAB_LOG, -1  : objprm id_logmoni, logmoni
+    gsel ID_TAB_SOUKO, -1
+    gsel ID_WIN_MAIN
+    //ゲーム内時間
+    sdim hmoni, 64
+    repeat gid
+        hmoni += "" + gt(cnt, 0) + gt(cnt, 1)
+    loop
+    sendmsg hStatic(0), $C, 0, hmoni
 
-	/*** Mainウィンドウ各変数読み込み ***/
-	gsel ID_TAB_MOTI, 1 : objprm id_motimono, motimono
-	gsel ID_TAB_LOG, -1 : objprm id_logmoni, logmoni
-	gsel ID_TAB_SOUKO, -1
+    //ステータス
+    repeat 7
+        mesmoni += st(cnt, 2) + "\n"
+    loop
+    sendmsg hStatic(2), $C, 0, mesmoni
 
-	/*** Settingウィンドウ各項目読み込み ***/
-	gsel ID_WIN_SETI, -1
-	objprm id_savebut, setting(0)
-	objprm id_chkosoi, setting(1)
-	objprm id_chkfutu, setting(2)
-	objprm id_chkhaya, setting(3)
-	objprm id_chkreamaz, setting(8)
-	objprm id_chkresave, setting(9)
-	objprm id_chkresett, setting(10)
+    //単位
+    mesmoni_u += " " + st(2, 1) + "\n" + " " + st(3, 1)
+    sendmsg hStatic(3), $C, 0, mesmoni_u
 
-	/*** Amazoonリストビュー読み込み ***/
-	gsel ID_WIN_AMAZ, -1
-	/*** CPU ***/
-	gsel ID_OMTAB_CPU, 1 : mydelitem LVidh(0, 0)
-	myinitem LVidh(0, 0), bfcpu, rec_cnum, col_num
-	/*** GPU ***/
-	gsel ID_OMTAB_GPU, -1 : mydelitem LVidh(1, 0)
-	myinitem LVidh(1, 0), bfgpu, rec_gnum, col_num
-	/*** ROM ***/
-	gsel ID_OMTAB_ROM, -1 : mydelitem LVidh(2, 0)
-	myinitem LVidh(2, 0), bfrom, rec_rnum, col_num
-	/***  SSD  ***/
-	gsel ID_OMTAB_SSD, -1
-	/***  FAM  ***/
-	gsel ID_OMTAB_FAN, -1
-	/***  POWER  ***/
-	gsel ID_OMTAB_POW, -1
+    /*** Settingウィンドウ各項目読み込み ***/
+    gsel ID_WIN_SETI, -1
+    objprm id_savebut, setting(0)
+    objprm Shkidh(0, 0), setting(1)
+    objprm Shkidh(1, 0), setting(2)
+    objprm Shkidh(2, 0), setting(3)
+    objprm Shkidh(3, 0), setting(8)
+    objprm Shkidh(4, 0), setting(9)
+    objprm Shkidh(5, 0), setting(10)
 
-	gsel ID_OMTAB_CPU
+    /*** Amazoonリストビュー読み込み ***/
+    gsel ID_WIN_AMAZ, -1
+    /*** CPU ***/
+    gsel ID_OMTAB_CPU, 1 : mydelitem LVidh(0, 0)
+    myinitem LVidh(0, 0), bfcpu, rec_cnum, col_num
+    /*** GPU ***/
+    gsel ID_OMTAB_GPU, -1 : mydelitem LVidh(1, 0)
+    myinitem LVidh(1, 0), bfgpu, rec_gnum, col_num
+    /*** ROM ***/
+    gsel ID_OMTAB_ROM, -1 : mydelitem LVidh(2, 0)
+    myinitem LVidh(2, 0), bfrom, rec_rnum, col_num
+    /***  SSD  ***/
+    gsel ID_OMTAB_SSD, -1
+    /***  FAM  ***/
+    gsel ID_OMTAB_FAN, -1
+    /***  POWER  ***/
+    gsel ID_OMTAB_POW, -1
 
-	/*** 各ウィンドウの非表示切り替え ***/
-	gsel ID_WIN_SAVE, -1
-	gsel ID_WIN_INFO, -1
+    gsel ID_OMTAB_CPU
 
-	gsel ID_WIN_MAIN
-	objprm layid0, gameh
-	objprm layid0, unitc
-	objprm layid0, "log,load"
-	return
+    /*** 各ウィンドウの非表示切り替え ***/
+    gsel ID_WIN_SAVE, -1
+    gsel ID_WIN_INFO, -1
+
+    gsel ID_WIN_MAIN
+    objprm layid(1), "log,load"
+    return
