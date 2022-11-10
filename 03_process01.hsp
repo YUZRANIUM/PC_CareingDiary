@@ -15,328 +15,328 @@
 
 //######################  メインループ  #######################/
 *main
-	await 64  :  gsel ID_WIN_MASTER  :  title titlemes + "   fps = " + d3getfps()
+    await 64  :  gsel ID_WIN_MASTER  :  title titlemes + "   fps = " + d3getfps()
 
-	;===================================================
-	; メインループの制御
-	;
-	gsel ID_WIN_SETI
-	/*****  設定ウィンドウのチェックボックスの表示更新  *****/
-	objprm id_savebut, savebut_text(setting(0))
-	objprm Shkidh(3, 0), re_amaz(setting(8))
-	objprm Shkidh(4, 0), re_save(setting(9))
-	objprm Shkidh(5, 0), re_sett(setting(10))
+    ;===================================================
+    ; メインループの制御
+    ;
+    gsel ID_WIN_SETI
+    /*****  設定ウィンドウのチェックボックスの表示更新  *****/
+    objprm id_savebut, savebut_text(setting(0))
+    objprm Shkidh(3, 0), re_amaz(setting(8))
+    objprm Shkidh(4, 0), re_save(setting(9))
+    objprm Shkidh(5, 0), re_sett(setting(10))
 
-	/*****  ループ制御ボタンの表示切り替え  *****/
-	gsel ID_WIN_MAIN  :  objprm id_opebut, opebut_text(int(opebut_text(2)))
+    /*****  ループ制御ボタンの表示切り替え  *****/
+    gsel ID_WIN_MAIN  :  objprm id_opebut, opebut_text(int(opebut_text(2)))
 
-	if setting(5) == -1 {opebut_text(2) = "あ"  :  goto *main}
-	else:                opebut_text(2) = "1"
+    if setting(5) == -1 {opebut_text(2) = "あ"  :  goto *main}
+    else:                opebut_text(2) = "1"
 
-	;===================================================
-	; 描画処理
-	;
+    ;===================================================
+    ; 描画処理
+    ;
 
-	/*****  ゲーム内時間更新  *****/
-	if setting(3) == 1 {gid = 5 : gt(4, 1) = ""}
-	else               {gid = 6 : gt(4, 1) = ":"}
+    /*****  ゲーム内時間更新  *****/
+    if setting(3) == 1 {gid = 5 : gt(4, 1) = ""}
+    else               {gid = 6 : gt(4, 1) = ":"}
 
-	// ゲーム内時間カウンターエンジン
-	gt(gid, 0) = str(int(gt(gid, 0)) + 1)  :  if int(gt(gid, 0)) > 59 : gt(gid, 0) = "00"
+    // ゲーム内時間カウンターエンジン
+    gt(gid, 0) = str(int(gt(gid, 0)) + 1)  :  if int(gt(gid, 0)) > 59 : gt(gid, 0) = "00"
 
-	gtcontrol = int(gt(gid, 0)) \ setting(4)        // カウンター変速機（ゲーム速度の変更）
-
-
-	/*****  ステータス変動  *****/
-	if gtcontrol == 0 {
-		gt(gid - 1, 0) = strf("%02d", int(gt(gid - 1, 0)) + 1)
-		objprm layid(1), gameh
-		objprm layid(2), newst
-	}
+    gtcontrol = int(gt(gid, 0)) \ setting(4)        // カウンター変速機（ゲーム速度の変更）
 
 
-	/*****  オートセーブ  *****/
-	//オートセーブ設定が有効かどうか
-	if setting(0) == 1 {
-		savecontrol = int(gt(gid, 0)) \ 16
-		if savecontrol == 0  :  savec = 1 + savec
-		/*****  セーブ  *****/
-		if savec > 100 {
-			gsel ID_WIN_MASTER  :  objprm layid(0), lay_autosave
-			savec = 0
-		}
-	}
-	goto *main
+    /*****  ステータス変動  *****/
+    if gtcontrol == 0 {
+        gt(gid - 1, 0) = strf("%02d", int(gt(gid - 1, 0)) + 1)
+        objprm layid(1), gameh
+        objprm layid(2), newst
+    }
+
+
+    /*****  オートセーブ  *****/
+    //オートセーブ設定が有効かどうか
+    if setting(0) == 1 {
+        savecontrol = int(gt(gid, 0)) \ 16
+        if savecontrol == 0  :  savec = 1 + savec
+        /*****  セーブ  *****/
+        if savec > 100 {
+            gsel ID_WIN_MASTER  :  objprm layid(0), lay_autosave
+            savec = 0
+        }
+    }
+    goto *main
 //###################  メインループここまで  ####################/
 
 
 
 //メインループ制御トグルボタン
 *ope
-	setting(5) = setting(5) * -1
-	gsel ID_WIN_MAIN
-	return
+    setting(5) = setting(5) * -1
+    gsel ID_WIN_MAIN
+    return
 
 
 /*****************  タブコントロールタブ切り替え  *****************/
 
 //タブコントロールタブの切り替え
 *tabchange
-	dupptr nmhdr, lparam, 12, 4 : tabhwnd = nmhdr(0)
-	if (nmhdr(2) == -551) {
-		switch tabhwnd
-			//mainタブコントロールの処理
-			case hTab_main
-				My_ChangeTab ID_TAB_MOTI, hTab_main, ID_WIN_MAIN
-				swbreak
-			//amazタブコントロールの処理
-			case hTabOMI
-				My_ChangeTab ID_OMTAB_CPU, hTabOMI, ID_WIN_AMAZ
-				swbreak
-		swend
-	}
-	return
+    dupptr nmhdr, lparam, 12, 4 : tabhwnd = nmhdr(0)
+    if (nmhdr(2) == -551) {
+        switch tabhwnd
+            //mainタブコントロールの処理
+            case hTab_main
+                My_ChangeTab ID_TAB_MOTI, hTab_main, ID_WIN_MAIN
+                swbreak
+            //amazタブコントロールの処理
+            case hTabOMI
+                My_ChangeTab ID_OMTAB_CPU, hTabOMI, ID_WIN_AMAZ
+                swbreak
+        swend
+    }
+    return
 
 /********************  リストビュー並べ替え  ********************/
 
 //amazoonリストビュー昇降順の処理
 *notify
-	setting(5) = -1
-	//タブコントロールのオブジェクトハンドル取得
-	dupptr nmhdr, lparam, 12, 4 : tabhwnd = nmhdr(0)
-	if (nmhdr(2) == LVN_COLUMNCLICK) {
-		//タブコントロールのクリックされたカラム取得
-		dupptr nmlv, lparam, 40, 4 : index = nmlv(4)
+    setting(5) = -1
+    //タブコントロールのオブジェクトハンドル取得
+    dupptr nmhdr, lparam, 12, 4 : tabhwnd = nmhdr(0)
+    if (nmhdr(2) == LVN_COLUMNCLICK) {
+        //タブコントロールのクリックされたカラム取得
+        dupptr nmlv, lparam, 40, 4 : index = nmlv(4)
 
-		sql_open db
-		sql_q "BEGIN;"
-		switch tabhwnd
-			/*****  CPU  *****/
-			case LVidh(0, 1)
-				sdim cpu, 2048
-				swc = swc * -1
-				if swc == -1 : sqsc = " DESC;"  :  else : sqsc = " ASC;"
-				sql_q "SELECT * FROM MyCPU ORDER BY " + col_list(index) + sqsc
-				myindata rec_cnum, col_num, col_list, cpu
-				gsel ID_OMTAB_CPU  :  mydelitem LVidh(0, 0)
-				myinitem LVidh(0, 0), cpu, rec_cnum, col_num
-				swbreak
+        sql_open db
+        sql_q "BEGIN;"
+        switch tabhwnd
+            /*****  CPU  *****/
+            case LVidh(0, 1)
+                sdim cpu, 2048
+                swc = swc * -1
+                if swc == -1 : sqsc = " DESC;"  :  else : sqsc = " ASC;"
+                sql_q "SELECT * FROM MyCPU ORDER BY " + col_list(index) + sqsc
+                myindata rec_cnum, col_num, col_list, cpu
+                gsel ID_OMTAB_CPU  :  mydelitem LVidh(0, 0)
+                myinitem LVidh(0, 0), cpu, rec_cnum, col_num
+                swbreak
 
-			/*****  GPU  *****/
-			case LVidh(1, 1)
-				sdim gpu, 2048
-				swg = swg * -1
-				if swg == -1 : sqsc = " DESC;"  :  else : sqsc = " ASC;"
-				sql_q "SELECT * FROM MyGPU ORDER BY " + col_list(index) + sqsc
-				myindata rec_gnum, col_num, col_list, gpu
-				gsel ID_OMTAB_GPU  :  mydelitem LVidh(1, 0)
-				myinitem LVidh(1, 0), gpu, rec_gnum, col_num
-				swbreak
+            /*****  GPU  *****/
+            case LVidh(1, 1)
+                sdim gpu, 2048
+                swg = swg * -1
+                if swg == -1 : sqsc = " DESC;"  :  else : sqsc = " ASC;"
+                sql_q "SELECT * FROM MyGPU ORDER BY " + col_list(index) + sqsc
+                myindata rec_gnum, col_num, col_list, gpu
+                gsel ID_OMTAB_GPU  :  mydelitem LVidh(1, 0)
+                myinitem LVidh(1, 0), gpu, rec_gnum, col_num
+                swbreak
 
-			/*****  ROM  *****/
-			case LVidh(2, 1)
-				sdim rom, 2048
-				swr = swr * -1
-				if swr == -1 : sqsc = " DESC;"  :  else : sqsc = " ASC;"
-				sql_q "SELECT * FROM MyROM ORDER BY " + col_list(index) + sqsc
-				myindata rec_rnum, col_num, col_list, rom
-				gsel ID_OMTAB_ROM  :  mydelitem LVidh(2, 0)
-				myinitem LVidh(2, 0), rom, rec_rnum, col_num
-				swbreak
-		swend
-		sql_q "COMMIT;"
-		sql_close
-	}
-	return
+            /*****  ROM  *****/
+            case LVidh(2, 1)
+                sdim rom, 2048
+                swr = swr * -1
+                if swr == -1 : sqsc = " DESC;"  :  else : sqsc = " ASC;"
+                sql_q "SELECT * FROM MyROM ORDER BY " + col_list(index) + sqsc
+                myindata rec_rnum, col_num, col_list, rom
+                gsel ID_OMTAB_ROM  :  mydelitem LVidh(2, 0)
+                myinitem LVidh(2, 0), rom, rec_rnum, col_num
+                swbreak
+        swend
+        sql_q "COMMIT;"
+        sql_close
+    }
+    return
 
 
 /*****************  カスタムオブジェクトmylmb  *****************/
 
 //mylmbによる割り込み
 *mousclick
-	//mylmbのオブジェクトハンドル
-	hL = lparam
-	switch hL
-		case hLinktw //情報twハイパーリンク
-			exec infa(4), 16
-			swbreak
-		case hLinkgi //情報githubハイパーリンク
-			exec infa(5), 16
-			swbreak
-		/*****   Save & Load   *****/
-		case hSave1
-			dialog "Save Data 1 にセーブしますか?", 2, "SAVE"
-			if stat == 6 {
-				saveID = 1
-				gsel ID_WIN_MASTER : objprm layid(0), lay_save
-				gsel ID_WIN_MAIN, 1
-			}
-			swbreak
-		case hLoad1
-			dialog "Save Data 1 をロードしますか?", 2, "LOAD"
-			if stat == 6 {
-				saveID = 1
-				gsel ID_WIN_MASTER : objprm layid(0), lay_load
-				gsel ID_WIN_MAIN, 1
-			}
-			swbreak
-	swend
-	return
+    //mylmbのオブジェクトハンドル
+    hL = lparam
+    switch hL
+        case hLinktw //情報twハイパーリンク
+            exec infa(4), 16
+            swbreak
+        case hLinkgi //情報githubハイパーリンク
+            exec infa(5), 16
+            swbreak
+        /*****   Save & Load   *****/
+        case hSave1
+            dialog "Save Data 1 にセーブしますか?", 2, "SAVE"
+            if stat == 6 {
+                saveID = 1
+                gsel ID_WIN_MASTER : objprm layid(0), lay_save
+                gsel ID_WIN_MAIN, 1
+            }
+            swbreak
+        case hLoad1
+            dialog "Save Data 1 をロードしますか?", 2, "LOAD"
+            if stat == 6 {
+                saveID = 1
+                gsel ID_WIN_MASTER : objprm layid(0), lay_load
+                gsel ID_WIN_MAIN, 1
+            }
+            swbreak
+    swend
+    return
 
 *cursorche
-	if (lparam & $FFFF) != 1 : return
-	// オブジェクトの左上XY右下XYの座標位置を取得
-	GetWindowRect hlink, varptr(RECT)
-	// 取得したオブジェクトの座標位置とカーソルの座標位置を比較
-	PtInRect varptr(RECT), ginfo(0), ginfo(1)
-	if stat {
-		if oncursor : return
-		InvalidateRect hlink, 0, 0
-		oncursor = 1
-		return
-	}
-	else {
-		if oncursor = 0 : return
-		InvalidateRect hlink, 0, 0
-		oncursor = 0
-		return
-	}
-	return
+    if (lparam & $FFFF) != 1 : return
+    // オブジェクトの左上XY右下XYの座標位置を取得
+    GetWindowRect hlink, varptr(RECT)
+    // 取得したオブジェクトの座標位置とカーソルの座標位置を比較
+    PtInRect varptr(RECT), ginfo(0), ginfo(1)
+    if stat {
+        if oncursor : return
+        InvalidateRect hlink, 0, 0
+        oncursor = 1
+        return
+    }
+    else {
+        if oncursor = 0 : return
+        InvalidateRect hlink, 0, 0
+        oncursor = 0
+        return
+    }
+    return
 
 /*******************  各ウィンドウボタン処理  *******************/
 
 /*** Opening Window ***/
 
 *OP新規
-	gsel ID_WIN_OPEN, -1
-	gsel ID_WIN_MAIN, 1
-	return
+    gsel ID_WIN_OPEN, -1
+    gsel ID_WIN_MAIN, 1
+    return
 
 *OPload
-	gsel ID_WIN_OPEN, -1
-	gsel ID_WIN_SAVE, 1
-	return
+    gsel ID_WIN_OPEN, -1
+    gsel ID_WIN_SAVE, 1
+    return
 
 
 
 //main >>> amazoon
 *amazoon
-	setting(5) = -1
-	gsel ID_WIN_MAIN, -1
-	gsel ID_WIN_AMAZ, 1
-	remain_code = "re,amaz"
-	return
+    setting(5) = -1
+    gsel ID_WIN_MAIN, -1
+    gsel ID_WIN_AMAZ, 1
+    remain_code = "re,amaz"
+    return
 
 //main >>> save
 *saveload
-	setting(5) = -1
-	gsel ID_WIN_MAIN, -1
-	gsel ID_WIN_SAVE, 1
-	remain_code = "re,save"
-	return
+    setting(5) = -1
+    gsel ID_WIN_MAIN, -1
+    gsel ID_WIN_SAVE, 1
+    remain_code = "re,save"
+    return
 
 //main >>> setting
 *settei
-	setting(5) = -1
-	gsel ID_WIN_MAIN, -1
-	gsel ID_WIN_SETI, 1
-	remain_code = "re,set"
-	return
+    setting(5) = -1
+    gsel ID_WIN_MAIN, -1
+    gsel ID_WIN_SETI, 1
+    remain_code = "re,set"
+    return
 
 //main <<< amazoon, save, setting
 *remain
-	gsel ID_WIN_MAIN : objprm layid(1), remain_code
-	return
+    gsel ID_WIN_MAIN : objprm layid(1), remain_code
+    return
 
 *infomation
-	ret = CCall2(pCtrl, 4, 1, 1)
-	gsel ID_WIN_INFO, 1
-	return
+    ret = CCall2(pCtrl, 4, 1, 1)
+    gsel ID_WIN_INFO, 1
+    return
 
 //情報ウィンドウを閉じるボタン
 *subw_exi
-	gsel ID_WIN_INFO, -1
-	return
+    gsel ID_WIN_INFO, -1
+    return
 
 
 //save,setting>>>open
 *retitle
-	setting(5) = -1
-	dialog "Return to Opening Really?", 2, "Return to Opening"
-	if stat == 6 {
-		mysave2 fname(saveID)
-		saveID = 7
-		gsel ID_WIN_MASTER : objprm layid(0), lay_load
-		gsel ID_WIN_MAIN, -1
-		gsel ID_WIN_OPEN, 1
-	}
-	return
+    setting(5) = -1
+    dialog "Return to Opening Really?", 2, "Return to Opening"
+    if stat == 6 {
+        mysave2 fname(saveID)
+        saveID = 7
+        gsel ID_WIN_MASTER : objprm layid(0), lay_load
+        gsel ID_WIN_MAIN, -1
+        gsel ID_WIN_OPEN, 1
+    }
+    return
 
 //======================================設定処理
 
 *tekiou
-	sdim string2
-	//チェックボックスの値取得
-	//ゲーム速度
-	sendmsg Shkidh(0, 1), $F0 : setting(1) = stat
-	sendmsg Shkidh(1, 1), $F0 : setting(2) = stat
-	sendmsg Shkidh(2, 1), $F0 : setting(3) = stat
-	//remain
-	sendmsg Shkidh(3, 1), $F0 : setting(8) = stat
-	sendmsg Shkidh(4, 1), $F0 : setting(9) = stat
-	sendmsg Shkidh(5, 1), $F0 : setting(10) = stat
+    sdim string2
+    //チェックボックスの値取得
+    //ゲーム速度
+    sendmsg Shkidh(0, 1), $F0 : setting(1) = stat
+    sendmsg Shkidh(1, 1), $F0 : setting(2) = stat
+    sendmsg Shkidh(2, 1), $F0 : setting(3) = stat
+    //remain
+    sendmsg Shkidh(3, 1), $F0 : setting(8) = stat
+    sendmsg Shkidh(4, 1), $F0 : setting(9) = stat
+    sendmsg Shkidh(5, 1), $F0 : setting(10) = stat
 
-	/*****  ゲーム内のログ表示（設定変更）  *****/
-	if setting(1) == 1 {
-		setting(4) = 8
-		string2 = "GameSpeed\t[Slowest]"
-	}
-	if setting(2) == 1 {
-		setting(4) = 4
-		string2 = "GameSpeed\t[Normal]"
-	}
-	if setting(3) == 1 {
-		setting(4) = 2
-		string2 = "GameSpeed\t[Fastest]"
-	}
-	logstr(7) = "\n" + string2
+    /*****  ゲーム内のログ表示（設定変更）  *****/
+    if setting(1) == 1 {
+        setting(4) = 8
+        string2 = "GameSpeed\t[Slowest]"
+    }
+    if setting(2) == 1 {
+        setting(4) = 4
+        string2 = "GameSpeed\t[Normal]"
+    }
+    if setting(3) == 1 {
+        setting(4) = 2
+        string2 = "GameSpeed\t[Fastest]"
+    }
+    logstr(7) = "\n" + string2
 
-	if setting(0) == 1  {logstr(6) = "\nAutoSave\t\t[ ON ]"}
-	else                {logstr(6) = "\nAutoSave\t\t[ OFF ]"}
-	if setting(8) == 1  {logstr(8) = "\nAmazoon Reture\t[ ON ]"}
-	else                {logstr(8) = "\nAmazoon Reture\t[ OFF ]"}
-	if setting(9) == 1  {logstr(8) += "\nSave & Load Reture\t[ ON ]"}
-	else                {logstr(8) += "\nSave & Load Reture\t[ OFF ]"}
-	if setting(10) == 1 {logstr(8) += "\nSetting Reture\t[ ON ]"}
-	else                {logstr(8) += "\nSetting Reture\t[ OFF ]"}
+    if setting(0) == 1  {logstr(6) = "\nAutoSave\t\t[ ON ]"}
+    else                {logstr(6) = "\nAutoSave\t\t[ OFF ]"}
+    if setting(8) == 1  {logstr(8) = "\nAmazoon Reture\t[ ON ]"}
+    else                {logstr(8) = "\nAmazoon Reture\t[ OFF ]"}
+    if setting(9) == 1  {logstr(8) += "\nSave & Load Reture\t[ ON ]"}
+    else                {logstr(8) += "\nSave & Load Reture\t[ OFF ]"}
+    if setting(10) == 1 {logstr(8) += "\nSetting Reture\t[ ON ]"}
+    else                {logstr(8) += "\nSetting Reture\t[ OFF ]"}
 
-	logstr(0) = "\n*** Settings Change ***" + logstr(6) + logstr(7) + logstr(8)
-	gsel ID_WIN_MAIN : objprm layid(1), "log,auto_chk"
-	return
+    logstr(0) = "\n*** Settings Change ***" + logstr(6) + logstr(7) + logstr(8)
+    gsel ID_WIN_MAIN : objprm layid(1), "log,auto_chk"
+    return
 
 
 //終了の処理
 *exit
-	setting(5) = -1
-	winID = wparam
-	switch winID
-		//------------------------------Master Window
-		case ID_WIN_MASTER
-			/*****  自動保存  *****/
-			mysave2 fname(saveID)
-			vsave backupdir
-			/*****  WebView2の後処理  *****/
-			gsel ID_WIN_INFO
-			WebView2_Release pView
-			WebView2_Release pCtrl
-			WebView2_Release pEnv
-			WebView2_Release ret
-			oncmd 0
-			end
-			swbreak
-		//------------------------------情報ウィンドウ
-		case ID_WIN_INFO
-			gsel ID_WIN_INFO, -1
-			swbreak
-	swend
-	return
+    setting(5) = -1
+    winID = wparam
+    switch winID
+        //------------------------------Master Window
+        case ID_WIN_MASTER
+            /*****  自動保存  *****/
+            mysave2 fname(saveID)
+            vsave backupdir
+            /*****  WebView2の後処理  *****/
+            gsel ID_WIN_INFO
+            WebView2_Release pView
+            WebView2_Release pCtrl
+            WebView2_Release pEnv
+            WebView2_Release ret
+            oncmd 0
+            end
+            swbreak
+        //------------------------------情報ウィンドウ
+        case ID_WIN_INFO
+            gsel ID_WIN_INFO, -1
+            swbreak
+    swend
+    return

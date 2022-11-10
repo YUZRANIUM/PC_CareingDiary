@@ -39,33 +39,33 @@
 //%1～%6:保存したい配列変数
 //%7:ファイル名
 #define global mysave(%1,%2,%3,%4,%5,%6,%7)\
-	vsave_start\
-	: vsave_put %1\
-	: vsave_put %2\
-	: vsave_put %3\
-	: vsave_put %4\
-	: vsave_put %5\
-	: vsave_put %6\
-	: vsave_end %7
+    vsave_start\
+    : vsave_put %1\
+    : vsave_put %2\
+    : vsave_put %3\
+    : vsave_put %4\
+    : vsave_put %5\
+    : vsave_put %6\
+    : vsave_end %7
 
 
 //vsave短縮2
 //%1 : ファイル名
 #define global mysave2(%1)\
-	vsave_start\
-	: vsave_put setting\
-	: vsave_put saveID\
-	: vsave_put u\
-	: vsave_put st\
-	: vsave_put gt\
-	: vsave_put gid\
-	: vsave_put dsta\
-	: vsave_put motimono\
-	: vsave_put logmoni\
-	: vsave_put bfcpu\
-	: vsave_put bfgpu\
-	: vsave_put bfrom\
-	: vsave_end %1
+    vsave_start\
+    : vsave_put setting\
+    : vsave_put saveID\
+    : vsave_put u\
+    : vsave_put st\
+    : vsave_put gt\
+    : vsave_put gid\
+    : vsave_put dsta\
+    : vsave_put motimono\
+    : vsave_put logmoni\
+    : vsave_put bfcpu\
+    : vsave_put bfgpu\
+    : vsave_put bfrom\
+    : vsave_end %1
 #global
 
 
@@ -74,13 +74,13 @@
 //HSPバージョン"beta文字"付き出力関数
 //hsedsdk.asをインクルードすること
 #defcfunc local myhspver_ int p1
-	sdim a
-	hsed_cnvverstr p1
-	a += refstr
-	if instr(a, 0, "b") != -1 {
-		strrep a, "b", "beta"
-	}
-	return a
+    sdim a
+    hsed_cnvverstr p1
+    a += refstr
+    if instr(a, 0, "b") != -1 {
+        strrep a, "b", "beta"
+    }
+    return a
 
 //HSPバージョン"beta文字"付き出力
 //%1 : __hspver__ もしくは hspver
@@ -92,24 +92,24 @@
 
 #module
 #deffunc rm_init
-	WakuSize = (ginfo(10) - ginfo(12)) / 2
-	TabSize = ginfo(11) - ginfo(13) - WakuSize
-	return
+    WakuSize = (ginfo(10) - ginfo(12)) / 2
+    TabSize = ginfo(11) - ginfo(13) - WakuSize
+    return
 
 #defcfunc rmousex
-	x1 = ginfo(0) - ginfo(4) - WakuSize
-	return x1
+    x1 = ginfo(0) - ginfo(4) - WakuSize
+    return x1
 
 #defcfunc rmousey
-	y1 = ginfo(1) - ginfo(5) - TabSize
-	return y1
+    y1 = ginfo(1) - ginfo(5) - TabSize
+    return y1
 #global
 
 
 
 
 /*******************************************************************************
-					タブコントロールモジュール
+                    タブコントロールモジュール
 ********************************************************************************/
 #module
 #uselib "user32"
@@ -128,11 +128,11 @@
 //p3 : タブコントロールのハンドルを受け取る変数
 //p4 : タブコントロールの追加ウィンドウスタイル
 #deffunc CreateTab int p1, int p2, var p3, int p4
-	winobj "systabcontrol32", "", , $52000000 | p4, p1, p2
-	p3 = objinfo(stat, 2)
-	sendmsg p3, $30, GetStockObject(17)
-	dim rect, 4
-	return p3
+    winobj "systabcontrol32", "", , $52000000 | p4, p1, p2
+    p3 = objinfo(stat, 2)
+    sendmsg p3, $30, GetStockObject(17)
+    dim rect, 4
+    return p3
 /*******************************************************************************/
 //My_CreateTab p1, p2, p3, p4
 //タブコントロールを設置します。
@@ -148,14 +148,14 @@
 //index : タブの序列(= 0～)
 //p3 : タブコントロールのオブジェクトハンドル
 #deffunc InsertTab str p1, int p2, int index, var p3
-	pszText = p1 : tcitem = 1, 0, 0, varptr(pszText)
-	sendmsg p3, $1307, index, varptr(tcitem)
-	GetClientRect p3, varptr(rect)
-	sendmsg p3, $1328, , varptr(rect)
-	bgscr p2, rect(2) - rect(0) + 2, rect(3) - rect(1) + 8, 2, rect(0) + 2, rect(1) + 8
-	SetWindowLong hwnd, -16, WS_CHILD
-	SetParent hwnd, p3
-	return
+    pszText = p1 : tcitem = 1, 0, 0, varptr(pszText)
+    sendmsg p3, $1307, index, varptr(tcitem)
+    GetClientRect p3, varptr(rect)
+    sendmsg p3, $1328, , varptr(rect)
+    bgscr p2, rect(2) - rect(0) + 2, rect(3) - rect(1) + 8, 2, rect(0) + 2, rect(1) + 8
+    SetWindowLong hwnd, -16, WS_CHILD
+    SetParent hwnd, p3
+    return
 #global
 #module
 //ChangeTab p1,
@@ -163,11 +163,11 @@
 //p1 : タブの項目として貼り付けるbgscr命令の初回ウィンドウID値
 //p2 : タブコントロールのオブジェクトハンドル
 #deffunc ChangeTab int p1, var p2
-	gsel wID + p1, -1
-	sendmsg p2, TCM_GETCURSEL
-	wID = stat
-	gsel wID + p1, 1
-	return
+    gsel wID + p1, -1
+    sendmsg p2, TCM_GETCURSEL
+    wID = stat
+    gsel wID + p1, 1
+    return
 #global
 /*******************************************************************************/
 #module
@@ -177,16 +177,16 @@
 //%2 : タブコントロールのオブジェクトハンドル
 //%3 : タブが設置されているウィンドウID
 #define global My_ChangeTab(%1,%2,%3)\
-		gsel wID + %1, -1\
-		: sendmsg %2, $130B\
-		: wID = stat\
-		: gsel wID + %1, 1\
-		: gsel %3
+        gsel wID + %1, -1\
+        : sendmsg %2, $130B\
+        : wID = stat\
+        : gsel wID + %1, 1\
+        : gsel %3
 #global
 
 /*******************************************************************************
-				マウスクリックに反応するスタティックテキスト
-					(完成度ビミョー)
+                マウスクリックに反応するスタティックテキスト
+                    (完成度ビミョー)
 ********************************************************************************/
 
 #module "mylmbc"
@@ -196,15 +196,15 @@
 //p4 : オブジェクトハンドルを受け取る変数
 //p5 : ウィンドウスタイル($1:中央揃え, $2:右揃え)
 #deffunc local mylmb_ str p1, int p2, int p3, var p4, int p5
-	dim RECT, 4
-	winobj "static", p1, , $50000000 | $100 | p5, p2, p3
-	p4 = objinfo(stat, 2)
-	mref BMSCR, 67
-	sendmsg p4, $30, BMSCR.38
-	//スタティックテキスト上のカーソルをハンドカーソルに変更
-	LoadCursor 0, 32649
-	SetClassLong p4, -12, stat
-	return
+    dim RECT, 4
+    winobj "static", p1, , $50000000 | $100 | p5, p2, p3
+    p4 = objinfo(stat, 2)
+    mref BMSCR, 67
+    sendmsg p4, $30, BMSCR.38
+    //スタティックテキスト上のカーソルをハンドカーソルに変更
+    LoadCursor 0, 32649
+    SetClassLong p4, -12, stat
+    return
 
 
 //マウスクリックに反応するオブジェクト

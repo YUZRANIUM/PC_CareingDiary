@@ -11,498 +11,498 @@
 
 #if 0
 /*##############################################################################
-							画面切り替え機能実験
+                            画面切り替え機能実験
 ###############################################################################*/
-	#include "user32.as"
-	#include "gdi32.as"
-	#include "hsedsdk.as"
-	#include "sqlele.hsp"
-	#include "00_module.hsp"
-	#include "00_mylv.hsp"
-	/***ウィンドウID***/
-	#enum MASTER_ex = 0
-	#enum MAIN_ex
-	#enum SUB1_ex
-	#enum SUB2_ex
+    #include "user32.as"
+    #include "gdi32.as"
+    #include "hsedsdk.as"
+    #include "sqlele.hsp"
+    #include "00_module.hsp"
+    #include "00_mylv.hsp"
+    /***ウィンドウID***/
+    #enum MASTER_ex = 0
+    #enum MAIN_ex
+    #enum SUB1_ex
+    #enum SUB2_ex
 
-	#enum tabid1
-	#enum tabid2
-	#enum tabid3
-	#enum tabid4
-	#enum tabid5
-	/*** 各種変数定義 ***/
+    #enum tabid1
+    #enum tabid2
+    #enum tabid3
+    #enum tabid4
+    #enum tabid5
+    /*** 各種変数定義 ***/
 
-	//HSPのバージョン
-	hspv = "" : hsed_cnvverstr hspver : hspv += refstr
-	if instr(hspv, 0, "b") != -1 : strrep hspv, "b", "beta"
-	title " 08_ver0.3.0experiment  for  HSP " + hspv
-	sdim logfile_ex, 2048
-	notesel logfile_ex
-	noteload "text\\08_ver000ex.txt" : noteunsel
-	link = "https://github.com/YUZURANIUM/PC_CareingDiary"
+    //HSPのバージョン
+    hspv = "" : hsed_cnvverstr hspver : hspv += refstr
+    if instr(hspv, 0, "b") != -1 : strrep hspv, "b", "beta"
+    title " 08_ver0.3.0experiment  for  HSP " + hspv
+    sdim logfile_ex, 2048
+    notesel logfile_ex
+    noteload "text\\08_ver000ex.txt" : noteunsel
+    link = "https://github.com/YUZURANIUM/PC_CareingDiary"
 /*******************************************************************************
-								MASTER_ex
+                                MASTER_ex
 ********************************************************************************/
 
-	screen MASTER_ex, 1100, 650, 2 : font "メイリオ", 16
-	hwindow = hwnd
-	mref BMSCRn, 67 : hFontn = BMSCRn.38
+    screen MASTER_ex, 1100, 650, 2 : font "メイリオ", 16
+    hwindow = hwnd
+    mref BMSCRn, 67 : hFontn = BMSCRn.38
 
-	sdim tabname, 64 : sdim mousmoni, 64
-	tabname = "Tab1", "Tab2", "Tab3", "Tab4", "Tab5"
-	sdim cpu, 2048 : sdim data_cpu, 1024 : sdim cpu_culm, 64 : dim c_culm_num
-	sdim gpu, 2048 : sdim data_gpu, 1024 : sdim gpu_culm, 64 : dim g_culm_num
-	sdim rom, 2048 : sdim data_rom, 1024 : sdim rom_culm, 64 : dim r_culm_num
-	cpu_culm = "" : gpu_culm = "" : rom_culm = "" : all_clum = ""
+    sdim tabname, 64 : sdim mousmoni, 64
+    tabname = "Tab1", "Tab2", "Tab3", "Tab4", "Tab5"
+    sdim cpu, 2048 : sdim data_cpu, 1024 : sdim cpu_culm, 64 : dim c_culm_num
+    sdim gpu, 2048 : sdim data_gpu, 1024 : sdim gpu_culm, 64 : dim g_culm_num
+    sdim rom, 2048 : sdim data_rom, 1024 : sdim rom_culm, 64 : dim r_culm_num
+    cpu_culm = "" : gpu_culm = "" : rom_culm = "" : all_clum = ""
 
-	swi = 1
-	c_clum_w = 50, 55, 75, 80, 80, 80
-	g_clum_w = 50, 55, 75, 80, 80, 80
-	r_clum_w = 50, 55, 75, 80, 80, 80
-	f = "SQL\\Syouhin.db"
+    swi = 1
+    c_clum_w = 50, 55, 75, 80, 80, 80
+    g_clum_w = 50, 55, 75, 80, 80, 80
+    r_clum_w = 50, 55, 75, 80, 80, 80
+    f = "SQL\\Syouhin.db"
 
-	sql_open f
-	sql_q "BEGIN;"
+    sql_open f
+    sql_q "BEGIN;"
 
-	sql_q "SELECT * FROM MyCPU;"
-	//レコードの数
-	cpu_cunt = stat
-	//カラムの数
-	c_culm_num = length(tmparr)
-	//カラムの一覧リスト
-	cpu_culm = sql_collist() : split cpu_culm, ",", cpu_culm
-	//DBのレコードを文字列型1次元配列変数に格納する
-	myindata cpu_cunt, c_culm_num, cpu_culm, cpu
+    sql_q "SELECT * FROM MyCPU;"
+    //レコードの数
+    cpu_cunt = stat
+    //カラムの数
+    c_culm_num = length(tmparr)
+    //カラムの一覧リスト
+    cpu_culm = sql_collist() : split cpu_culm, ",", cpu_culm
+    //DBのレコードを文字列型1次元配列変数に格納する
+    myindata cpu_cunt, c_culm_num, cpu_culm, cpu
 
-	sql_q "SELECT * FROM MyGPU;"
-	gpu_cunt = stat
-	gpu_culm = sql_collist() : split gpu_culm, ",", gpu_culm
-	g_culm_num = length(tmparr)
-	myindata gpu_cunt, g_culm_num, gpu_culm, gpu
+    sql_q "SELECT * FROM MyGPU;"
+    gpu_cunt = stat
+    gpu_culm = sql_collist() : split gpu_culm, ",", gpu_culm
+    g_culm_num = length(tmparr)
+    myindata gpu_cunt, g_culm_num, gpu_culm, gpu
 
-	sql_q "SELECT * FROM MyROM;"
-	rom_cunt = stat
-	rom_culm = sql_collist() : split rom_culm, ",", rom_culm
-	r_culm_num = length(tmparr)
-	myindata rom_cunt, r_culm_num, rom_culm, rom
+    sql_q "SELECT * FROM MyROM;"
+    rom_cunt = stat
+    rom_culm = sql_collist() : split rom_culm, ",", rom_culm
+    r_culm_num = length(tmparr)
+    myindata rom_cunt, r_culm_num, rom_culm, rom
 
-	sql_q "COMMIT;"
-	sql_close
+    sql_q "COMMIT;"
+    sql_close
 
-	/***MASTERここまで***/
-
-
-/*******************************************************************************
-								MAIN_ex
-********************************************************************************/
-
-	bgscr MAIN_ex, 1100, 625, 2
-	SetWindowLong hwnd, -16, WS_CHILD
-	SetParent hwnd, hwindow
-
-	font "メイリオ", 14 : objmode 2, 0
-
-	pos 10, 0 : mes f : x2 = ginfo(14)
-	objsize 150, 25 : pos x2 + 20, 0
-
-	button gosub "Your Get List Items", *getitem
-	id_butget = stat:hButget = objinfo_hwnd(id_butget)
-
-	pos x2 + 300, 0
-	button gosub "SUB1_exへ", *onsub1
-	id_gowin = stat : hButnew = objinfo_hwnd(id_gowin)
-
-	pos x2 + 300 + 180, 0
-	button gosub "SUB2_exへ", *onsub2
-
-	pos 20, 30
-	/***リストビューの設置***/
-	mycrelv 500, 280, id_cpumoni, hLVcsouko
-	myincol id_cpumoni, cpu_culm, c_culm_num, c_clum_w
-	myinitem id_cpumoni, cpu, cpu_cunt, c_culm_num
-
-	pos 550, 30
-	/***リストビューの設置***/
-	mycrelv 500, 280, id_gpumoni, hLVgsouko
-	myincol id_gpumoni, gpu_culm, g_culm_num, g_clum_w
-	myinitem id_gpumoni, gpu, gpu_cunt, g_culm_num
-
-	pos 20, 320
-	/***リストビューの設置***/
-	mycrelv 500, 280, id_rommoni, hLVrsouko
-	myincol id_rommoni, rom_culm, r_culm_num, r_clum_w
-	myinitem id_rommoni, rom, rom_cunt, r_culm_num
-
-	oncmd gosub *listnotify, WM_NOTIFY
-
-	/******フォントの反映******/
-	sendmsg hLVcsouko, $30, , hFontn
-	sendmsg hLVgsouko, $30, , hFontn
-	sendmsg hLVrsouko, $30, , hFontn
-	/***SUB1_exここまで***/
+    /***MASTERここまで***/
 
 
 /*******************************************************************************
-								SUB1_ex
+                                MAIN_ex
 ********************************************************************************/
 
-	bgscr SUB1_ex, 1100, 625, 2
-	SetWindowLong hwnd, -16, WS_CHILD
-	SetParent hwnd, hwindow
+    bgscr MAIN_ex, 1100, 625, 2
+    SetWindowLong hwnd, -16, WS_CHILD
+    SetParent hwnd, hwindow
 
-	font "メイリオ", 16 : objmode 2, 0
+    font "メイリオ", 14 : objmode 2, 0
 
-	pos 20, 0
-	mes "bgscr命令による専用画面遷移動作実験"
-	x1 = ginfo(14)
-	mes "こちらはSUB1_exです。"
+    pos 10, 0 : mes f : x2 = ginfo(14)
+    objsize 150, 25 : pos x2 + 20, 0
 
-	objsize 100, 25
+    button gosub "Your Get List Items", *getitem
+    id_butget = stat:hButget = objinfo_hwnd(id_butget)
 
-	pos x1 + 30, 0
-	button gosub "MAIN_exへ", *onmain
+    pos x2 + 300, 0
+    button gosub "SUB1_exへ", *onsub1
+    id_gowin = stat : hButnew = objinfo_hwnd(id_gowin)
 
-	pos x1 + 30 + 160, 0
-	button gosub "SUB2_exへ", *onsub2
+    pos x2 + 300 + 180, 0
+    button gosub "SUB2_exへ", *onsub2
 
-	pos 875, 50
-	mesbox mousmoni, 200, 30, 0
-	id_mousmoni = stat
+    pos 20, 30
+    /***リストビューの設置***/
+    mycrelv 500, 280, id_cpumoni, hLVcsouko
+    myincol id_cpumoni, cpu_culm, c_culm_num, c_clum_w
+    myinitem id_cpumoni, cpu, cpu_cunt, c_culm_num
 
-	pos 10, 50
-	font msgothic, 15
-	mesbox logfile_ex, 845, 500, 0
+    pos 550, 30
+    /***リストビューの設置***/
+    mycrelv 500, 280, id_gpumoni, hLVgsouko
+    myincol id_gpumoni, gpu_culm, g_culm_num, g_clum_w
+    myinitem id_gpumoni, gpu, gpu_cunt, g_culm_num
 
-	pos 10, 555
-	mylmb "Git Hub", 150, 25, hlink
+    pos 20, 320
+    /***リストビューの設置***/
+    mycrelv 500, 280, id_rommoni, hLVrsouko
+    myincol id_rommoni, rom_culm, r_culm_num, r_clum_w
+    myinitem id_rommoni, rom, rom_cunt, r_culm_num
 
-	sendmsg hlink, $30, ,hFontn
+    oncmd gosub *listnotify, WM_NOTIFY
 
-	/***MAIN_exここまで***/
+    /******フォントの反映******/
+    sendmsg hLVcsouko, $30, , hFontn
+    sendmsg hLVgsouko, $30, , hFontn
+    sendmsg hLVrsouko, $30, , hFontn
+    /***SUB1_exここまで***/
+
+
+/*******************************************************************************
+                                SUB1_ex
+********************************************************************************/
+
+    bgscr SUB1_ex, 1100, 625, 2
+    SetWindowLong hwnd, -16, WS_CHILD
+    SetParent hwnd, hwindow
+
+    font "メイリオ", 16 : objmode 2, 0
+
+    pos 20, 0
+    mes "bgscr命令による専用画面遷移動作実験"
+    x1 = ginfo(14)
+    mes "こちらはSUB1_exです。"
+
+    objsize 100, 25
+
+    pos x1 + 30, 0
+    button gosub "MAIN_exへ", *onmain
+
+    pos x1 + 30 + 160, 0
+    button gosub "SUB2_exへ", *onsub2
+
+    pos 875, 50
+    mesbox mousmoni, 200, 30, 0
+    id_mousmoni = stat
+
+    pos 10, 50
+    font msgothic, 15
+    mesbox logfile_ex, 845, 500, 0
+
+    pos 10, 555
+    mylmb "Git Hub", 150, 25, hlink
+
+    sendmsg hlink, $30, ,hFontn
+
+    /***MAIN_exここまで***/
 
 
 
 /*******************************************************************************
-								SUB2_ex
+                                SUB2_ex
 ********************************************************************************/
 
-	bgscr SUB2_ex, 1100, 625, 2
-	SetWindowLong hwnd, -16, WS_CHILD
-	SetParent hwnd, hwindow
+    bgscr SUB2_ex, 1100, 625, 2
+    SetWindowLong hwnd, -16, WS_CHILD
+    SetParent hwnd, hwindow
 
-	font "メイリオ", 16 : objmode 2, 0
+    font "メイリオ", 16 : objmode 2, 0
 
-	pos 20, 0
-	mes "bgscr命令による専用画面遷移動作実験"
-	x3 = ginfo(14)
-	mes "こちらはSUB2_exです。", 1
-	objsize 100, 25
+    pos 20, 0
+    mes "bgscr命令による専用画面遷移動作実験"
+    x3 = ginfo(14)
+    mes "こちらはSUB2_exです。", 1
+    objsize 100, 25
 
-	pos x3 + 30, 0
-	button gosub "MAIN_exへ", *onmain
+    pos x3 + 30, 0
+    button gosub "MAIN_exへ", *onmain
 
-	pos x3 + 30 + 160, 0
-	button gosub "SUB1_exへ", *onsub1
-
-
-
-	/***タブコントロール***/
-	pos 50, 100
-	My_CreateTab 600, 300, hTab_ex
-
-	InsertTab tabname(0), tabid1, 0, hTab_ex
-	font "メイリオ", 16
-	pos 20, 20
-	mes "こちらは Tabのつまみ1 です。"
+    pos x3 + 30 + 160, 0
+    button gosub "SUB1_exへ", *onsub1
 
 
-	InsertTab tabname(1), tabid2, 1, hTab_ex
-	font "メイリオ", 16
-	pos 20, 20
-	mes "こちらは Tabのつまみ2 です。"
+
+    /***タブコントロール***/
+    pos 50, 100
+    My_CreateTab 600, 300, hTab_ex
+
+    InsertTab tabname(0), tabid1, 0, hTab_ex
+    font "メイリオ", 16
+    pos 20, 20
+    mes "こちらは Tabのつまみ1 です。"
 
 
-	InsertTab tabname(2), tabid3, 2, hTab_ex
-	font "メイリオ", 16
-	pos 20, 20
-	mes "こちらは Tabのつまみ3 です。"
+    InsertTab tabname(1), tabid2, 1, hTab_ex
+    font "メイリオ", 16
+    pos 20, 20
+    mes "こちらは Tabのつまみ2 です。"
 
 
-	InsertTab tabname(3), tabid4, 3, hTab_ex
-	font "メイリオ", 16
-	pos 20, 20
-	mes "こちらは Tabのつまみ4 です。"
+    InsertTab tabname(2), tabid3, 2, hTab_ex
+    font "メイリオ", 16
+    pos 20, 20
+    mes "こちらは Tabのつまみ3 です。"
 
 
-	InsertTab tabname(4), tabid5, 4, hTab_ex
-	font "メイリオ", 16
-	pos 20, 20
-	mes "こちらは Tabのつまみ5 です。"
+    InsertTab tabname(3), tabid4, 3, hTab_ex
+    font "メイリオ", 16
+    pos 20, 20
+    mes "こちらは Tabのつまみ4 です。"
 
 
-	gsel tabid1, 1
+    InsertTab tabname(4), tabid5, 4, hTab_ex
+    font "メイリオ", 16
+    pos 20, 20
+    mes "こちらは Tabのつまみ5 です。"
 
 
-	gsel SUB2_ex
-	oncmd gosub *notify_ex, WM_NOTIFY
-	/***SUB2_exここまで***/
+    gsel tabid1, 1
 
-	gsel MASTER_ex, 1
-	gsel SUB1_ex, 1
 
-	oncmd gosub *command, $111      //マウスクリック時のウィンドウメッセージ
-	oncmd gosub *wmsetcursor, $20   //WM_SETCURSOR
+    gsel SUB2_ex
+    oncmd gosub *notify_ex, WM_NOTIFY
+    /***SUB2_exここまで***/
+
+    gsel MASTER_ex, 1
+    gsel SUB1_ex, 1
+
+    oncmd gosub *command, $111      //マウスクリック時のウィンドウメッセージ
+    oncmd gosub *wmsetcursor, $20   //WM_SETCURSOR
 
 
 *maint
-	wait 5
-	gsel SUB1_ex
-	mousmoni = ""
-	mousmoni += " x = " + rmousex() + "  y = " + rmousey()
-	objprm id_mousmoni, mousmoni
-	goto *maint
+    wait 5
+    gsel SUB1_ex
+    mousmoni = ""
+    mousmoni += " x = " + rmousex() + "  y = " + rmousey()
+    objprm id_mousmoni, mousmoni
+    goto *maint
 
 
 //############################## < 以下処理系 > #################################
 
 
 *command
-	if hlink = lparam : exec link, 16
-	return
+    if hlink = lparam : exec link, 16
+    return
 
 *wmsetcursor
-	if (lparam & $FFFF) != 1 : return
-	// オブジェクトの左上XY右下XYの座標位置を取得
-	GetWindowRect hlink, varptr(RECT)
-	// 取得したオブジェクトの座標位置とカーソルの座標位置を比較
-	PtInRect varptr(RECT), ginfo(0), ginfo(1)
-	if stat {
-		if oncursor : return
-		InvalidateRect hlink, 0, 0
-		oncursor = 1
-		return
-	}
-	else {
-		if oncursor = 0 : return
-		InvalidateRect hlink, 0, 0
-		oncursor = 0
-		return
-	}
-	return
+    if (lparam & $FFFF) != 1 : return
+    // オブジェクトの左上XY右下XYの座標位置を取得
+    GetWindowRect hlink, varptr(RECT)
+    // 取得したオブジェクトの座標位置とカーソルの座標位置を比較
+    PtInRect varptr(RECT), ginfo(0), ginfo(1)
+    if stat {
+        if oncursor : return
+        InvalidateRect hlink, 0, 0
+        oncursor = 1
+        return
+    }
+    else {
+        if oncursor = 0 : return
+        InvalidateRect hlink, 0, 0
+        oncursor = 0
+        return
+    }
+    return
 
 
 
 /*********ウィンドウ切り替え処理*********/
 
 *onmain
-	gsel SUB1_ex, -1 : gsel SUB2_ex, -1
-	gsel MAIN_ex, 1
-	return
+    gsel SUB1_ex, -1 : gsel SUB2_ex, -1
+    gsel MAIN_ex, 1
+    return
 
 *onsub1
-	gsel MAIN_ex, -1 : gsel SUB2_ex, -1
-	gsel SUB1_ex, 1
-	return
+    gsel MAIN_ex, -1 : gsel SUB2_ex, -1
+    gsel SUB1_ex, 1
+    return
 
 *onsub2
-	gsel SUB1_ex, -1 : gsel MAIN_ex, -1
-	gsel SUB2_ex, 1
-	return
+    gsel SUB1_ex, -1 : gsel MAIN_ex, -1
+    gsel SUB2_ex, 1
+    return
 /******ウィンドウ切り替え処理ここまで*****/
 
 //タブコントロールの切り替え
 *notify_ex
-	dupptr nmhdr, lparam, 12, 4
-	if (nmhdr(2) == -551) {
-		My_ChangeTab tabid1, hTab_ex, SUB2_ex
-	}
-	return
+    dupptr nmhdr, lparam, 12, 4
+    if (nmhdr(2) == -551) {
+        My_ChangeTab tabid1, hTab_ex, SUB2_ex
+    }
+    return
 
 //選択したリストアイテムの取得
 *getitem
-	gsel MAIN_ex
-	sdim infonoteC, 1024 : sdim infotext1, 1024
-	sdim infonoteG, 1024 : sdim infotext2, 1024
-	sdim infonoteR, 1024 : sdim infotext3, 1024
+    gsel MAIN_ex
+    sdim infonoteC, 1024 : sdim infotext1, 1024
+    sdim infonoteG, 1024 : sdim infotext2, 1024
+    sdim infonoteR, 1024 : sdim infotext3, 1024
 
-	mygetitem id_cpumoni, 6, infonoteC
-	mygetitem id_gpumoni, 6, infonoteG
-	mygetitem id_rommoni, 6, infonoteR
+    mygetitem id_cpumoni, 6, infonoteC
+    mygetitem id_gpumoni, 6, infonoteG
+    mygetitem id_rommoni, 6, infonoteR
 
-	infotext1 += "\n\n---CPU---" + "\n" + infonoteC
-	infotext2 += "\n\n---GPU---" + "\n" + infonoteG
-	infotext3 += "\n\n---ROM---" + "\n" + infonoteR
-	kounyu = "\n\n\t\t以上を購入しますか?"
+    infotext1 += "\n\n---CPU---" + "\n" + infonoteC
+    infotext2 += "\n\n---GPU---" + "\n" + infonoteG
+    infotext3 += "\n\n---ROM---" + "\n" + infonoteR
+    kounyu = "\n\n\t\t以上を購入しますか?"
 
-	dialog "購入リスト" + infotext1 + infotext2 + infotext3 + kounyu, 0, "購入確認"
+    dialog "購入リスト" + infotext1 + infotext2 + infotext3 + kounyu, 0, "購入確認"
 
-	return
+    return
 
 //並べ替え
 *listnotify
-	dupptr nmhdr, lparam, 12, 4 : id = nmhdr(0)
-	if (nmhdr(2) = LVN_COLUMNCLICK) {
-		dupptr nmlv, lparam, 40, 4 : inde = nmlv(4)
+    dupptr nmhdr, lparam, 12, 4 : id = nmhdr(0)
+    if (nmhdr(2) = LVN_COLUMNCLICK) {
+        dupptr nmlv, lparam, 40, 4 : inde = nmlv(4)
 
-		swi = swi * -1
-		if swi == -1 : sqsc = " DESC;" : else : sqsc = " ASC;"
-		/***描画先・操作先***/
-		gsel MAIN_ex
+        swi = swi * -1
+        if swi == -1 : sqsc = " DESC;" : else : sqsc = " ASC;"
+        /***描画先・操作先***/
+        gsel MAIN_ex
 
-		sql_open f
-		sql_q "BEGIN;"
-		switch id
-			/***CPUの処理***/
-			case hLVcsouko
-				sdim cpu, 2048 : sdim data_cpu, 1024
-				sql_q "SELECT * FROM MyCPU ORDER BY " + cpu_culm(inde) + sqsc
-				myindata cpu_cunt, c_culm_num, cpu_culm, cpu
-				/***今あるリストアイテムの削除***/
-				mydelitem id_cpumoni
-				myinitem id_cpumoni, cpu, cpu_cunt, c_culm_num
-				swbreak
+        sql_open f
+        sql_q "BEGIN;"
+        switch id
+            /***CPUの処理***/
+            case hLVcsouko
+                sdim cpu, 2048 : sdim data_cpu, 1024
+                sql_q "SELECT * FROM MyCPU ORDER BY " + cpu_culm(inde) + sqsc
+                myindata cpu_cunt, c_culm_num, cpu_culm, cpu
+                /***今あるリストアイテムの削除***/
+                mydelitem id_cpumoni
+                myinitem id_cpumoni, cpu, cpu_cunt, c_culm_num
+                swbreak
 
-			/***GPU***/
-			case hLVgsouko
-				sdim gpu, 2048 : sdim data_gpu, 1024
-				sql_q "SELECT * FROM MyGPU ORDER BY " + gpu_culm(inde) + sqsc
-				myindata gpu_cunt, g_culm_num, gpu_culm, gpu
-				mydelitem id_gpumoni
-				myinitem id_gpumoni, gpu, gpu_cunt, g_culm_num
-				swbreak
+            /***GPU***/
+            case hLVgsouko
+                sdim gpu, 2048 : sdim data_gpu, 1024
+                sql_q "SELECT * FROM MyGPU ORDER BY " + gpu_culm(inde) + sqsc
+                myindata gpu_cunt, g_culm_num, gpu_culm, gpu
+                mydelitem id_gpumoni
+                myinitem id_gpumoni, gpu, gpu_cunt, g_culm_num
+                swbreak
 
-			/***ROM***/
-			case hLVrsouko
-				sdim rom, 2048 : sdim data_rom, 1024
-				sql_q "SELECT * FROM MyROM ORDER BY " + rom_culm(inde) + sqsc
-				myindata rom_cunt, r_culm_num, rom_culm, rom
-				mydelitem id_rommoni
-				myinitem id_rommoni, rom, rom_cunt, r_culm_num
-				swbreak
-		swend
-		sql_q "COMMIT;"
-		sql_close
-	}
-	return
+            /***ROM***/
+            case hLVrsouko
+                sdim rom, 2048 : sdim data_rom, 1024
+                sql_q "SELECT * FROM MyROM ORDER BY " + rom_culm(inde) + sqsc
+                myindata rom_cunt, r_culm_num, rom_culm, rom
+                mydelitem id_rommoni
+                myinitem id_rommoni, rom, rom_cunt, r_culm_num
+                swbreak
+        swend
+        sql_q "COMMIT;"
+        sql_close
+    }
+    return
 #endif
 
 /*******************************************************************************
-		SQLite DB Table Schema Infomation for HSP3.7beta (SQLele)
-		対象となるDBファイル内のテーブルスキーマを確認するスクリプト
+        SQLite DB Table Schema Infomation for HSP3.7beta (SQLele)
+        対象となるDBファイル内のテーブルスキーマを確認するスクリプト
 ********************************************************************************/
 #if 1
-	#include "hsp3util.as"
-	#include "hsedsdk.as"
-	#include "sqlele.hsp"
-	#include "00_module.hsp"
-	#include "00_mylv.hsp"
-	screen 0, 1250, 450, 2 : title "SQLite DB Table Schema Information for HSP" + myhspver(hspver) + " (SQLele)"
-	font "メイリオ", 12 : mref BMSCR, 67 : hFont = BMSCR(38) : objmode 2, 1
+    #include "hsp3util.as"
+    #include "hsedsdk.as"
+    #include "sqlele.hsp"
+    #include "00_module.hsp"
+    #include "00_mylv.hsp"
+    screen 0, 1250, 450, 2 : title "SQLite DB Table Schema Information for HSP" + myhspver(hspver) + " (SQLele)"
+    font "メイリオ", 12 : mref BMSCR, 67 : hFont = BMSCR(38) : objmode 2, 1
 
-	sdim tz1, 2048 : sdim tz2, 2048 : sdim tz3, 512
-	tzw = 50, 90, 89, 75, 920 : sdim f
-	pos 5, 10 : mes "DataBase File : ", 1
+    sdim tz1, 2048 : sdim tz2, 2048 : sdim tz3, 512
+    tzw = 50, 90, 89, 75, 920 : sdim f
+    pos 5, 10 : mes "DataBase File : ", 1
 
-	pos ginfo(14) + 10,
-	winobj "static", f, , $50000000 | SS_SUNKEN, 700, 25
-	id_file = stat : hStfile = objinfo(id_file, 2)
+    pos ginfo(14) + 10,
+    winobj "static", f, , $50000000 | SS_SUNKEN, 700, 25
+    id_file = stat : hStfile = objinfo(id_file, 2)
 
-	objsize 100, 30
-	pos ginfo(14) + 720, 5
-	button gosub "OPEN", *OPEN
-	id_butop = stat : hButop = objinfo(id_butop, 2)
+    objsize 100, 30
+    pos ginfo(14) + 720, 5
+    button gosub "OPEN", *OPEN
+    id_butop = stat : hButop = objinfo(id_butop, 2)
 
-	pos 10, 50
-	mycrelv 1230, 300, id_dbinfo, hLVdbinfo
-	sendmsg hLVdbinfo, 0x1036, , 0x00000020 | 0x00000010
+    pos 10, 50
+    mycrelv 1230, 300, id_dbinfo, hLVdbinfo
+    sendmsg hLVdbinfo, 0x1036, , 0x00000020 | 0x00000010
 
-	/***Create Dummy DB***/
-	sql_open f
-	sql_q "BEGIN;"
-	sql_q "SELECT * FROM sqlite_master;"
-	repeat length(tmparr)
-		tz3 += "" + tmparr(cnt, length2(tmparr) - 1) + ","
-	loop
-	split tz3, ",", tz3
-	myincol id_dbinfo, tz3, length(tmparr), tzw, 0
-	sql_q "COMMIT;"
-	sql_close
+    /***Create Dummy DB***/
+    sql_open f
+    sql_q "BEGIN;"
+    sql_q "SELECT * FROM sqlite_master;"
+    repeat length(tmparr)
+        tz3 += "" + tmparr(cnt, length2(tmparr) - 1) + ","
+    loop
+    split tz3, ",", tz3
+    myincol id_dbinfo, tz3, length(tmparr), tzw, 0
+    sql_q "COMMIT;"
+    sql_close
 
-	/***フォントの適用***/
-	sendmsg objinfo(id_dbinfo, 2), $30, hFont
-	gsel 0, 1
-	stop
+    /***フォントの適用***/
+    sendmsg objinfo(id_dbinfo, 2), $30, hFont
+    gsel 0, 1
+    stop
 
 *OPEN
-	dialog "db", 16, "DataBase"
-	if stat = 0 : return
-	f = refstr : fpath = getpath(f, 2)
-	if fpath != ".db" {
-		dialog "This file is not DataBase file!", 1, "FileError"
-		sdim f : return
-	}
-	sendmsg hStfile, $C, , f
-	sdim tz1, 2048 : sdim tz2, 2048 : sdim tz3, 512
+    dialog "db", 16, "DataBase"
+    if stat = 0 : return
+    f = refstr : fpath = getpath(f, 2)
+    if fpath != ".db" {
+        dialog "This file is not DataBase file!", 1, "FileError"
+        sdim f : return
+    }
+    sendmsg hStfile, $C, , f
+    sdim tz1, 2048 : sdim tz2, 2048 : sdim tz3, 512
 
-	/*** DB OPEN ***/
-	sql_open f
-	sql_q "BEGIN;"
-	sql_q "SELECT * FROM sqlite_master;"
+    /*** DB OPEN ***/
+    sql_open f
+    sql_q "BEGIN;"
+    sql_q "SELECT * FROM sqlite_master;"
 
-	repeat length2(tmparr) - 1
-		tz2 += "" + tmparr(0, cnt) + "|" + tmparr(1, cnt) + "|" + tmparr(2, cnt) + "|" + tmparr(3, cnt) + "|" + tmparr(4, cnt) + "|"
-	loop
-	split tz2, "|", tz2
-	mydelitem id_dbinfo
-	/***Item reload***/
-	myinitem id_dbinfo, tz2, length2(tmparr) - 1, length(tmparr)
+    repeat length2(tmparr) - 1
+        tz2 += "" + tmparr(0, cnt) + "|" + tmparr(1, cnt) + "|" + tmparr(2, cnt) + "|" + tmparr(3, cnt) + "|" + tmparr(4, cnt) + "|"
+    loop
+    split tz2, "|", tz2
+    mydelitem id_dbinfo
+    /***Item reload***/
+    myinitem id_dbinfo, tz2, length2(tmparr) - 1, length(tmparr)
 
-	sql_q "COMMIT;"
-	sql_close
-	/*** DB CLOSE ***/
-	return
+    sql_q "COMMIT;"
+    sql_close
+    /*** DB CLOSE ***/
+    return
 #endif
 
 /*##############################################################################
-						hspバージョン確認
+                        hspバージョン確認
 ###############################################################################*/
 #if 0
-	#include "hsedsdk.as"
-	#include "00_module.hsp"
-	#include "00_mylv.hsp"
+    #include "hsedsdk.as"
+    #include "00_module.hsp"
+    #include "00_mylv.hsp"
 
 #module
 #define global ctype myhspver2(%1)\
-	mes " " + %1
+    mes " " + %1
 #global
 
-	screen 0, 500, 300
-	font "メイリオ", 16
-	mref BMSCR, 67 : hFont = BMSCR(38)
+    screen 0, 500, 300
+    font "メイリオ", 16
+    mref BMSCR, 67 : hFont = BMSCR(38)
 
-	sdim d1  :  sdim d2, 20, 8  :  dim d3  :  sdim aa  :  sdim bb
-	hsed_cnvverstr __hspver__  :  aa += refstr
-	hsed_cnvverstr hspver      :  bb += refstr
+    sdim d1  :  sdim d2, 20, 8  :  dim d3  :  sdim aa  :  sdim bb
+    hsed_cnvverstr __hspver__  :  aa += refstr
+    hsed_cnvverstr hspver      :  bb += refstr
 
-	d1 = "macro", "int", "hsed_cnvverstr", "myhspver()"
-	d2(0) = "__hspver__"
-	d2(1) = str(__hspver__)
-	d2(2) = aa
-	d2(3) = myhspver (__hspver__)
-	d2(4) = "hspver"
-	d2(5) = str(hspver)
-	d2(6) = bb
-	d2(7) = myhspver (hspver)
-	d3 = 110, 75, 140, 110
+    d1 = "macro", "int", "hsed_cnvverstr", "myhspver()"
+    d2(0) = "__hspver__"
+    d2(1) = str(__hspver__)
+    d2(2) = aa
+    d2(3) = myhspver (__hspver__)
+    d2(4) = "hspver"
+    d2(5) = str(hspver)
+    d2(6) = bb
+    d2(7) = myhspver (hspver)
+    d3 = 110, 75, 140, 110
 
-	mycrelv 440, 120, id_lv, hLv
-	myincol id_lv, d1, 4, d3
-	myinitem id_lv, d2, 2, 4
+    mycrelv 440, 120, id_lv, hLv
+    myincol id_lv, d1, 4, d3
+    myinitem id_lv, d2, 2, 4
 
-	sendmsg objinfo(id_lv, 2), $30, hFont
+    sendmsg objinfo(id_lv, 2), $30, hFont
 
-	/*** マクロ ***/
-	//myhspver2 (myhspver(hspver))
+    /*** マクロ ***/
+    //myhspver2 (myhspver(hspver))
 #endif
 
 //##############################################################################
@@ -510,82 +510,82 @@
 //##############################################################################
 #if 0
 #packopt name "Key Get"
-	screen 0, 350, 200
-	sdim moni : dim number, 5
-	pos 10, 10
-	mesbox moni, 200, 120, 0
-	id_moni = stat
+    screen 0, 350, 200
+    sdim moni : dim number, 5
+    pos 10, 10
+    mesbox moni, 200, 120, 0
+    id_moni = stat
 
 *inkey
-	wait 16
-	getkey ctrl, 17
-	getkey number(0), 49
-	getkey number(1), 50
-	getkey number(2), 51
-	getkey number(3), 52
-	getkey number(4), 53
+    wait 16
+    getkey ctrl, 17
+    getkey number(0), 49
+    getkey number(1), 50
+    getkey number(2), 51
+    getkey number(3), 52
+    getkey number(4), 53
 
-	moni = {"
-	[ aa ] (bb)
+    moni = {"
+    [ aa ] (bb)
 
-	文字コード       [ ii ]
-	(iparam)
-	仮想キーコード  [ ww ] ( wx )
-	(wparam)
-	"}
-	strrep moni, "aa", strf("%c", iparam)
-	strrep moni, "bb", str(lparam >> 30 & 1)
-	strrep moni, "ii", str(iparam)
-	strrep moni, "ll", str(lparam)
-	strrep moni, "ww", str(wparam)
-	strrep moni, "wx", strf("%X", wparam)
+    文字コード       [ ii ]
+    (iparam)
+    仮想キーコード  [ ww ] ( wx )
+    (wparam)
+    "}
+    strrep moni, "aa", strf("%c", iparam)
+    strrep moni, "bb", str(lparam >> 30 & 1)
+    strrep moni, "ii", str(iparam)
+    strrep moni, "ll", str(lparam)
+    strrep moni, "ww", str(wparam)
+    strrep moni, "wx", strf("%X", wparam)
 
-	notesel moni
-	if (ctrl == 1) & (number(0) == 1) : noteadd "\n Ctrl + 1"
-	if (ctrl == 1) & (number(1) == 1) : noteadd "\n Ctrl + 2"
-	if (ctrl == 1) & (number(2) == 1) : noteadd "\n Ctrl + 3"
-	if (ctrl == 1) & (number(3) == 1) : noteadd "\n Ctrl + 4"
-	if (ctrl == 1) & (number(4) == 1) : noteadd "\n Ctrl + 5"
-	objprm id_moni, moni
-	noteunsel
-	goto *inkey
+    notesel moni
+    if (ctrl == 1) & (number(0) == 1) : noteadd "\n Ctrl + 1"
+    if (ctrl == 1) & (number(1) == 1) : noteadd "\n Ctrl + 2"
+    if (ctrl == 1) & (number(2) == 1) : noteadd "\n Ctrl + 3"
+    if (ctrl == 1) & (number(3) == 1) : noteadd "\n Ctrl + 4"
+    if (ctrl == 1) & (number(4) == 1) : noteadd "\n Ctrl + 5"
+    objprm id_moni, moni
+    noteunsel
+    goto *inkey
 #endif
 
 /*******************************************************************************
-								プログレスバー
+                                プログレスバー
 ********************************************************************************/
 #if 0
-	#include "C:\\gitproject\\01_mypb\\common\\01_mypb.hsp"
+    #include "01_mypb.hsp"
 
-	screen 0, 450, 300
-	safe = 40 : deng = 20
+    screen 0, 450, 300
+    safe = 40 : deng = 20
 
-	pos 30, 20
-	mypb 250, 15, hProg1
-	pbset hProg1, 0, 100, -1, 100
+    pos 30, 20
+    mypb 250, 15, hProg1
+    pbset hProg1, 0, 100, -1, 100
 
-	pos 30, 40
-	mypb 250, 15, hProg2
-	pbset hProg2, 0, 100, 1, 0
+    pos 30, 40
+    mypb 250, 15, hProg2
+    pbset hProg2, 0, 100, 1, 0
 
-	pos 30, 60
-	mypb 250, 15, hProg3, 1
-	pbmarq hProg3, 1
+    pos 30, 60
+    mypb 250, 15, hProg3, 1
+    pbmarq hProg3, 1
 
 *main1
-	wait 16
+    wait 16
 
-	pbstep hProg1
-	if      pbgetp(hProg1) > safe {pbsetst hProg1, 1}
-	else:if pbgetp(hProg1) < deng {pbsetst hProg1, 2}
-	else:                          pbsetst hProg1, 3
+    pbstep hProg1
+    if      pbgetp(hProg1) > safe {pbsetst hProg1, 1}
+    else:if pbgetp(hProg1) < deng {pbsetst hProg1, 2}
+    else:                          pbsetst hProg1, 3
 
 
-	pbstep hProg2
-	if      pbgetp(hProg2) > safe {pbsetst hProg2, 1}
-	else:if pbgetp(hProg2) < deng {pbsetst hProg2, 2}
-	else:                          pbsetst hProg2, 3
+    pbstep hProg2
+    if      pbgetp(hProg2) > safe {pbsetst hProg2, 1}
+    else:if pbgetp(hProg2) < deng {pbsetst hProg2, 2}
+    else:                          pbsetst hProg2, 3
 
-	goto *main1
+    goto *main1
 
 #endif
