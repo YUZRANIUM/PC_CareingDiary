@@ -204,6 +204,7 @@ SQlele はHSP3でSQLiteを扱えるようにするための支援モジュール
 ├── text
 │   ├── changelog.html
 │   ├── 08_ver000ex.txt
+│   ├── verinfo.txt
 │   └── README.html
 ├── 01_variable.hsp
 ├── 02_interface.hsp

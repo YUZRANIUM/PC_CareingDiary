@@ -2,9 +2,9 @@
 // FileName : 04_process02.hsp
 // Version : 0.3.0
 // Date    : 2022/11/02
-// Author  : YUZURANIUM（ゆずらにうむ）
+// Author  : YUZRANIUM（ゆずらにうむ）
 // Twitter : https://twitter.com/YUZRANIUM
-// Git Hub : https://github.com/YUZURANIUM/PC_CareingDiary
+// Git Hub : https://github.com/YUZRANIUM/PC_CareingDiary
 //**********************************************************
 /* Description
 このファイルは各モジュールのインクルードとlayerobjのサブルーチン処理を行っています。
@@ -220,7 +220,7 @@
 
     /***  プログレスバー  ***/
     dsta(7) = str(int(double(st(6, 0)) * 10))
-    pbsetpos hPb(0), int(dsta(7)), 0
+    pbrepos hPb(0), int(dsta(7)), 0
 
     //ステータス代入
     repeat 5, 2
@@ -313,7 +313,7 @@
     setting(5) = -1
     logmes "fname(saveID) = " + saveID
     /*** Mainウィンドウ各変数読み込み ***/
-    gsel ID_WIN_MAIN, -1 : pbsetpos hPb(0), int(dsta(7)), 0
+    gsel ID_WIN_MAIN, -1 : pbrepos hPb(0), int(dsta(7)), 0
     gsel ID_TAB_MOTI, 1  : objprm id_motimono, motimono
     gsel ID_TAB_LOG, -1  : objprm id_logmoni, logmoni
     gsel ID_TAB_SOUKO, -1

@@ -2,9 +2,9 @@
 // FileName : 01_variable.hsp
 // Version : 0.3.0
 // Date    : 2022/11/02
-// Author  : YUZURANIUM（ゆずらにうむ）
+// Author  : YUZRANIUM（ゆずらにうむ）
 // Twitter : https://twitter.com/YUZRANIUM
-// Git Hub : https://github.com/YUZURANIUM/PC_CareingDiary
+// Git Hub : https://github.com/YUZRANIUM/PC_CareingDiary
 //**********************************************************
 /* Description
 このファイルは以降のスクリプトで使用する変数の定義、初期化などを行っています。

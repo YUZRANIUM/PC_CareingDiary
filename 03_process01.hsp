@@ -2,9 +2,9 @@
 // FileName : 03_process01.hsp
 // Version : 0.3.0
 // Date    : 2022/11/02
-// Author  : YUZURANIUM（ゆずらにうむ）
+// Author  : YUZRANIUM（ゆずらにうむ）
 // Twitter : https://twitter.com/YUZRANIUM
-// Git Hub : https://github.com/YUZURANIUM/PC_CareingDiary
+// Git Hub : https://github.com/YUZRANIUM/PC_CareingDiary
 //**********************************************************
 /* Description
 このファイルはメインループ及び、layerobjを除く
@@ -26,13 +26,10 @@
     objprm Shkidh(3, 0), re_amaz(setting(8))
     objprm Shkidh(4, 0), re_save(setting(9))
     objprm Shkidh(5, 0), re_sett(setting(10))
-
     /*****  ループ制御ボタンの表示切り替え  *****/
     gsel ID_WIN_MAIN  :  objprm id_opebut, opebut_text(int(opebut_text(2)))
-
     if setting(5) == -1 {opebut_text(2) = "あ"  :  goto *main}
     else:                opebut_text(2) = "1"
-
     ;===================================================
     ; 描画処理
     ;
@@ -43,9 +40,7 @@
 
     // ゲーム内時間カウンターエンジン
     gt(gid, 0) = str(int(gt(gid, 0)) + 1)  :  if int(gt(gid, 0)) > 59 : gt(gid, 0) = "00"
-
     gtcontrol = int(gt(gid, 0)) \ setting(4)        // カウンター変速機（ゲーム速度の変更）
-
 
     /*****  ステータス変動  *****/
     if gtcontrol == 0 {
@@ -53,7 +48,6 @@
         objprm layid(1), gameh
         objprm layid(2), newst
     }
-
 
     /*****  オートセーブ  *****/
     //オートセーブ設定が有効かどうか
