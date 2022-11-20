@@ -2,9 +2,9 @@
 // FileName : 02_interface.hsp
 // Version : 0.3.0
 // Date    : 2022/11/02
-// Author  : YUZURANIUM（ゆずらにうむ）
+// Author  : YUZRANIUM（ゆずらにうむ）
 // Twitter : https://twitter.com/YUZRANIUM
-// Git Hub : https://github.com/YUZURANIUM/PC_CareingDiary
+// Git Hub : https://github.com/YUZRANIUM/PC_CareingDiary
 //**********************************************************
 /* Description
 このファイルはウィンドウの初期化とウィンドウオブジェクトの配置を行っています。
@@ -100,7 +100,7 @@
 
     /*****  Power用プログレスバー  *****/
     pos 15, 200
-    mypb 200, 15, hPb(0)
+    mypb 200, 15, hPb(0), 0
     pbset hPb(0), 0, 1000, -1, 1000
 
 /*******************************************************************************/
