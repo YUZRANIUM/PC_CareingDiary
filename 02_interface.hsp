@@ -100,7 +100,7 @@
 
     /*****  Power用プログレスバー  *****/
     pos 15, 200
-    mypb 200, 15, hPb(0), 0
+    mypb 170, 10, hPb(0), 0
     pbset hPb(0), 0, 1000, -1, 1000
 
 /*******************************************************************************/
@@ -119,7 +119,7 @@
 //==========================================================
     InsertTab "Arsenal", ID_TAB_SOUKO, 1, hTab_main
     pos 0, 0
-    mycrelv 794, 210, id_soukomoni, hLVsouko
+    mylv 794, 210, hLVsouko
 
 //==========================================================
     InsertTab "Logs", ID_TAB_LOG, 2, hTab_main
@@ -192,9 +192,9 @@
 //==========================================================
     InsertTab "C P U", ID_OMTAB_CPU, 5, hTabOMI
     pos 2, 2
-    mycrelv listx, listy, LVidh(0, 0), LVidh(0, 1)
-    myincol LVidh(0, 0), col_list, col_num, column_w
-    myinitem LVidh(0, 0), bfcpu, rec_cnum, col_num
+    mylv listx, listy, LVidh(0, 0)
+    incolm LVidh(0, 0), col_list, length(bfcpu), column_w
+    insqlitem LVidh(0, 0), bfcpu
     /*****  割り込み  *****/
     oncmd gosub *notify, WM_NOTIFY
 
@@ -202,9 +202,9 @@
 //==========================================================
     InsertTab "G P U", ID_OMTAB_GPU, 6, hTabOMI
     pos 2, 2
-    mycrelv listx, listy, LVidh(1, 0), LVidh(1, 1)
-    myincol LVidh(1, 0), col_list, col_num, column_w
-    myinitem LVidh(1, 0), bfgpu, rec_gnum, col_num
+    mylv listx, listy, LVidh(1, 0)
+    incolm LVidh(1, 0), col_list, length(bfgpu), column_w
+    insqlitem LVidh(1, 0), bfgpu
     /*****  割り込み  *****/
     oncmd gosub *notify, WM_NOTIFY
 
@@ -212,9 +212,9 @@
 //==========================================================
     InsertTab "R O M", ID_OMTAB_ROM, 7, hTabOMI
     pos 2, 2
-    mycrelv listx, listy, LVidh(2, 0), LVidh(2, 1)
-    myincol LVidh(2, 0), col_list, col_num, column_w
-    myinitem LVidh(2, 0), bfrom, rec_rnum, col_num
+    mylv listx, listy, LVidh(2, 0)
+    incolm LVidh(2, 0), col_list, length(bfrom), column_w
+    insqlitem LVidh(2, 0), bfrom
     /*****  割り込み  *****/
     oncmd gosub *notify, WM_NOTIFY
 
@@ -222,22 +222,31 @@
 //==========================================================
     InsertTab "S S D", ID_OMTAB_SSD, 8, hTabOMI
     pos 2, 2
-    //mycrelv listx, listy, LVidh(3, 0), LVidh(3, 1)
-    //oncmd gosub *notify, WM_NOTIFY
+    mylv listx, listy, LVidh(3, 0)
+    incolm LVidh(3, 0), col_list, length(bfssd), column_w
+    insqlitem LVidh(3, 0), bfssd
+    /*****  割り込み  *****/
+    oncmd gosub *notify, WM_NOTIFY
 
 
 //==========================================================
     InsertTab "F A N", ID_OMTAB_FAN, 9, hTabOMI
     pos 2, 2
-    //mycrelv listx, listy, LVidh(4, 0), LVidh(4, 1)
-    //oncmd gosub *notify, WM_NOTIFY
+    mylv listx, listy, LVidh(4, 0)
+    incolm LVidh(4, 0), col_list, length(bffan), column_w
+    insqlitem LVidh(4, 0), bffan
+    /*****  割り込み  *****/
+    oncmd gosub *notify, WM_NOTIFY
 
 
 //==========================================================
     InsertTab "Power", ID_OMTAB_POW, 10, hTabOMI
     pos 2, 2
-    //mycrelv listx, listy, LVidh(5, 0), LVidh(5, 1)
-    //oncmd gosub *notify, WM_NOTIFY
+    mylv listx, listy, LVidh(5, 0)
+    incolm LVidh(5, 0), col_list, length(bfpow), column_w
+    insqlitem LVidh(5, 0), bfpow
+    /*****  割り込み  *****/
+    oncmd gosub *notify, WM_NOTIFY
 
 
 
@@ -281,15 +290,14 @@
 
     /*****  mylmb  *****/
     pos bx + 75, by + 48
-    mylmb " LOAD ", 55, 25, hLoad1, WS_BORDER
+    mylmb " LOAD ", 55, 25, hls(0), WS_BORDER
     pos bx + 140, by + 48
-    mylmb " SAVE ", 55, 25, hSave1, WS_BORDER
+    mylmb " SAVE ", 55, 25, hls(1), WS_BORDER
 
 
 
     /*****  割り込み  *****/
     oncmd gosub *mousclick, $111 //マウスクリック
-    oncmd gosub *cursorche, $20  //カーソルの見た目
 
 
 
@@ -394,11 +402,11 @@
     mes "  UPDATE HISTORY  "
     font "メイリオ", 10
 
-    pEnv = WebView2_CreateEnv()
-    pCtrl = WebView2_CreateCtrl(pEnv, hwnd)
-    WebView2_Size pCtrl, 0, 130, 650, 475
-    pView = WebView2_GetView(pCtrl)
-    WebView2_Navigate pView, changelog
+    webv2(pEnv) = WebView2_CreateEnv()
+    webv2(pCtrl) = WebView2_CreateCtrl(webv2(pEnv), hwnd)
+    WebView2_Size webv2(pCtrl), 0, 130, 650, 475
+    webv2(pView) = WebView2_GetView(webv2(pCtrl))
+    WebView2_Navigate webv2(pView), changelog
 
 
     pos 525, 475 : objsize 125,
@@ -411,7 +419,6 @@
 
     /*****  割り込み  *****/
     oncmd gosub *mousclick, $111 //マウスクリック
-    oncmd gosub *cursorche, $20  //カーソルの見た目
 
 //##############################################################################
 

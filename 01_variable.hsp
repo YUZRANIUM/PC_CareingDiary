@@ -15,316 +15,317 @@ SQL関係もデータを変数に格納するということでこちらで扱っています。
 変数直上のコメントを表示させるためです。
 ************************************************************/
 
-    /*** 各ウィンドウID ***/
-    #enum ID_WIN_MASTER = 0
-    #enum ID_WIN_OPEN          //OPウィンドウ
-    #enum ID_WIN_MAIN          //メインウィンドウ
-    #enum ID_WIN_AMAZ          //Amaz
-    #enum ID_WIN_SAVE          //Save $ Load
-    #enum ID_WIN_SETI          //Setting
-    #enum ID_WIN_INFO          //情報ウィンドウ
-    /*** bgscr命令のウィンドウID ***/
-    #enum ID_TAB_MOTI          //タブid持ち物
-    #enum ID_TAB_SOUKO         //タブid倉庫
-    #enum ID_TAB_LOG           //タブidログ
-    //お店タブ
-    #enum ID_OMTAB_CPU     //CPU
-    #enum ID_OMTAB_GPU     //GPU
-    #enum ID_OMTAB_ROM     //ROM
-    #enum ID_OMTAB_SSD     //SSD
-    #enum ID_OMTAB_FAN     //FAN
-    #enum ID_OMTAB_POW     //Power
+	/*** 各ウィンドウID ***/
+	#enum ID_WIN_MASTER = 0
+	#enum ID_WIN_OPEN          //OPウィンドウ
+	#enum ID_WIN_MAIN          //メインウィンドウ
+	#enum ID_WIN_AMAZ          //Amaz
+	#enum ID_WIN_SAVE          //Save $ Load
+	#enum ID_WIN_SETI          //Setting
+	#enum ID_WIN_INFO          //情報ウィンドウ
+	/*** bgscr命令のウィンドウID ***/
+	#enum ID_TAB_MOTI          //タブid持ち物
+	#enum ID_TAB_SOUKO         //タブid倉庫
+	#enum ID_TAB_LOG           //タブidログ
+	//お店タブ
+	#enum ID_OMTAB_CPU     //CPU
+	#enum ID_OMTAB_GPU     //GPU
+	#enum ID_OMTAB_ROM     //ROM
+	#enum ID_OMTAB_SSD     //SSD
+	#enum ID_OMTAB_FAN     //FAN
+	#enum ID_OMTAB_POW     //Power
+	/***  WebView2配列変数用  ***/
+	#enum pEnv = 0
+	#enum pCtrl
+	#enum pView
+	#enum ret
 
-    /***  master layerobjのswitch/case  ***/
-    #enum lay_autosave = 0
-    #enum lay_save
-    #enum lay_load
-    /***  描画用layerobjのswitch/case  ***/
-    #enum gameh = 0
-    /*****  ステ管理用layerobjのswitch/case  *****/
-    #enum newst = 0
-    #enum unitc
+	/***  master layerobjのswitch/case  ***/
+	#enum lay_autosave = 0
+	#enum lay_save
+	#enum lay_load
+	/***  描画用layerobjのswitch/case  ***/
+	#enum gameh = 0
+	/***  ステ管理用layerobjのswitch/case  ***/
+	#enum newst = 0
+	#enum unitc
 
-    // \\text\\changelog.html
-    #define changelog dir_cur + "\\text\\changelog.html"
-    // \\savedata\\backup.var
-    #define backupdir dir_cur + "\\savedata\\backup.var"
+	// dir_cur + \\text\\changelog.html
+	#define changelog dir_cur + "\\text\\changelog.html"
+	// dir_cur + \\savedata\\backup.var
+	#define backupdir dir_cur + "\\savedata\\backup.var"
+	// dir_cur + "\\SQL\\Syouhin.db"
+	#define db        dir_cur + "\\SQL\\Syouhin.db"
 
-    //バージョン
-    ver = "0.2.0"
-    //titleバー
-    titlemes = "PC CareingDiary ver" + ver + " /HSP" + myhspver(hspver)
-    //バージョン情報
-    infa = "" : sdim infa, 128, 5
-    notesel infa
-    noteload "text\\verinfo.txt" : split infa, "\n", infa
-    strrep infa(1), "vv", ver : strrep infa(2), "hh", myhspver(hspver)
+	//バージョン
+	ver = "0.2.0"
+	//titleバー
+	titlemes = "PC CareingDiary ver" + ver + " /HSP" + myhspver(hspver)
+	//バージョン情報
+	infa = "" : sdim infa, 128, 5
+	notesel infa
+	noteload "text\\verinfo.txt" : split infa, "\n", infa
+	strrep infa(1), "vv", ver : strrep infa(2), "hh", myhspver(hspver)
 
-    //フォントハンドル:メイリオ
-    //hFont(0):メイリオ, 16
-    //hFont(1):メイリオ, 14
-    //hFont(2):メイリオ, 13
-    hFont = 0 : dim hFont, 3
-    hFont(0) = 0
-    hFont(1) = 0
-    hFont(2) = 0
+	//設定項目配列
+	//setting(0):オートセーブON/OFF
+	//setting(1):ゲーム速度項目[遅  め]
+	//setting(2):ゲーム速度項目[ふつう]
+	//setting(3):ゲーム速度項目[早  め]
+	//setting(4):ゲーム速度剰余算
+	//setting(5):めいんるーてん制御
+	//setting(6):日付変更フラグ
+	//setting(7):新年あけおめフラグ
+	//setting(8):amzo auto start
+	//setting(9):save auto start
+	//setting(10):sett auto start
+	setting = "" : dim setting, 11, 0
+	setting(0) = 0
+	setting(1) = 0
+	setting(2) = 1
+	setting(3) = 0
+	setting(4) = 4
+	setting(5) = -1
+	setting(6) = 0
+	setting(7) = 0
+	setting(8) = 0
+	setting(9) = 0
+	setting(10) = 0
+	//スタートストップボタン
+	opebut_text = "START", "STOP", "あ"
+	//オートセーブボタン
+	savebut_text = "AutoSave OFF", "AutoSave ON"
+	//return amaz
+	re_amaz = "Amazoon Return OFF", "Amazoon Return ON"
+	//return save load
+	re_save = "Save & Load Return OFF", "Save & Load Return ON"
+	//return setteing
+	re_sett = "Setting Return OFF", "Setting Return ON"
+	//設定変更時のログ表示
+	logstr = "" : sdim logstr, 1000, 9
+	logstr(0) = "\n*** Settings Change ***"
+	logstr(1) = " : AutoSave Successed! "
+	logstr(2) = " : Load Successed! "
+	logstr(3) = " : Save Successed! "
+	logstr(4) = ""
+	logstr(5) = " : Happy New Year!!"
+	logstr(6) = ""
+	logstr(7) = ""
+	logstr(8) = ""
 
-    //設定項目配列
-    //setting(0):オートセーブON/OFF
-    //setting(1):ゲーム速度項目[遅  め]
-    //setting(2):ゲーム速度項目[ふつう]
-    //setting(3):ゲーム速度項目[早  め]
-    //setting(4):ゲーム速度剰余算
-    //setting(5):めいんるーてん制御
-    //setting(6):日付変更フラグ
-    //setting(7):新年あけおめフラグ
-    //setting(8):amzo auto start
-    //setting(9):save auto start
-    //setting(10):sett auto start
-    setting = "" : dim setting, 11, 0
-    setting(0) = 0
-    setting(1) = 0
-    setting(2) = 1
-    setting(3) = 0
-    setting(4) = 4
-    setting(5) = -1
-    setting(6) = 0
-    setting(7) = 0
-    setting(8) = 0
-    setting(9) = 0
-    setting(10) = 0
-    //スタートストップボタン
-    opebut_text = "START", "STOP", "あ"
-    //オートセーブボタン
-    savebut_text = "AutoSave OFF", "AutoSave ON"
-    //return amaz
-    re_amaz = "Amazoon Return OFF", "Amazoon Return ON"
-    //return save load
-    re_save = "Save & Load Return OFF", "Save & Load Return ON"
-    //return setteing
-    re_sett = "Setting Return OFF", "Setting Return ON"
-    //設定変更時のログ表示
-    logstr = "" : sdim logstr, 1000, 9
-    logstr(0) = "\n*** Settings Change ***"
-    logstr(1) = " : AutoSave Successed! "
-    logstr(2) = " : Load Successed! "
-    logstr(3) = " : Save Successed! "
-    logstr(4) = ""
-    logstr(5) = " : Happy New Year!!"
-    logstr(6) = ""
-    logstr(7) = ""
-    logstr(8) = ""
+	//経過時間
+	hmoni = "" : sdim hmoni, 64
+	//ステータス表示用
+	mesmoni = "" : sdim mesmoni, 128
+	//単位表示用
+	mesmoni_u = "" : sdim mesmoni_u, 16
+	//セーブカウンター
+	savec = 0
+	//ゲーム内時間の速度変更
+	gtcontrol = 0
+	//saveフォルダの有無
+	sdim fname
+	logmes fname  :  dirlist fname, "savedata", 5  :  logmes fname
+	if fname == "" : mkdir "savedata"
+	sdim fname
+	//ファイル名変数
+	fname = "" : sdim fname, 512, 8
+	fname(0) = "" + dir_cur + "\\savedata\\Save0.var"
+	fname(1) = "" + dir_cur + "\\savedata\\Save1.var"
+	fname(2) = "" + dir_cur + "\\savedata\\Save2.var"
+	fname(3) = "" + dir_cur + "\\savedata\\Save3.var"
+	fname(4) = "" + dir_cur + "\\savedata\\Save4.var"
+	fname(5) = "" + dir_cur + "\\savedata\\Save5.var"
+	fname(6) = "" + dir_cur + "\\savedata\\Save6.var"
+	fname(7) = "" + dir_cur + "\\savedata\\Reset.var"
+	//saveスロット番号
+	saveID = 0
 
-    //設定変更時のゲーム速度
-    string2 = ""
-    //設定画面チェックボックスオブジェクトIDとハンドル
-    //第2次元要素 0 = ID, 1 = objct hWnd
-    //Shkidh(0, 0) : ゲーム速度項目[遅  め]
-    //Shkidh(1, 0) : ゲーム速度項目[ふつう]
-    //Shkidh(2, 0) : ゲーム速度項目[早  め]
-    //Shkidh(3, 0) : amzo auto start
-    //Shkidh(4, 0) : save auto start
-    //Shkidh(5, 0) : sett auto start
-    Shkidh = ""  :  dim Shkidh, 6, 2
-    Shkidh(0, 0) = 0  :  Shkidh(0, 1) = 0
-    Shkidh(1, 0) = 0  :  Shkidh(1, 1) = 0
-    Shkidh(2, 0) = 0  :  Shkidh(2, 1) = 0
-    Shkidh(3, 0) = 0  :  Shkidh(3, 1) = 0
-    Shkidh(4, 0) = 0  :  Shkidh(4, 1) = 0
-    Shkidh(5, 0) = 0  :  Shkidh(5, 1) = 0
+	//単位変換
+	//第２次元要素 = 1 : 変換・実績解除フラグ
+	//第２次元要素 = 0
+	//u(0) :rom変換カウンタ
+	//u(1) :ssd変換カウンタ
+	u = "" : sdim u, 32, 11, 2
+	u(0, 0) = "2"   : u(0, 1) = "0"
+	u(1, 0) = "2"   : u(1, 1) = "0"
+	u(2, 0) = "B"   : u(2, 1) = "0"  //u(2) :"B"
+	u(3, 0) = "KB"  : u(3, 1) = "0"  //u(3) :"KB"
+	u(4, 0) = "MB"  : u(4, 1) = "0"  //u(4) :"MB"
+	u(5, 0) = "GB"  : u(5, 1) = "0"  //u(5) :"GB"
+	u(6, 0) = "TB"  : u(6, 1) = "0"  //u(6) :"TB"
+	u(7, 0) = "PB"  : u(7, 1) = "0"  //u(7) :"PB"
+	u(8, 0) = "EB"  : u(8, 1) = "0"  //u(8) :"EB"
+	u(9, 0) = "ZB"  : u(9, 1) = "0"  //u(9) :"ZB"
+	u(10, 0) = "YB" : u(10, 1) = "0" //u(10):"YB"
 
-    //経過時間
-    hmoni = "" : sdim hmoni, 64
-    //ステータス表示用
-    mesmoni = "" : sdim mesmoni, 128
-    //単位表示用
-    mesmoni_u = "" : sdim mesmoni_u, 16
-    //セーブカウンター
-    savec = 0
-    //ゲーム内時間の速度変更
-    gtcontrol = 0
-    //saveフォルダの有無
-    sdim flist
-    dirlist flist, "savedata", 5
-    if flist == "" : mkdir "savedata"
-    sdim flist
-    //ファイル名変数
-    fname = "" : sdim fname, 512, 8
-    fname(0) = "" + dir_cur + "\\savedata\\Save0.var"
-    fname(1) = "" + dir_cur + "\\savedata\\Save1.var"
-    fname(2) = "" + dir_cur + "\\savedata\\Save2.var"
-    fname(3) = "" + dir_cur + "\\savedata\\Save3.var"
-    fname(4) = "" + dir_cur + "\\savedata\\Save4.var"
-    fname(5) = "" + dir_cur + "\\savedata\\Save5.var"
-    fname(6) = "" + dir_cur + "\\savedata\\Save6.var"
-    fname(7) = "" + dir_cur + "\\savedata\\Reset.var"
-    //saveスロット番号
-    saveID = 0
+	//ステータス管理
+	//st(0, 0):CPU
+	//st(1, 0):GPU
+	//st(2, 0):ROM
+	//st(3, 0):SSD
+	//st(4, 0):FAN
+	//st(5, 0):温度
+	//st(6, 0):Power
+	st = "" : sdim st, 32, 7, 3
+	st(0, 0) = "1"   : st(0, 1) = ""      : st(0, 2) = "Core i" + st(0, 0)
+	st(1, 0) = "0"   : st(1, 1) = ""      : st(1, 2) = st(1, 0)
+	st(2, 0) = "1"   : st(2, 1) = u(2, 0) : st(2, 2) = strf("%.1f", st(2, 0))
+	st(3, 0) = "1"   : st(3, 1) = u(2, 0) : st(3, 2) = strf("%.1f", st(3, 0))
+	st(4, 0) = "10"  : st(4, 1) = "rpm"   : st(4, 2) = strf("%.1f", st(4, 0))
+	st(5, 0) = "30"  : st(5, 1) = "deg"   : st(5, 2) = strf("%.1f", st(5, 0))
+	st(6, 0) = "100" : st(6, 1) = "%"     : st(6, 2) = strf("%.1f", st(6, 0))
 
-    //単位変換
-    //第２次元要素 = 1 : 変換・実績解除フラグ
-    //第２次元要素 = 0
-    //u(0) :rom変換カウンタ
-    //u(1) :ssd変換カウンタ
-    u = "" : sdim u, 32, 11, 2
-    u(0, 0) = "2"   : u(0, 1) = "0"
-    u(1, 0) = "2"   : u(1, 1) = "0"
-    u(2, 0) = "B"   : u(2, 1) = "0"  //u(2) :"B"
-    u(3, 0) = "KB"  : u(3, 1) = "0"  //u(3) :"KB"
-    u(4, 0) = "MB"  : u(4, 1) = "0"  //u(4) :"MB"
-    u(5, 0) = "GB"  : u(5, 1) = "0"  //u(5) :"GB"
-    u(6, 0) = "TB"  : u(6, 1) = "0"  //u(6) :"TB"
-    u(7, 0) = "PB"  : u(7, 1) = "0"  //u(7) :"PB"
-    u(8, 0) = "EB"  : u(8, 1) = "0"  //u(8) :"EB"
-    u(9, 0) = "ZB"  : u(9, 1) = "0"  //u(9) :"ZB"
-    u(10, 0) = "YB" : u(10, 1) = "0" //u(10):"YB"
+	//日付管理
+	//gt(0, 0):年
+	//gt(1, 0):四半期
+	//gt(2, 0):月
+	//gt(3, 0):日
+	//gt(4, 0):時間
+	//gt(5, 0):分
+	gt = "" : sdim gt, 125, 7, 3
+	gt(0, 0) = "0"   : gt(0, 1) = "/"  : gt(0, 2) = gt(0, 0)
+	gt(1, 0) = "1st" : gt(1, 1) = "Q/" : gt(1, 2) = gt(1, 0)
+	gt(2, 0) = " 4"  : gt(2, 1) = "/"  : gt(2, 2) = strf("%2d", int(gt(2, 0)))
+	gt(3, 0) = " 1"  : gt(3, 1) = "/"  : gt(3, 2) = strf("%2d", int(gt(3, 0)))
+	gt(4, 0) = "08"  : gt(4, 1) = ":"  : gt(4, 2) = strf("%02d", int(gt(4, 0)))
+	gt(5, 0) = "00"  : gt(5, 1) = ""   : gt(5, 2) = strf("%02d", int(gt(5, 0)))
+	gt(6, 0) = "0"
+	gid = 6
+	sdim motimono, 2048 : sdim soukomoni, 2048 : sdim logmoni, 2048 : sdim omisemoni, 2048
+	//持ち物表示用その他1
+	motimono += "持ち物一覧です\n\n"
+	//倉庫
+	soukomoni = ""
+	//お店
+	omisemoni = ""
+	//ログ表示用
+	logmoni = "\n\n"
 
-    //ステータス管理
-    //st(0, 0):CPU
-    //st(1, 0):GPU
-    //st(2, 0):ROM
-    //st(3, 0):SSD
-    //st(4, 0):FAN
-    //st(5, 0):温度
-    //st(6, 0):Power
-    st = "" : sdim st, 32, 7, 3
-    st(0, 0) = "1"   : st(0, 1) = ""      : st(0, 2) = "Core i" + st(0, 0)
-    st(1, 0) = "0"   : st(1, 1) = ""      : st(1, 2) = st(1, 0)
-    st(2, 0) = "1"   : st(2, 1) = u(2, 0) : st(2, 2) = strf("%.1f", st(2, 0))
-    st(3, 0) = "1"   : st(3, 1) = u(2, 0) : st(3, 2) = strf("%.1f", st(3, 0))
-    st(4, 0) = "10"  : st(4, 1) = "rpm"   : st(4, 2) = strf("%.1f", st(4, 0))
-    st(5, 0) = "30"  : st(5, 1) = "deg"   : st(5, 2) = strf("%.1f", st(5, 0))
-    st(6, 0) = "100" : st(6, 1) = "%"     : st(6, 2) = strf("%.1f", st(6, 0))
+	//各種ステータス変動値
+	//dsta(0):CPU
+	//dsta(1):GPU
+	//dsta(2):ROM
+	//dsta(3):SSD
+	//dsta(4):FAN
+	//dsta(5):温度
+	//dsta(6):Power
+	//dsta(7):powerプログレスバー
+	dsta = "" : sdim dsta, 7
+	dsta(0) = "0"
+	dsta(1) = "0"
+	dsta(2) = "0.5"
+	dsta(3) = "1.0"
+	dsta(4) = "0"
+	dsta(5) = "0"
+	dsta(6) = "0.1"
+	dsta(7) = "1000"
 
-    //日付管理
-    //gt(0, 0):年
-    //gt(1, 0):四半期
-    //gt(2, 0):月
-    //gt(3, 0):日
-    //gt(4, 0):時間
-    //gt(5, 0):分
-    gt = "" : sdim gt, 125, 7, 3
-    gt(0, 0) = "0"   : gt(0, 1) = "/"  : gt(0, 2) = gt(0, 0)
-    gt(1, 0) = "1st" : gt(1, 1) = "Q/" : gt(1, 2) = gt(1, 0)
-    gt(2, 0) = " 4"  : gt(2, 1) = "/"  : gt(2, 2) = strf("%2d", int(gt(2, 0)))
-    gt(3, 0) = " 1"  : gt(3, 1) = "/"  : gt(3, 2) = strf("%2d", int(gt(3, 0)))
-    gt(4, 0) = "08"  : gt(4, 1) = ":"  : gt(4, 2) = strf("%02d", int(gt(4, 0)))
-    gt(5, 0) = "00"  : gt(5, 1) = ""   : gt(5, 2) = strf("%02d", int(gt(5, 0)))
-    gt(6, 0) = "0"
-    gid = 6
-    sdim motimono, 2048 : sdim soukomoni, 2048 : sdim logmoni, 2048 : sdim omisemoni, 2048
-    //持ち物表示用その他1
-    motimono += "持ち物一覧です\n\n"
-    //倉庫
-    soukomoni = ""
-    //お店
-    omisemoni = ""
-    //ログ表示用
-    logmoni = "\n\n"
+//------------------------------------------------------------------------------
+//                      オブジェクトID, ハンドル格納用
+//------------------------------------------------------------------------------
 
-    //レイヤーオブジェクトID
-    //layid(0):MASTER/セーブ・ロード用
-    //layid(1):MAIN  /時間・ログ表示用
-    //layid(2):MAIN  /ステータス管理用
-    layid = "" : dim layid, 3
-    layid(0) = 0
-    layid(1) = 0
-    layid(2) = 0
+	//フォントハンドル:メイリオ
+	//hFont(0):メイリオ, 16
+	//hFont(1):メイリオ, 14
+	//hFont(2):メイリオ, 13
+	hFont = 0 : dim hFont, 3
+	hFont(0) = 0
+	hFont(1) = 0
+	hFont(2) = 0
 
+	//設定変更時のゲーム速度
+	string2 = ""
+	//設定画面チェックボックスオブジェクトIDとハンドル
+	//第2次元要素 0 = ID, 1 = objct hWnd
+	//Shkidh(0, 0) : ゲーム速度項目[遅  め]
+	//Shkidh(1, 0) : ゲーム速度項目[ふつう]
+	//Shkidh(2, 0) : ゲーム速度項目[早  め]
+	//Shkidh(3, 0) : amzo auto start
+	//Shkidh(4, 0) : save auto start
+	//Shkidh(5, 0) : sett auto start
+	Shkidh = ""  :  dim Shkidh, 6, 2
+	Shkidh(0, 0) = 0  :  Shkidh(0, 1) = 0
+	Shkidh(1, 0) = 0  :  Shkidh(1, 1) = 0
+	Shkidh(2, 0) = 0  :  Shkidh(2, 1) = 0
+	Shkidh(3, 0) = 0  :  Shkidh(3, 1) = 0
+	Shkidh(4, 0) = 0  :  Shkidh(4, 1) = 0
+	Shkidh(5, 0) = 0  :  Shkidh(5, 1) = 0
 
-    //レイヤーオブジェクトlparam受け取り
-    layl = "" : dim layl, 3
-    //プログレスバーオブジェクトハンドル
-    hPb = "" : dim hPb, 1
-    hPb(0) = 0
+	//レイヤーオブジェクトID
+	//layid(0):MASTER/セーブ・ロード用
+	//layid(1):MAIN  /時間・ログ表示用
+	//layid(2):MAIN  /ステータス管理用
+	layid = "" : dim layid, 3
+	layid(0) = 0
+	layid(1) = 0
+	layid(2) = 0
+	//レイヤーオブジェクトlparam受け取り
+	layl = "" : dim layl, 3
 
-    //各種ステータス変動値
-    //dsta(0):CPU
-    //dsta(1):GPU
-    //dsta(2):ROM
-    //dsta(3):SSD
-    //dsta(4):FAN
-    //dsta(5):温度
-    //dsta(6):Power
-    //dsta(7):powerプログレスバー
-    dsta = "" : sdim dsta, 7
-    dsta(0) = "0"
-    dsta(1) = "0"
-    dsta(2) = "0.5"
-    dsta(3) = "1.0"
-    dsta(4) = "0"
-    dsta(5) = "0"
-    dsta(6) = "0.01"
-    dsta(7) = "1000"
+	//save & load オブジェクトハンドル
+	//hls(0):hLoad1
+	//hls(1):hSave1
+	hls = "" : dim hls, 2
 
+	//プログレスバーオブジェクトハンドル
+	hPb = "" : dim hPb, 1
+	hPb(0) = 0
 
+	//WebView2用
+	dim webv2, 4
 
-//******************************************************************************
+//------------------------------------------------------------------------------
 //                                    S Q L
-//******************************************************************************
+//------------------------------------------------------------------------------
 
-    //商品リストビューのオブジェクトIDとハンドル
-    //第2次元要素 0 = ID, 1 = objct hWnd
-    //LVidh(0, 0):CPU
-    //LVidh(1, 0):GPU
-    //LVidh(2, 0):ROM
-    //LVidh(3, 0):SSD
-    //LVidh(4, 0):FAN
-    //LVidh(5, 0):POWER
-    LVidh = "" : dim LVidh, 6, 2
-    LVidh(0, 0) = 0  :  LVidh(0, 1) = 0
-    LVidh(1, 0) = 0  :  LVidh(1, 1) = 0
-    LVidh(2, 0) = 0  :  LVidh(2, 1) = 0
-    LVidh(3, 0) = 0  :  LVidh(3, 1) = 0
-    LVidh(4, 0) = 0  :  LVidh(4, 1) = 0
-    LVidh(5, 0) = 0  :  LVidh(5, 1) = 0
+	//商品リストビューのオブジェクトハンドル
+	//第2次元要素 0 = objct hWnd
+	//LVidh(0, 0):CPU
+	//LVidh(1, 0):GPU
+	//LVidh(2, 0):ROM
+	//LVidh(3, 0):SSD
+	//LVidh(4, 0):FAN
+	//LVidh(5, 0):POWER
+	LVidh = "" : dim LVidh, 6, 1
+	LVidh(0, 0) = 0
+	LVidh(1, 0) = 0
+	LVidh(2, 0) = 0
+	LVidh(3, 0) = 0
+	LVidh(4, 0) = 0
+	LVidh(5, 0) = 0
 
-    //アイテムDB
-    db = "SQL\\Syouhin.db"
-    //商品データ
-    sdim cpu, 2048 : sdim gpu, 2048 : sdim rom, 2048 : sdim ssd, 2048
-    //リセット用バッファー
-    sdim bfcpu, 2048 : sdim bfgpu, 2048 : sdim bfrom, 2048 : sdim bfssd, 2048
-    //レコードの数
-    dim rec_cnum   : dim rec_gnum   : dim rec_rnum   : dim rec_snum
-    //カラムの数
-    dim col_num
-    //カラムリスト
-    sdim col_list, 64
-    //カラムの幅
-    column_w = 60, 60, 110, 85, 80, 80
-    //昇降順切り替え
-    swc = 1 : swg = 1 : swr = 1 : sws = 1
+	//商品データ
+	sdim cpu, 2048 : sdim gpu, 2048 : sdim rom, 2048 : sdim ssd, 2048 : sdim fan, 2048 : sdim pow, 2048
+	//リセット用バッファー
+	sdim bfcpu, 2048 : sdim bfgpu, 2048 : sdim bfrom, 2048 : sdim bfssd, 2048 : sdim bffan, 2048 : sdim bfpow, 2048
+	//カラムリスト
+	sdim col_list, 64
+	//カラムの幅
+	column_w = 60, 60, 110, 85, 80, 80
+	//昇降順切り替え
+	dim swlv, 6
+	swlv(0) = 1, 1, 1, 1, 1, 1
 
-    /***SQL***/
-    sql_open db
-    sql_q "BEGIN;"
+	/***SQL***/
+	sql_open db
+	sql_q "BEGIN;"
 
-    /***CPU***/
-    sql_q "SELECT * FROM MyCPU;"
-    //レコードの数
-    rec_cnum = stat
-    //カラムの数
-    col_num = length(tmparr)
-    //カラムリスト
-    col_list = sql_collist() : split col_list, ",", col_list
-    //データのインプット
-    myindata rec_cnum, col_num, col_list, bfcpu
+	/***CPU***/
+	sql_q "SELECT * FROM MyCPU;", bfcpu
+	//カラムリスト
+	col_list = sql_collist(",", bfcpu) : split col_list, ",", col_list
 
-    /***GPU***/
-    sql_q "SELECT * FROM MyGPU;"
-    rec_gnum = stat
-    col_num = length(tmparr)
-    myindata rec_gnum, col_num, col_list, bfgpu
+	/***GPU***/
+	sql_q "SELECT * FROM MyGPU;", bfgpu
+	/***ROM***/
+	sql_q "SELECT * FROM MyROM;", bfrom
+	/***SSD***/
+	sql_q "SELECT * FROM MySSD;", bfssd
+	/***FAN***/
+	sql_q "SELECT * FROM MyFAN;", bffan
+	/***POW***/
+	sql_q "SELECT * FROM MyPOW;", bfpow
 
-    /***ROM***/
-    sql_q "SELECT * FROM MyROM;"
-    rec_rnum = stat
-    col_num = length(tmparr)
-    myindata rec_rnum, col_num, col_list, bfrom
-
-    sql_q "COMMIT;"
-    sql_close
-
-    //変数リセット用ファイル
-    //mysave2 fname(7)
+	sql_q "COMMIT;"
+	sql_close
