@@ -585,7 +585,7 @@
 /*##############################################################################
 						hspバージョン確認
 ###############################################################################*/
-#if 0
+#if 1
 	#include "hsedsdk.as"
 	#include "00_module.hsp"
 	#include "00_mylv.hsp"
@@ -609,11 +609,10 @@
 	d2(7) = myhspver (hspver)
 	d3 = 110, 75, 140, 110
 
-	mylv 440, 120, id_lv, hLv
-	incolm id_lv, d1, 4, d3
-	inlvitem id_lv, d2, 2, 4
-
-	sendmsg objinfo(id_lv, 2), $30, hFont
+	mylv 440, 120, hLv
+	incolm hLv, d1, 4, d3
+	inlv1item hLv, d2, 2, 4
+	sendmsg hLv, $30, hFont
 
 #endif
 
