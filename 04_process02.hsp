@@ -16,161 +16,165 @@
 #packopt hide 1
 #pack "text\\verinfo.txt"
 
-    /*** 外部モジュール ***/
-    #include "user32.as"
-    #include "gdi32.as"
-    #include "WebView2_10115038.as"
-    #include "hsp3util.as"
-    #include "hsedsdk.as"      //hspver
-    #include "hspda.as"        //vsave系
-    #include "d3m.hsp"         //fps
-    #include "sqlele.hsp"
-    /*** 分割自作モジュール ***/
-    #include "00_module.hsp"
-    #include "00_mylv.hsp"
-    #include "01_mypb.hsp"
-    /*** 分割ファイル ***/
-    #include "01_variable.hsp"
-    #include "02_interface.hsp"
-    #include "03_process01.hsp"
+	#addition "userdef.as"
+	#addition "hspdef.as"
+	/*** 外部モジュール ***/
+	#include "user32.as"
+	#include "gdi32.as"
+	#include "WebView2_10115038.as"
+	#include "hsp3util.as"
+	#include "hsedsdk.as"      //hspver
+	#include "hspda.as"        //vsave系
+	#include "d3m.hsp"         //fps
+	#include "sqlele.hsp"
+	/*** 分割自作モジュール ***/
+	#include "C:\\gitproject\\doclib\\02_myarray.hsp"
+	#include "00_module.hsp"
+	#include "00_mylv.hsp"
+	#include "01_mypb.hsp"
+	/*** 分割ファイル ***/
+	#include "01_variable.hsp"
+	#include "02_interface.hsp"
+	#include "03_process01.hsp"
 
+#cmpopt ppout 1
 /******************************  layerobjの処理  *********************************/
+
+
+//##############################################################################
+//                           <<  セーブ・ロード用  >>
+//##############################################################################
+
+//セーブ・ロード用レイヤーオブジェクト layidh(0)
+*master_layer_var
+	layl(0) = lparam
+		//変数リセット用ファイル
+	if      (layl = lay_init) {mysave fname(7)}
+	else:if (layl = lay_prmi) {layint1 = iparam
+		if      (layint1 = 0) {mysave fname(saveID) : G_prm ID_WIN_MAIN, 0, layidh(1), "log,asc"}
+		else:if (layint1 = 1) {mysave fname(saveID) : G_prm ID_WIN_MAIN, 0, layidh(1), "log,save"}
+		else:if (layint1 = 2) {vload  fname(saveID) : gosub *hlay_saveload} ; load
+	}
+	else:if (layl = lay_prms) {laystr1 = refstr}
+
+	return
+
+/***********************************************************/
+//セーブデータのロード･各変数とオブジェクトの更新
+*hlay_saveload
+	setting(5) = -1
+
+	/*** Mainウィンドウ各変数読み込み ***/
+	gsel ID_WIN_MAIN, -1
+	; Power用 プログレスバー設定
+	pbswmarq hPb(0), 0
+	pbset hPb(0), 0, 1000, 1000, -1
+	pbrepos hPb(0), int(st(6)), 0
+	pbstcol2 hPb(0), 25, 44
+
+	G_prm ID_TAB_MOTI, 1, id_motimono, motimono
+	G_prm ID_TAB_LOG, -1, id_logmoni, logmoni
+	gsel ID_TAB_SOUKO, -1
+	gsel ID_WIN_MAIN
+
+	//ゲーム内時間
+	sendmsg hStatic(0), $C, 0, strf(gtformat.0, gt.0, gt.1, gt.2, gt.3)
+	sendmsg hStatic(1), $C, 0, strf(gtformat.1, gt.4, gt.5)
+	//ステータス
+
+	/*** Settingウィンドウ各項目読み込み ***/
+	gsel ID_WIN_SETI, -1
+	objprm id_savebut, setting(0)
+	objprm Shkidh(0, 0), setting(1)
+	objprm Shkidh(1, 0), setting(2)
+	objprm Shkidh(2, 0), setting(3)
+	objprm Shkidh(3, 0), setting(8)
+	objprm Shkidh(4, 0), setting(9)
+	objprm Shkidh(5, 0), setting(10)
+	objprm Shkidh(6, 0), setting(11)
+	objprm Shkidh(7, 0), setting(12)
+
+	/*** Amazoonリストビュー読み込み ***/
+	gsel ID_WIN_AMAZ, -1
+	gsel ID_OMTAB_CPU, 1
+	gsel ID_OMTAB_GPU, -1 : gsel ID_OMTAB_ROM, -1 : gsel ID_OMTAB_SSD, -1 : gsel ID_OMTAB_FAN, -1 : gsel ID_OMTAB_POW, -1
+
+	dellv LVidh(0, 0), 2 : insqlitem LVidh(0, 0), bfcpu ; CPU
+	dellv LVidh(1, 0), 2 : insqlitem LVidh(1, 0), bfgpu ; GPU
+	dellv LVidh(2, 0), 2 : insqlitem LVidh(2, 0), bfrom ; ROM
+	dellv LVidh(3, 0), 2 : insqlitem LVidh(3, 0), bfssd ; SSD
+	dellv LVidh(4, 0), 2 : insqlitem LVidh(4, 0), bffan ; FAM
+	dellv LVidh(5, 0), 2 : insqlitem LVidh(5, 0), bfpow ; POWER
+
+	/*** 各ウィンドウの非表示切り替え ***/
+	gsel ID_WIN_DOCK, -1 : gsel ID_WIN_SAVE, -1 : gsel ID_WIN_INFO, -1
+	G_prm ID_WIN_MAIN, 0, layidh(1), "log,load"
+	return
+
+
 
 //##############################################################################
 //                               <<  描画用  >>
 //##############################################################################
 
-//ゲーム内時間とログ
+//ゲーム内時間とログ layid(1)
 *lay
-    layl(1) = lparam
-    switch layl(1)
-//-----  レイヤー設置直後の処理  --------
-        case objlayer_cmdinit
-            swbreak
+	layl(1) = lparam
 
-//--------  int値を渡された  ------------
-        case objlayer_cmdprmi
-            layint0 = iparam
-            switch layint0
-                //メインループ>>ゲーム内時間
-                case gameh
-                    gosub *hlay_gt
-                    swbreak
-            swend
-            swbreak
+	if (layl(1) = lay_init) {}
+	if (layl(1) = lay_prmi) {layint0 = iparam : if (layint0 = gameh) {gosub *hlay_gt} }
+	if (layl(1) = lay_prms) {laystr0 = refstr
 
-//--------  文字列を渡された  -----------
-        case objlayer_cmdprms
-            //layerobjに渡す文字列
-            laystr0 = refstr  :  split laystr0, ",", laystr0
+		split laystr0, ",", laystr0
+		/*** Mainウィンドウログ表示内容 ***/
+		notesel logmoni : noteadd "\n", 1, 0
+		time = strf("%d/%d %d:%d:%d", gettime(1), gettime(3), gettime(4), gettime(5), gettime(6))
 
-            /*** Mainウィンドウログ表示内容 ***/
-            if laystr0(0) == "log" {
-                notesel logmoni : noteadd "\n", 1, 0
-                time = "" + gettime(1) + "/" + gettime(3) + " " + gettime(4) + ":" + gettime(5) + ":" + gettime(6)
-                if      (laystr0(1) == "auto_chk") {noteadd time + logstr(0), 1, 0}                    //設定変更報告
-                else:if (laystr0(1) == "asc")      {noteadd time + logstr(1) + fname(saveID), 1, 0}    //オートセーブ事後報告
-                else:if (laystr0(1) == "load")     {noteadd time + logstr(2) + fname(saveID), 1, 0}    //ロードの事後報告
-                else:if (laystr0(1) == "save")     {noteadd time + logstr(3) + fname(saveID), 1, 0}    //セーブの事後報告
-                else:if (laystr0(1) == "dd")       {noteadd time + logstr(4), 1, 0}                    //日付変更線
-                else:if (laystr0(1) == "yy")       {noteadd time + logstr(5), 1, 0}                    //あけおめ
-                noteunsel
-                gsel ID_TAB_LOG : objprm id_logmoni, logmoni : gsel ID_WIN_MAIN
-            }
+		if TskFlg(0) {noteadd time + TskLog(0, 0), 1, 0} ; 日付変更線
+		if TskFlg(1) {noteadd time + TskLog(1, 0), 1, 0} ; 月変更
+		if TskFlg(2) {noteadd time + TskLog(2, 0), 1, 0} ; 四半期変更
+		if TskFlg(3) {noteadd time + TskLog(3, 0), 1, 0} ; あけおめ
+		TskFlg.0 = 0, 0, 0, 0
 
-            /*****  Mainウィンドウに戻る際のメインループ自走設定  *****/
-            if laystr0(0) == "re" {
-                switch laystr0(1)
-                    case "amaz"
-                        if setting(8) == 1 : setting(5) = 1
-                        sdim remain_code
-                        gsel ID_WIN_AMAZ, -1 : gsel ID_WIN_MAIN, 1
-                        swbreak
-                    case "save"
-                        if setting(9) == 1 : setting(5) = 1
-                        sdim remain_code
-                        gsel ID_WIN_SAVE, -1 : gsel ID_WIN_MAIN, 1
-                        swbreak
-                    case "set"
-                        if setting(10) == 1 : setting(5) = 1
-                        sdim remain_code
-                        gsel ID_WIN_SETI, -1 : gsel ID_WIN_MAIN, 1
-                        swbreak
-                swend
-            }
+		if laystr0(0) = "log" {
+			if  (laystr0.1 = "auto_chk") {noteadd time + logstr.9, 1, 0} ; 設定変更報告
+			else:if (laystr0.1 = "asc")  {noteadd time + logstr.1 + fname(saveID), 1, 0} ; オートセーブ事後報告
+			else:if (laystr0.1 = "load") {noteadd time + logstr.2 + fname(saveID), 1, 0} ; ロードの事後報告
+			else:if (laystr0.1 = "save") {noteadd time + logstr.3 + fname(saveID), 1, 0} ; セーブの事後報告
+		}
 
-            swbreak
-    swend
-    return
+		noteunsel
+		G_prm ID_TAB_LOG, 0, id_logmoni, logmoni : gsel ID_WIN_MAIN
+	}
+	if (layl(1) = lay_prmd) {laydbl0 = refdval}
+
+	return
 
 /***********************************************************/
 //ゲーム内時間
 *hlay_gt
-    sdim hmoni, 64 : sdim mesmoni, 128
-    //時間
-    if int(gt(5, 0)) > 59 {
-        gt(5, 0) = "00"
-        gt(4, 0) = strf("%02d", int(gt(4, 0)) + 1)
-    }
-    //日数
-    if int(gt(4, 0)) > 23 {
-        gt(4, 0) = "00"
-        gt(3, 0) = strf("%2d", int(gt(3, 0)) + 1)  :  setting(6) = 1
-    }
-    //月
-    if int(gt(3, 0)) > 30 {
-        gt(3, 0) = " 1"
-        gt(2, 0) = strf("%2d", int(gt(2, 0)) + 1)
-    }
-    //四半期
-    switch int(gt(2, 0))
-        case 4
-        case 5
-        case 6
-            gt(1, 0) = "1st"
-            swbreak
-        case 7
-        case 8
-        case 9
-            gt(1, 0) = "2nd"
-            swbreak
-        case 10
-        case 11
-        case 12
-            gt(1, 0) = "3rd"
-            swbreak
-        case 1
-        case 2
-        case 3
-            gt(1, 0) = "4th"
-            swbreak
-    swend
-    //年
-    if int(gt(2, 0)) > 12 {
-        gt(2, 0) = " 1"
-        gt(0, 0) = strf("%3d", int(gt(0, 0)) + 1)  :  setting(7) = 1
-    }
 
-    repeat gid
-        hmoni += "" + gt(cnt, 0) + gt(cnt, 1)
-    loop
-    //表示文字列の変更 (WM_SETTEXT)
-    sendmsg hStatic(0), $C, , hmoni
+	if (gt(4) > 23) {gt(4) = 0 : gt(3)++ : TskFlg(0)++} else {return} ; 日数
+	if (gt(3) > 30) {gt(3) = 1 : gt(2)++ : TskFlg(1)++}               ; 月
+	if (gt(2) > 12) {gt(2) = 1 : gt(0)++ : TskFlg(3)++}               ; 年
 
+	; 四半期
+	if      (gt(2) =  1) & (gt(1) = 3) {gt(1)++   : TskFlg(2)++}
+	else:if (gt(2) =  4) & (gt(1) = 4) {gt(1) = 1 : TskFlg(2)++}
+	else:if (gt(2) =  7) & (gt(1) = 1) {gt(1)++   : TskFlg(2)++}
+	else:if (gt(2) = 10) & (gt(1) = 2) {gt(1)++   : TskFlg(2)++}
 
-    //日付変更線
-    if setting(6) == 1 {
-        logstr(4) = " : Game times " + gt(2, 0) + "/" + gt(3, 0) + " になりました."
-        gsel ID_WIN_MAIN : objprm layid(1), "log,dd"
-        setting(6) = 0
-    }
-    //あけおめ
-    if setting(7) == 1 {
-        gsel ID_WIN_MAIN : objprm layid(1), "log,yy"
-        setting(7) = 0
-    }
+	; 表示文字列の変更 (WM_SETTEXT)
+	sendmsg hStatic, $C, 0, strf(gtformat, gt.0, gt.1, gt.2, gt.3)
 
-    return
+	; ログ出力処理
+	if TskFlg.0 {TskLog(0, 0) = strf(TskLog(0, 1), gt.2, gt.3)} ; 日付変更線
+	if TskFlg.1 {TskLog(1, 0) = strf(TskLog(1, 1), gt.2)      } ; 月変更
+	if TskFlg.2 {TskLog(2, 0) = strf(TskLog(2, 1), gt.1)      } ; 四半期変更
+	if TskFlg.3 {TskLog(3, 0) = strf(TskLog(3, 1), gt.0)      } ; あけおめ
+	G_prm ID_WIN_MAIN, 0, layidh(2), "user"
+	G_prm ID_WIN_MAIN, 0, layidh(1), "time"
+	return
 
 
 
@@ -179,196 +183,148 @@
 //                          <<  ステータス管理用  >>
 //##############################################################################
 
-
-//ステータス管理用
+//ステータス管理用 layidh(2)
 *laystat
+	layl(2) = lparam
 
-    layl(2) = lparam
-    switch layl(2)
-//-----  レイヤー設置直後の処理  --------
-        case objlayer_cmdinit
-            swbreak
-//--------  int値を渡された  ------------
-        case objlayer_cmdprmi
-            layint2 = iparam
-            switch layint2
-                //ステータス更新
-                case newst
-                    gosub *updatestatus
-                    swbreak
-                //
-                case unitc
-                    swbreak
-            swend
-            swbreak
-//--------  文字列を渡された  -----------
-        case objlayer_cmdprms
-            laystr2 = refstr
-            swbreak
-    swend
-    return
+	if      (layl(2) = lay_init) {
+		sendmsg hStatic.0, $C, 0, strf(gtformat.0, gt.0, gt.1, gt.2, gt.3)
+		sendmsg hStatic.1, $C, 0, strf(gtformat.1, gt.4, gt.5)
+		gosub *redraw_stat_
+	}
+	if (layl(2) = lay_prmi) {layint2 = iparam : if (layint2 = newst) {gosub *updatestatus : gosub *redraw_stat_} }
+	if (layl(2) = lay_prms) {laystr2 = refstr
+		if (laystr2 = "user") {
+			; ユーザーポイント関連
+			userp.0 += ((1.0 * TskFlg.0) + (30.0 * TskFlg.1) + (90.0 * TskFlg.2) + (360.0 * TskFlg.3))
+			userp.1 = userp.0 / 5.0
+			sendmsg hStatic.4, $C, 0, strf(" %.2f :  %.2f", userp.0, userp.1)
+		}
+	}
+	if (layl(2) = lay_prmd) {}
+
+	return
 
 
 /***********************************************************/
 //ステータス更新
 *updatestatus
-    gsel ID_WIN_MAIN
+	gsel ID_WIN_MAIN
 
-    st(2, 0) = str(double(st(2, 0)) + double(dsta(2)))  //ROM
-    st(3, 0) = str(double(st(3, 0)) + double(dsta(3)))  //SSD
-    st(6, 0) = str(double(st(6, 0)) - double(dsta(6)))  //Power
-
-    /***  プログレスバー  ***/
-    dsta(7) = str(int(double(st(6, 0)) * 10))
-    pbrepos hPb(0), int(dsta(7)), 0
-
-    //ステータス代入
-    repeat 5, 2
-        st(cnt, 2) = strf("%.1f", st(cnt, 0))
-    loop
-
-    repeat 7
-        mesmoni += st(cnt, 2) + "\n"
-    loop
-
-    /*****   単位変換チェック  *****/
-    if ((int(st(2, 0)) > 1023) | (int(st(3, 0)) > 1023)) {
-        sdim mesmoni_u, 16
-
-        /***ROM***/
-        if (int(st(2, 0)) > 1023) {
-            st(2, 0) = str(double(st(2, 0)) / 1024)
-            u(0, 0) = str(int(u(0, 0)) + 1)
-            st(2, 1) = u(int(u(0, 0)), 0)
-        }
-
-        /***SSD***/
-        if (int(st(3, 0)) > 1023) {
-            st(3, 0) = str(double(st(3, 0)) / 1024)
-            u(1, 0) = str(int(u(1, 0)) + 1)
-            st(3, 1) = u(int(u(1, 0)), 0)
-        }
-
-        mesmoni_u += " " + st(2, 1) + "\n" + " " + st(3, 1)
-        //表示文字列の変更 (WM_SETTEXT)
-        sendmsg hStatic(3), $C, , mesmoni_u
-    }
-
-    //表示文字列の変更 (WM_SETTEXT)
-    sendmsg hStatic(2), $C, , mesmoni
-
-    return
+;======================================= ユーザーポイント関連
+	; 経過時間に応じて
+	userp.0 += 0.1
+	userp.1 = userp.0 / 5.0
+	sendmsg hStatic.4, $C, 0, strf(" %.2f :  %.2f", userp.0, userp.1)
 
 
+;======================================= C P U
+	/***** CPU *****/
+	randomize
+	; st(0) += dsta(0)
+	work  = double(st(0) * rnd(3)) + 1.5
 
 
-//##############################################################################
-//                           <<  セーブ・ロード用  >>
-//##############################################################################
+;======================================= G P U
+	/***** GPU *****/
+	randomize int(st(1))
+	; st(1) += dsta(1)
+	work += double(st(1) * rnd(3)) + 1.5
 
-//セーブ・ロード用レイヤーオブジェクト
-*master_layer_var
-    layl(0) = lparam
-    switch layl(0)
-//-----  レイヤー設置直後の処理  --------
-        case objlayer_cmdinit
-            //変数リセット用ファイル
-            mysave2 fname(7)
-            swbreak
-//--------  int値を渡された  ------------
-        case objlayer_cmdprmi
-            layint1 = iparam
-            logmes "saveID = " + saveID
-            switch layint1
-                /*****  autosave  *****/
-                case lay_autosave
-                    mysave2 fname(saveID)
-                    gsel ID_WIN_MAIN : objprm layid(1), "log,asc"
-                    swbreak
-                /*****    save    *****/
-                case lay_save
-                    mysave2 fname(saveID)
-                    gsel ID_WIN_MAIN : objprm layid(1), "log,save"
-                    swbreak
-                /*****    load    *****/
-                case lay_load
-                    logmes "vload fname(saveID) = " + saveID
-                    vload fname(saveID)
-                    gosub *hlay_saveload
-                    swbreak
-            swend
-            swbreak
-//--------  文字列を渡された  -----------
-        case objlayer_cmdprms
-            laystr1 = refstr
-            swbreak
-    swend
-    return
+;======================================= R O M
+	/***** ROM *****/
+	; st(2) += dsta(2)
+
+;======================================= S S D
+	/***** SSD *****/
+	; st(3) += dsta(3)
+
+;======================================= F A N
+	/***** FAN *****/
+	cooler(0) = 100.0 + (thermal), 0.0
+
+	th_prmchk = (thermal < 0.0), ((0.0 < thermal) & (thermal <= 3.0))
+	th_prmchk(2) = (st(5) < 45.0)
+	th_prmchk(3) = (45.0 < st(5)) & (st(5) <= 50.0)
+	th_prmchk(4) = (50.0 < st(5)) & (st(5) <= 75.0)
+	th_prmchk(5) = (75.0 < st(5))
+
+	if      th_prmchk(0) {cooler(1) = cooler * 0.00}
+	else:if th_prmchk(1) {cooler(1) = cooler * 0.50}
+
+	if th_prmchk(2) {cooler(1) += (cooler * 0.01)}
+	if th_prmchk(3) {cooler(1) += (cooler * 1.25)}
+	if th_prmchk(4) {cooler(1) += (cooler * 1.75)}
+	if th_prmchk(5) {cooler(1) += (cooler * 2.00)}
+
+	st(4) = limitf(cooler(0) + cooler(1), 90.0, 180.0)
+
+	if (st(5) < 35.0) {st(4) = 90.0}
+
+;======================================= T H E R M A L
+	/***** THERMAL *****/
+	thermal(1) = 1.0 + ((st.0 * pst.0 + dsta.0)) + ((st.1 * pst.1 + dsta.1))
+
+	thermal = ((work * thermal.1) - (st.4 * (pst.4 + pst.5))) / 10.0
+
+	st(5) += limitf(thermal, -1.0)
+
+;======================================= P O W E R
+	/***** Power *****/
+	st(6) -= dsta(6)
+	st(7) = ((st(6) / st(8)) * 100.0)
+
+;======================================= U N I T S
+	/*****   単位変換チェック  *****/
+	if (st.2 > 1023.0) {unit_cnt(0)++ : repeat unit_cnt(0):   st.2 /= 1024.0   :loop} ; ROM
+	if (st.3 > 1023.0) {unit_cnt(1)++ : repeat unit_cnt(1):   st.3 /= 1024.0   :loop} ; SSD
+	return
+
 
 
 
 /***********************************************************/
-//セーブデータのロード･各変数とオブジェクトの更新
-*hlay_saveload
-    setting(5) = -1
-    logmes "fname(saveID) = " + saveID
-    /*** Mainウィンドウ各変数読み込み ***/
-    gsel ID_WIN_MAIN, -1 : pbrepos hPb(0), int(dsta(7)), 0
-    gsel ID_TAB_MOTI, 1  : objprm id_motimono, motimono
-    gsel ID_TAB_LOG, -1  : objprm id_logmoni, logmoni
-    gsel ID_TAB_SOUKO, -1
-    gsel ID_WIN_MAIN
-    //ゲーム内時間
-    sdim hmoni, 64
-    repeat gid
-        hmoni += "" + gt(cnt, 0) + gt(cnt, 1)
-    loop
-    sendmsg hStatic(0), $C, 0, hmoni
+; 各ステータスの描画処理
+*redraw_stat_
 
-    //ステータス
-    repeat 7
-        mesmoni += st(cnt, 2) + "\n"
-    loop
-    sendmsg hStatic(2), $C, 0, mesmoni
 
-    //単位
-    mesmoni_u += " " + st(2, 1) + "\n" + " " + st(3, 1)
-    sendmsg hStatic(3), $C, 0, mesmoni_u
+;======================================= P R O G R E S S
+	/***  プログレスバー  ***/
+	pbrepos hPb(0), int(st(7) * 10), 0
+	pbstcol2 hPb(0), 25, 44
+;=======================================
 
-    /*** Settingウィンドウ各項目読み込み ***/
-    gsel ID_WIN_SETI, -1
-    objprm id_savebut, setting(0)
-    objprm Shkidh(0, 0), setting(1)
-    objprm Shkidh(1, 0), setting(2)
-    objprm Shkidh(2, 0), setting(3)
-    objprm Shkidh(3, 0), setting(8)
-    objprm Shkidh(4, 0), setting(9)
-    objprm Shkidh(5, 0), setting(10)
 
-    /*** Amazoonリストビュー読み込み ***/
-    gsel ID_WIN_AMAZ, -1
-    /*** CPU ***/
-    gsel ID_OMTAB_CPU, 1 : mydelitem LVidh(0, 0)
-    myinitem LVidh(0, 0), bfcpu, rec_cnum, col_num
-    /*** GPU ***/
-    gsel ID_OMTAB_GPU, -1 : mydelitem LVidh(1, 0)
-    myinitem LVidh(1, 0), bfgpu, rec_gnum, col_num
-    /*** ROM ***/
-    gsel ID_OMTAB_ROM, -1 : mydelitem LVidh(2, 0)
-    myinitem LVidh(2, 0), bfrom, rec_rnum, col_num
-    /***  SSD  ***/
-    gsel ID_OMTAB_SSD, -1
-    /***  FAM  ***/
-    gsel ID_OMTAB_FAN, -1
-    /***  POWER  ***/
-    gsel ID_OMTAB_POW, -1
+	gsel ID_WIN_MAIN
 
-    gsel ID_OMTAB_CPU
+	; 画面左上,PC各ステータス表示
+	;#######################################################
+	redraw 0, u1pos(0), u1pos(1), u1pos(2) - u1pos(0), u1pos(3) - u1pos(1)
 
-    /*** 各ウィンドウの非表示切り替え ***/
-    gsel ID_WIN_SAVE, -1
-    gsel ID_WIN_INFO, -1
+	rgbcolor 0x000000 : boxf u1pos(0) - 2, u1pos(1) - 2, u1pos(2) + 2, u1pos(3) + 2
+	rgbcolor 0xFFFFFF : boxf u1pos(0), u1pos(1), u1pos(2), u1pos(3)
 
-    gsel ID_WIN_MAIN
-    objprm layid(1), "log,load"
-    return
+	pos u1pos(0) + 5, u1pos(1) + 5 : rgbcolor 0x000000
+	mes " C P U \n G P U \n R O M \n S S D \n F A N \nTHERMAL\n POWER "
+
+	pos u1pos(0) + 25 + ginfo_mesx, u1pos(1) + 5
+	mes strf(stformat.0, st.0, st.1, st.2, unit(unit_cnt.0), st.3, unit(unit_cnt.1), st.4, st.5, st.7)
+
+	redraw 1, u1pos(0), u1pos(1), u1pos(2) - u1pos(0), u1pos(3) - u1pos(1)
+	;#######################################################
+
+
+	; 画面中央,ユーザーポイント及び所持金表示
+	;#######################################################
+	redraw 0, u2pos(0), u2pos(1), u2pos(2) - u2pos(0), u2pos(3) - u2pos(1)
+
+	rgbcolor 0x000000 : boxf u2pos(0) - 2, u2pos(1) - 2, u2pos(2) + 2, u2pos(3) + 2
+	rgbcolor 0xFFFFFF : boxf u2pos(0), u2pos(1), u2pos(2), u2pos(3)
+
+	pos u2pos(0) + 10, u2pos(1) + 10 : rgbcolor 0x000000
+	mes strf("Exp %.2f\nCat %.2f", userp.0, userp.1)
+
+	redraw 1, u2pos(0), u2pos(1), u2pos(2) - u2pos(0), u2pos(3) - u2pos(1)
+	;#######################################################
+
+	return

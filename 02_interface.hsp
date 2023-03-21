@@ -12,410 +12,428 @@
 ************************************************************/
 
 /*******************************************************************************
-                                Master Window
+								Master Window
 ********************************************************************************/
-    screen ID_WIN_MASTER, 800, 500, 2
-    hWin_master = hwnd
-    title titlemes
-    font "メイリオ", 16 : objmode 2, 1
-    //HSPのBMSCR構造体からフォントハンドルを取得
-    mref BMSCR, 67 : hFont(0) = BMSCR.38
+	screen ID_WIN_MASTER, 800, 500, 2
+	hWin_master = hwnd
+	title titlemes
+	font myricaMM, hFont(3) : objmode 2, 1
+	//HSPのBMSCR構造体からフォントハンドルを取得
+	mref BMSCR, 67 : hFont(0) = BMSCR.38
 
-//--------------------------------------セーブ・ロード用
-    layerobj ,,1, *master_layer_var, 0
-    layid(0) = stat
+;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% セーブ・ロード用
+	layerobj ,,1, *master_layer_var, 0 : layidh(0) = stat
+
 
 /*******************************************************************************
-                                Opening Window
+								Opening Window
 ********************************************************************************/
 
-    bgscr ID_WIN_OPEN, 800, 500, 2
-    SetWindowLong hwnd, -16, WS_CHILD
-    SetParent hwnd, hWin_master
+	bgscr ID_WIN_OPEN, 800, 500, 2
+	SetWindowLong hwnd, -16, WS_CHILD
+	SetParent hwnd, hWin_master
 
-    Mycolor 0.4, 0.7, 0.85, 0
-    boxf 10, 10, 790, 480
+	Mycolor color_data(3)
+	boxf 10, 10, 790, 480
 
-    font "メイリオ", 40, 1, 4
-    pos 120, 40
-    Mycolor 1, 0.5, 0.75, 1 //輪郭線
-    Mycolor 0.95, 0.95, 0.95, 0 //文字色
-    mes "PC CareingDiary ver" + ver, 4
+	font myricaMM, 50, 1, 4
+	pos 120, 40
+	Mycolor color_data(4), 1    //輪郭線
+	Mycolor color_data(1), 0    //文字色
+	mes "PC CareingDiary ver" + ver, 4
 
-    font "メイリオ", 40, 1, 2
-    pos 120, 40
-    Mycolor 0, 0, 0, 1 //輪郭線
-    Mycolor 0.95, 0.95, 0.95, 0 //文字色
-    mes "PC CareingDiary ver" + ver, 4
+	font myricaMM, 50, 1, 2
+	pos 120, 40
+	Mycolor color_data(2), 1 //輪郭線
+	Mycolor color_data(1), 0 //文字色
+	mes "PC CareingDiary ver" + ver, 4
 
-    pos 300, 200 : objsize 200, 40, 60 : font "けいふぉんと", 16 : objmode 2, 1
+	pos 300, 200 : objsize 200, 40, 60 : font "けいふぉんと", 20 : objmode 2, 1
 
-    button gosub "新しく始める", *OP新規
-    id_opB0 = stat
-    button gosub "続きから始める", *OPload
-    id_opB1 = stat
+	button gosub "新しく始める", *OP新規   : id_opB0 = stat
+	button gosub "続きから始める", *OPload : id_opB1 = stat
 
-    font "メイリオ", 13
-    //HSPのBMSCR構造体からフォントハンドルを取得
-    mref BMSCR3, 67 : hFont(2) = BMSCR3.38
+	font myricaMM, hFont(4)
+	//HSPのBMSCR構造体からフォントハンドルを取得
+	mref BMSCR3, 67 : hFont(2) = BMSCR3.38
 
 
 
 /*******************************************************************************
-                                Main Window
+								Main Window
 ********************************************************************************/
-    bgscr ID_WIN_MAIN, 800, 500, 2
-    SetWindowLong hwnd, -16, WS_CHILD
-    SetParent hwnd, hWin_master
+	bgscr ID_WIN_MAIN, 800, 500, 2
+	SetWindowLong hwnd, -16, WS_CHILD
+	SetParent hwnd, hWin_master
 
-    font "メイリオ", 16 : objmode 2, 1
+	font myricaMM, hFont(4) : objmode 2, 1
 /*******************<<  ウィンドウオブジェクトの設置  >>********************/
 
-    /***ゲーム内時間***/
-    hx = 590 : hy = 15
-    pos hx, hy
-    winobj "static", "ゲーム内時間を表記します", , $50000000 | $1 | $800000, 200, 28
-    hStatic(0) = objinfo(stat, 2)
+	/***ゲーム内時間***/
+	hx = 590 : hy = 10
+	pos hx - 70, hy
+	winobj "static", "ゲーム内時間を表記します", , $50000000 | $1 | $800000, 270, 28
+	hStatic(0) = objinfo(stat, 2)
 
-    /***ステータス項目表示***/
-    mx = 15 : my = 15
-    pos mx, my
-    winobj "static", " C P U\n G P U\n R O M\n S S D\n F a n\n 温 度\n Power", , $50000000 | $800000, 170, 170
-    hStatic(1) = objinfo(stat, 2)
+	pos hx + 100, hy + 30
+	winobj "static", "", , $50000000 | $1 | $800000, 100, 28
+	hStatic(1) = objinfo(stat, 2)
 
-    /***ステータス数値表示***/
-    pos mx + 58, my + 1
-    winobj "static", "", , $50000000 | $2, 70, 168
-    hStatic(2) = objinfo(stat, 2)
+	/***ステータス項目表示***/
 
-    /***ステータス単位表示(変動用)***/
-    pos mx + 127, my + 50
-    winobj "static", " B\n B", , $50000000, 40, 50
-    hStatic(3) = objinfo(stat, 2)
+	u1pos(0) = 5
+	u1pos(1) = 5
+	u1pos(2) = 200
+	u1pos(3) = 210
 
-    /***ステータス単位表示(固定用)***/
-    pos mx + 127, my + 96
-    winobj "static", " rpm\n deg\n %", , $50000000, 40, 70
-    hStatic(4) = objinfo(stat, 2)
+	u2pos(0) = 210
+	u2pos(1) = 45
+	u2pos(2) = 650
+	u2pos(3) = 230
 
-    /*****  Power用プログレスバー  *****/
-    pos 15, 200
-    mypb 200, 15, hPb(0), 0
-    pbset hPb(0), 0, 1000, -1, 1000
+
+	/*****  Power用プログレスバー  *****/
+	pos 15, 220
+	mypb 170, 10, hPb(0), 0
+	pbset hPb(0), 0, 1000, 1000, -1
 
 /*******************************************************************************/
 
 
-    /*****  タブコントロール  *****/
-    pos 0, 240
-    My_CreateTab 800, 240, hTab_main
+	/*****  タブコントロール  *****/
+	pos 0, 240
+	My_CreateTab 800, 240, hTab_main
 //==========================================================
-    InsertTab "Tools", ID_TAB_MOTI, 0, hTab_main
-    font "メイリオ", 15 : objmode 2, 0
-    pos 0, 0
-    mesbox motimono, 794, 210, 0
-    id_motimono = stat
-
-//==========================================================
-    InsertTab "Arsenal", ID_TAB_SOUKO, 1, hTab_main
-    pos 0, 0
-    mycrelv 794, 210, id_soukomoni, hLVsouko
+	InsertTab "Tools", ID_TAB_MOTI, 0, hTab_main
+	font myricaMM, hFont(5) : objmode 2, 0
+	pos 0, 0
+	mesbox motimono, 794, 210, 0
+	id_motimono = stat
 
 //==========================================================
-    InsertTab "Logs", ID_TAB_LOG, 2, hTab_main
-    pos 0, 0
-    mesbox logmoni, 794, 210, 0
-    id_logmoni = stat
+	InsertTab "Arsenal", ID_TAB_SOUKO, 1, hTab_main
+	pos 0, 0
+	mylv 794, 210, hLVsouko
+
+//==========================================================
+	InsertTab "Logs", ID_TAB_LOG, 2, hTab_main
+	pos 0, 0
+	mesbox logmoni, 794, 210, 0
+	id_logmoni = stat
 
 //==========================================================
 
-    gsel ID_TAB_MOTI, 1 : gsel ID_WIN_MAIN
+	gsel ID_TAB_MOTI, 1 : gsel ID_WIN_MAIN
 
 
 
-//--------------------------------------ゲーム内時間, ログ表示更新用
-    pos 0, 0
-    layerobj 800, 200, 3, *lay, 1
-    layid(1) = stat
+;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% ゲーム内時間, ログ表示更新用
+	pos 0, 0
+	layerobj 800, 200, 3, *lay, 1
+	layidh(1) = stat
 
-//--------------------------------------各ステータス管理用
-    layerobj ,,1, *laystat, 2
-    layid(2) = stat
+;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 各ステータス管理用
+	layerobj ,,1, *laystat, 2
+	layidh(2) = stat
 
 
 //--------------------------------------再開ボタン
-    pos hx + 90, hy + 50 : objsize 110, 30, 30
-    button gosub "START", *ope
-    id_opebut = stat
-    SetWindowLong objinfo(id_opebut, 2), -16, $50000003 | $1000
+	pos hx + 90, hy + 65 : objsize 110, 30, 30
+	button gosub "START", *ope
+	id_opebut = stat
+	SetWindowLong objinfo(id_opebut, 2), -16, $50000003 | $1000
 
 
-    button gosub "Amazoon", *amazoon
-    button gosub "Save&Load", *saveload
-    button gosub "Setting", *settei
+	button gosub "Amazoon", *amazoon
+	button gosub "PC DOCK", *dock
+	button gosub "Data Slot", *saveload
+	button gosub "Setting", *settei
 
 
-    gsel ID_WIN_MAIN
+	gsel ID_WIN_MAIN
 
-    /******フォントの反映******/
-    sendmsg hStatic(0), $30, hFont(0)
-    sendmsg hStatic(1), $30, hFont(0)
-    sendmsg hStatic(2), $30, hFont(0)
-    sendmsg hStatic(3), $30, hFont(0)
-    sendmsg hStatic(4), $30, hFont(0)
-    /******フォントの反映******/
-    sendmsg hTab_main, $30, hFont(1)
-    sendmsg hLVsouko, $30, hFont(2)
+	/******フォントの反映******/
+	sendmsg hStatic(0), $30, hFont(0)
+	sendmsg hStatic(1), $30, hFont(0)
+	; sendmsg hStatic(2), $30, hFont(0)
+	; sendmsg hStatic(3), $30, hFont(0)
 
-    /*****  割り込み  *****/
-    oncmd gosub *tabchange, WM_NOTIFY //タブ項目切り替え処理時のメッセージ
+	/******フォントの反映******/
+	sendmsg hTab_main, $30, hFont(1)
+	sendmsg hLVsouko, $30, hFont(2)
 
-
-
-/*******************************************************************************
-                                Amazoon
-********************************************************************************/
-    bgscr ID_WIN_AMAZ, 800, 500, 2
-    SetWindowLong hwnd, -16, WS_CHILD
-    SetParent hwnd, hWin_master
-
-    pos hx + 90, hy + 50 : objsize 110, 30, 20
-
-    button gosub "Exit", *remain
-
-    /*****  タブコントロール  *****/
-    pos 5, 120
-    My_CreateTab 750, 300, hTabOMI
-    listx = 550
-    listy = 280
-
-//==========================================================
-    InsertTab "C P U", ID_OMTAB_CPU, 5, hTabOMI
-    pos 2, 2
-    mycrelv listx, listy, LVidh(0, 0), LVidh(0, 1)
-    myincol LVidh(0, 0), col_list, col_num, column_w
-    myinitem LVidh(0, 0), bfcpu, rec_cnum, col_num
-    /*****  割り込み  *****/
-    oncmd gosub *notify, WM_NOTIFY
-
-
-//==========================================================
-    InsertTab "G P U", ID_OMTAB_GPU, 6, hTabOMI
-    pos 2, 2
-    mycrelv listx, listy, LVidh(1, 0), LVidh(1, 1)
-    myincol LVidh(1, 0), col_list, col_num, column_w
-    myinitem LVidh(1, 0), bfgpu, rec_gnum, col_num
-    /*****  割り込み  *****/
-    oncmd gosub *notify, WM_NOTIFY
-
-
-//==========================================================
-    InsertTab "R O M", ID_OMTAB_ROM, 7, hTabOMI
-    pos 2, 2
-    mycrelv listx, listy, LVidh(2, 0), LVidh(2, 1)
-    myincol LVidh(2, 0), col_list, col_num, column_w
-    myinitem LVidh(2, 0), bfrom, rec_rnum, col_num
-    /*****  割り込み  *****/
-    oncmd gosub *notify, WM_NOTIFY
-
-
-//==========================================================
-    InsertTab "S S D", ID_OMTAB_SSD, 8, hTabOMI
-    pos 2, 2
-    //mycrelv listx, listy, LVidh(3, 0), LVidh(3, 1)
-    //oncmd gosub *notify, WM_NOTIFY
-
-
-//==========================================================
-    InsertTab "F A N", ID_OMTAB_FAN, 9, hTabOMI
-    pos 2, 2
-    //mycrelv listx, listy, LVidh(4, 0), LVidh(4, 1)
-    //oncmd gosub *notify, WM_NOTIFY
-
-
-//==========================================================
-    InsertTab "Power", ID_OMTAB_POW, 10, hTabOMI
-    pos 2, 2
-    //mycrelv listx, listy, LVidh(5, 0), LVidh(5, 1)
-    //oncmd gosub *notify, WM_NOTIFY
-
-
-
-    gsel ID_OMTAB_CPU, 1 : gsel ID_WIN_AMAZ
-
-    /******フォントの反映******/
-    sendmsg hTabOMI, $30, hFont(2)
-    /*****  割り込み  *****/
-    oncmd gosub *tabchange, WM_NOTIFY //タブ項目切り替え処理時のメッセージ
+	/*****  割り込み  *****/
+	oncmd gosub *tabchange, WM_NOTIFY //タブ項目切り替え処理時のメッセージ
 
 
 
 /*******************************************************************************
-                            SAVE & LOAD
+								Amazoon
 ********************************************************************************/
-
-    bgscr ID_WIN_SAVE, 800, 500, 2
-    SetWindowLong hwnd, -16, WS_CHILD
-    SetParent hwnd, hWin_master
-
-    font "メイリオ", 16 : objmode 2, 0
-
-    pos hx + 90, hy + 50 : objsize 110, 30, 20
-    button gosub "Exit", *remain
-    button gosub "Title", *retitle
-
-    pos 10, 20
-    mes "Chooes your play data slot"
-    bb = 3 : bcolor = 0.9
-
-    bx = 30 : by = 80
-    /*** save1_outer ***/
-    Mycolor 0.1, 0.1, 0.75, 0
-    boxf bx - bb, by - bb, bx + 200 + bb, by + 75 + bb
-    /*** save1_inner ***/
-    Mycolor bcolor, bcolor, bcolor, 0
-    boxf bx, by, bx + 200, by + 75
-    /*** save1_text ***/
-    pos bx + 5, by + 5
-    Mycolor 0, 0, 0, 0 : mes "Save Data 1"
-
-    /*****  mylmb  *****/
-    pos bx + 75, by + 48
-    mylmb " LOAD ", 55, 25, hLoad1, WS_BORDER
-    pos bx + 140, by + 48
-    mylmb " SAVE ", 55, 25, hSave1, WS_BORDER
+	bgscr ID_WIN_AMAZ, 800, 500, 2
+	SetWindowLong hwnd, -16, WS_CHILD
+	SetParent hwnd, hWin_master
 
 
+	font myricaMM, hFont(3) : objmode 2, 1
 
-    /*****  割り込み  *****/
-    oncmd gosub *mousclick, $111 //マウスクリック
-    oncmd gosub *cursorche, $20  //カーソルの見た目
+	; 経験値と所持金
+	wx = 200, ((ginfo(12) / 2) - (wx / 2))
+	pos wx(1), hy : mes " Exp\tCat "
+	pos wx(1), 40 : winobj "static", "", , $50000000 | $800000, wx(0), (ginfo_mesy)
+	hStatic(4) = objinfo(stat, 2)
+
+
+	pos hx + 90, hy + 50 : objsize 110, 30, 20
+	button gosub "Exit", *remain
+
+	/*****  タブコントロール  *****/
+	pos 5, 120
+	My_CreateTab 750, 300, hTabOMI
+	listx = 550
+	listy = 280
+
+//==========================================================
+	InsertTab "C P U", ID_OMTAB_CPU, 5, hTabOMI
+	pos 2, 2
+	mylv listx, listy, LVidh(0, 0)
+	incolm LVidh(0, 0), col_list, length(bfcpu), column_w
+	insqlitem LVidh(0, 0), bfcpu
+	/*****  割り込み  *****/
+	oncmd gosub *lisupdn, WM_NOTIFY
+
+
+//==========================================================
+	InsertTab "G P U", ID_OMTAB_GPU, 6, hTabOMI
+	pos 2, 2
+	mylv listx, listy, LVidh(1, 0)
+	incolm LVidh(1, 0), col_list, length(bfgpu), column_w
+	insqlitem LVidh(1, 0), bfgpu
+	/*****  割り込み  *****/
+	oncmd gosub *lisupdn, WM_NOTIFY
+
+
+//==========================================================
+	InsertTab "R O M", ID_OMTAB_ROM, 7, hTabOMI
+	pos 2, 2
+	mylv listx, listy, LVidh(2, 0)
+	incolm LVidh(2, 0), col_list, length(bfrom), column_w
+	insqlitem LVidh(2, 0), bfrom
+	/*****  割り込み  *****/
+	oncmd gosub *lisupdn, WM_NOTIFY
+
+
+//==========================================================
+	InsertTab "S S D", ID_OMTAB_SSD, 8, hTabOMI
+	pos 2, 2
+	mylv listx, listy, LVidh(3, 0)
+	incolm LVidh(3, 0), col_list, length(bfssd), column_w
+	insqlitem LVidh(3, 0), bfssd
+	/*****  割り込み  *****/
+	oncmd gosub *lisupdn, WM_NOTIFY
+
+
+//==========================================================
+	InsertTab "F A N", ID_OMTAB_FAN, 9, hTabOMI
+	pos 2, 2
+	mylv listx, listy, LVidh(4, 0)
+	incolm LVidh(4, 0), col_list, length(bffan), column_w
+	insqlitem LVidh(4, 0), bffan
+	/*****  割り込み  *****/
+	oncmd gosub *lisupdn, WM_NOTIFY
+
+
+//==========================================================
+	InsertTab "Power", ID_OMTAB_POW, 10, hTabOMI
+	pos 2, 2
+	mylv listx, listy, LVidh(5, 0)
+	incolm LVidh(5, 0), col_list, length(bfpow), column_w
+	insqlitem LVidh(5, 0), bfpow
+	/*****  割り込み  *****/
+	oncmd gosub *lisupdn, WM_NOTIFY
+
+
+
+	gsel ID_OMTAB_CPU, 1 : gsel ID_WIN_AMAZ
+
+	/******フォントの反映******/
+	sendmsg hTabOMI, $30, hFont(2)
+	sendmsg hStatic(4), $30, hFont(0)
+
+	/*****  割り込み  *****/
+	oncmd gosub *tabchange, WM_NOTIFY //タブ項目切り替え処理時のメッセージ
 
 
 
 /*******************************************************************************
-                                Setting
+							PC Dock
 ********************************************************************************/
-    bgscr ID_WIN_SETI, 800, 500, 2
-    SetWindowLong hwnd, -16, WS_CHILD
-    SetParent hwnd, hWin_master
+	bgscr ID_WIN_DOCK, 800, 500, 2
+	SetWindowLong hwnd, -16, WS_CHILD
+	SetParent hwnd, hWin_master
 
-    font "メイリオ", 13 : objmode 2, 0
-    pos hx + 90, hy + 50 : objsize 110, 30, 30
+	font myricaMM, hFont(3) : objmode 2, 1
 
-    button gosub "Exit", *remain
-    button gosub "Information", *infomation
-    button gosub "Title", *retitle
-
-    pos 20, 20 : objsize 110, 20
-    chkbox "AutoSave OFF", setting(0)
-    id_savebut = stat : hButton = objinfo(id_savebut, 2)
-
-
-
-    /******* ゲーム速度の変更 *******/
-    pos 20, 60 : objsize 75, 19 : font "メイリオ", 16
-    mes "Game Speed" : font "メイリオ", 13
-
-    //----------------------------------chkbox
-    pos 20, 90
-    chkbox "Slowest", setting(1)
-    Shkidh(0, 0) = stat : Shkidh(0, 1) = objinfo(Shkidh(0, 0), 2)
-    sendmsg Shkidh(0, 1), $F4, $9 //ラジオボタングループ化
-
-    //----------------------------------chkbox
-    pos 110, 90
-    chkbox "Normal", setting(2)
-    Shkidh(1, 0) = stat : Shkidh(1, 1) = objinfo(Shkidh(1, 0), 2)
-    sendmsg Shkidh(1, 1), $F4, $9
-
-    //----------------------------------chkbox
-    pos 200, 90
-    chkbox "Fastest", setting(3)
-    Shkidh(2, 0) = stat : Shkidh(2, 1) = objinfo(Shkidh(2, 0), 2)
-    sendmsg Shkidh(2, 1), $F4, $9
+	pos hx + 90, hy + 50 : objsize 110, 30, 20
+	button gosub "Exit", *remain
 
 
 
 
-    /*** メインウィンドウに戻る際にメインループを自動で開始するか ***/
-    pos 20, 130 : objsize 165, 19, 30 : font "メイリオ", 16
-    mes "Auto starting Game when return to Main" : font "メイリオ", 13
-
-    pos 20, 160
-    chkbox re_amaz(setting(8)), setting(8)
-    Shkidh(3, 0) = stat : Shkidh(3, 1) = objinfo(Shkidh(3, 0), 2)
-
-    chkbox re_save(setting(9)), setting(9)
-    Shkidh(4, 0) = stat : Shkidh(4, 1) = objinfo(Shkidh(4, 0), 2)
-
-    chkbox re_sett(setting(10)), setting(10)
-    Shkidh(5, 0) = stat : Shkidh(5, 1) = objinfo(Shkidh(5, 0), 2)
-
-
-
-    //------------------適用ボタン[ID=5]
-    pos 675, 455 : objsize 110, 30
-    button gosub "Active", *tekiou
 
 
 
 /*******************************************************************************
-                            Infomation Window
+							SAVE & LOAD
 ********************************************************************************/
-    screen ID_WIN_INFO, 650, 500, 6 : title "Information ver" + ver
-    font "メイリオ", 15 : objmode 2, 0
-    pos 10, 2
-    repeat 4, 6
-        mes infa(cnt)
-    loop
-    pos 90, 2
-    repeat 4
-        mes infa(cnt)
-    loop
+
+	bgscr ID_WIN_SAVE, 800, 500, 2
+	SetWindowLong hwnd, -16, WS_CHILD
+	SetParent hwnd, hWin_master
+
+	font myricaMM, hFont(3) : objmode 2, 0
+
+	pos hx + 90, hy + 50 : objsize 110, 30, 20
+	button gosub "Exit", *remain
+	button gosub "Title", *retitle
+
+	pos 10, 20
+	mes "Chooes your play data slot"
+
+	data_slot hls,  30,  80, 200, 75, 3, color_data, 0
+	data_slot hls,  30, 175, 200, 75, 3, color_data, 1
+	data_slot hls,  30, 270, 200, 75, 3, color_data, 2
+	data_slot hls, 250,  80, 200, 75, 3, color_data, 3
+	data_slot hls, 250, 175, 200, 75, 3, color_data, 4
+	data_slot hls, 250, 270, 200, 75, 3, color_data, 5
+
+	/*****  割り込み  *****/
+	oncmd gosub *mousclick, $111 //マウスクリック
+
+
+
+/*******************************************************************************
+								Setting
+********************************************************************************/
+	bgscr ID_WIN_SETI, 800, 500, 2
+	SetWindowLong hwnd, -16, WS_CHILD
+	SetParent hwnd, hWin_master
+
+	font myricaMM, hFont(5) : objmode 2, 0
+	pos hx + 90, hy + 50 : objsize 110, 30, 30
+
+	button gosub "Exit", *remain
+	button gosub "Information", *infomation
+	button gosub "Title", *retitle
+
+	pos 20, 20 : objsize 130, 20
+	chkbox "AutoSave OFF", setting(0)
+	id_savebut = stat : hButton = objinfo(id_savebut, 2)
+
+
+
+	/******* ゲーム速度の変更 *******/
+	pos 20, 60 : objsize 80, 19 : font myricaMM, hFont(4)
+	mes "Game Speed" : font myricaMM, hFont(5)
+
+	//----------------------------------chkbox
+	pos 20, 90
+	chkbox "Slowest", setting(1)
+	Shkidh(0, 0) = stat : Shkidh(0, 1) = objinfo(Shkidh(0, 0), 2)
+	sendmsg Shkidh(0, 1), $F4, $9 //ラジオボタングループ化
+
+	//----------------------------------chkbox
+	pos 110, 90
+	chkbox "Normal", setting(2)
+	Shkidh(1, 0) = stat : Shkidh(1, 1) = objinfo(Shkidh(1, 0), 2)
+	sendmsg Shkidh(1, 1), $F4, $9
+
+	//----------------------------------chkbox
+	pos 200, 90
+	chkbox "Fastest", setting(3)
+	Shkidh(2, 0) = stat : Shkidh(2, 1) = objinfo(Shkidh(2, 0), 2)
+	sendmsg Shkidh(2, 1), $F4, $9
+
+
+
+
+	/*** メインウィンドウに戻る際にメインループを自動で開始するか ***/
+	pos 20, 130 : objsize 180, 19, 30 : font myricaMM, hFont(3)
+	mes "Auto starting Game when return to Main" : font myricaMM, hFont(5)
+
+	pos 20, 160
+	chkbox re_amaz(setting(8)), setting(8)
+	Shkidh(3, 0) = stat : Shkidh(3, 1) = objinfo(Shkidh(3, 0), 2)
+
+	chkbox re_save(setting(9)), setting(9)
+	Shkidh(4, 0) = stat : Shkidh(4, 1) = objinfo(Shkidh(4, 0), 2)
+
+	chkbox re_sett(setting(10)), setting(10)
+	Shkidh(5, 0) = stat : Shkidh(5, 1) = objinfo(Shkidh(5, 0), 2)
+
+	chkbox re_dock(setting(11)), setting(11)
+	Shkidh(6, 0) = stat : Shkidh(6, 1) = objinfo(Shkidh(6, 0), 2)
+
+	chkbox re_info(setting(12)), setting(12)
+	Shkidh(7, 0) = stat : Shkidh(7, 1) = objinfo(Shkidh(7, 0), 2)
+
+	//------------------適用ボタン[ID=5]
+	pos 675, 455 : objsize 110, 30
+	button gosub "Active", *tekiou
+
+
+
+/*******************************************************************************
+							Infomation Window
+********************************************************************************/
+	bgscr ID_WIN_INFO, 800, 500, 2
+	SetWindowLong hwnd, -16, WS_CHILD
+	SetParent hwnd, hWin_master
+
+	font myricaMM, hFont(4) : objmode 2, 0
+	pos 10, 2 : repeat 4, 6:   mes infa(cnt)   :loop
+	pos 90, 2 : repeat 4:      mes infa(cnt)   :loop
+
 //==============================================================================
 //						<<  オブジェクトの設置  >>
 //==============================================================================
 
-    pos 310, ginfo_cy - 23
-    mylmb "Twitter", 100, 25, hLinktw, SS_CENTER | WS_BORDER
-    pos ginfo_cx + 110, ginfo_cy - 25
-    mylmb "GitHub", 100, 25, hLinkgi, SS_CENTER | WS_BORDER
+	pos ginfo_mesx + 100, (ginfo_mesy * 3) + 2
+	mylmb "Twitter", 100, 25, hLinktw, SS_CENTER | WS_BORDER
+	pos ginfo_mesx + 210, (ginfo_mesy * 3) + 2
+	mylmb "GitHub", 100, 25, hLinkgi, SS_CENTER | WS_BORDER
 
-    font "メイリオ", 14 : objmode 2, 1
-    //HSPのBMSCR構造体からフォントハンドルを取得
-    mref BMSCR2, 67 : hFont(1) = BMSCR2.38
+	font myricaMM, hFont(5) : objmode 2, 1
+	//HSPのBMSCR構造体からフォントハンドルを取得
+	mref BMSCR2, 67 : hFont(1) = BMSCR2.38
 
+	pos hx + 90, hy + 50 : objsize 110, 30, 30
+	button gosub "Exit", *remain
 
-    pos 0, 110
-    //Mycolor 0.25, 0.25, 0.25, 0
-    //boxf 0, 150, 650, 485
-    /*****  WebView2  *****/
-    mes "  UPDATE HISTORY  "
-    font "メイリオ", 10
+	pos 0, 110
+	; Mycolor 0x444444, 0 : boxf 0, 150, 800, 485
 
-    pEnv = WebView2_CreateEnv()
-    pCtrl = WebView2_CreateCtrl(pEnv, hwnd)
-    WebView2_Size pCtrl, 0, 130, 650, 475
-    pView = WebView2_GetView(pCtrl)
-    WebView2_Navigate pView, changelog
+	/*****  WebView2  *****/
+	mes "  UPDATE HISTORY  "
+	font myricaMM, hFont(5)
 
-
-    pos 525, 475 : objsize 125,
-    button gosub "Close", *subw_exi
+	webv2(pEnv) = WebView2_CreateEnv()
+	webv2(pCtrl) = WebView2_CreateCtrl(webv2(pEnv), hwnd)
+	WebView2_Size webv2(pCtrl), 0, 130, 800, 500
+	webv2(pView) = WebView2_GetView(webv2(pCtrl))
+	WebView2_Navigate webv2(pView), changelog
 
 
-    /***ハイパーリンクフォントの適用***/
-    sendmsg hLinktw, $30, hFont(0)
-    sendmsg hLinkgi, $30, hFont(0)
+	/***ハイパーリンクフォントの適用***/
+	sendmsg hLinktw, $30, hFont(0)
+	sendmsg hLinkgi, $30, hFont(0)
 
-    /*****  割り込み  *****/
-    oncmd gosub *mousclick, $111 //マウスクリック
-    oncmd gosub *cursorche, $20  //カーソルの見た目
+	/*****  割り込み  *****/
+	oncmd gosub *mousclick, $111 //マウスクリック
 
 //##############################################################################
 
-    gsel ID_WIN_MASTER, 1
-    oncmd 1
-    onexit gosub *exit	//終了ボタン
-    gsel ID_WIN_OPEN, 1
+	gsel ID_WIN_MASTER, 1
+	oncmd 1
+	onexit gosub *exit	//終了ボタン
+	gsel ID_WIN_OPEN, 1

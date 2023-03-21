@@ -13,23 +13,23 @@
 
 -- PRAGMA foreign_keys=OFF;
 -- BEGIN TRANSACTION;
-	--CREATE TABLE "Syouhin" (
-	--	[ID] TEXT NOT NULL UNIQUE,
-	--	[Parts] TEXT,
-	--	[Name] TEXT NOT NULL,
-	--	[Version] TEXT,
-	--	[Value] REAL,
-	--	[seinou] REAL NOT NULL,
-	--	[hosei] REAL NOT NULL,
-	--	[Reality] TEXT,
-	--	[S0] REAL,
-	--	[S1] REAL,
-	--	[S2] REAL,
-	--	[S3] REAL,
-	--	[S4] REAL,
-	--	[S5] REAL,
-	--	[S6] REAL
-	--);
+--CREATE TABLE "Syouhin" (
+--	[ID] TEXT NOT NULL UNIQUE,
+--	[Parts] TEXT,
+--	[Name] TEXT NOT NULL,
+--	[Version] TEXT,
+--	[Value] REAL,
+--	[seinou] REAL NOT NULL,
+--	[hosei] REAL NOT NULL,
+--	[Reality] TEXT,
+--	[S0] REAL,
+--	[S1] REAL,
+--	[S2] REAL,
+--	[S3] REAL,
+--	[S4] REAL,
+--	[S5] REAL,
+--	[S6] REAL
+--);
 
 
 --============================================================================--
