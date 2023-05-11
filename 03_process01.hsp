@@ -18,6 +18,9 @@
 	await (1000 / 60)
 	gsel ID_WIN_MASTER  :  title titlemes + "   fps = " + d3getfps()
 
+	stick key
+	if key & 128 : goto *exit ; ESCAPE
+
 	;===================================================
 	; メインループの制御
 	;
@@ -46,12 +49,39 @@
 	if gtcontrol = 0 {
 		gt(5)++ : if (gt.5 > 59) {gt.5 = 0 : gt(4)++} ; 時間
 
-		sendmsg hStatic.1, $C, 0, strf(gtformat.1, gt.4, gt.5)
+		; マウス座標による表示変更
+		; ゲーム内日付
+		if comp_musxy(650, 790, 000, 035) {ease_on(0, eDate) = 1 : objprm layidh(2), 0.1}
+		else                              {ease_on(0, eDate) = 0 : objprm layidh(2), 0.1}
+		; PCステータス
+		if comp_musxy(000, 100, 015, 210) {ease_on(0, eStat) = 1} else {ease_on(0, eStat) = 0}
 
-		if (gt.4 > 23) {objprm layidh(1), gameh} ; ゲーム内時間更新
-		objprm layidh(2), newst ; ステータス更新
+		; ゲーム内時間表示
+		;=======================================================
+		statredraw_start winxy, 0, 2, dmode
+		pos winxy(0, 2) + 25, winxy(1, 2) + 3 : mes strf(gtformat.2, gt.4, gt.5)
+		statredraw_end winxy, 0, 2
+		;=======================================================
+
+		; ゲーム内日付更新
+		if (gt.4 > 23) {objprm layidh(1), gameh}
+		; ステータス更新
+		objprm layidh(2), newst
+
+		; 画面中央上部,ユーザーポイント及び所持金表示
+		;=======================================================
+		statredraw_start winxy, 0, 4, dmode
+		pos winxy(0, 4) + 5, winxy(1, 4) + 2 : mes strf("Cat : %.2f", userp.1)
+		statredraw_end winxy, 0, 4
+		;=======================================================
+
+		; デバッグ用マウス座標
+		;=======================================================
+		statredraw_start winxy, 0, 6, dmode
+		pos winxy(0, 6) + 2, winxy(1, 6) + 2 : mes strf("mouse(%d, %d)", musx(), musy())
+		statredraw_end winxy, 0, 6
+		;=======================================================
 	}
-
 
 
 	/*****  オートセーブ  *****/
@@ -60,7 +90,6 @@
 	savecontrol = gt(6) \ 16
 	if (savecontrol = 0) : savec++
 	if (savec > 100) {G_prm ID_WIN_MASTER, 0, layidh(0), lay_autosave : savec = 0}
-
 
 	goto *main
 //###################  メインループここまで  ####################/
@@ -252,20 +281,17 @@
 //終了の処理
 *exit
 	setting(5) = -1
-	winID = wparam
+	/*****  自動保存  *****/
+	mysave fname(saveID)
+	mysave fname(6)
+	vsave backupdir
 
-	if (winID = ID_WIN_MASTER) {
-		/*****  自動保存  *****/
-		mysave fname(saveID)
-		mysave fname(6)
-		vsave backupdir
-		/*****  WebView2の後処理  *****/
-		gsel ID_WIN_INFO
-		WebView2_Release webv2(pView)
-		WebView2_Release webv2(pCtrl)
-		WebView2_Release webv2(pEnv)
-		WebView2_Release webv2(ret)
-		oncmd 0
-		end
-	}
+	/*****  WebView2の後処理  *****/
+	gsel ID_WIN_INFO
+	WebView2_Release webv2(pView)
+	WebView2_Release webv2(pCtrl)
+	WebView2_Release webv2(pEnv)
+	WebView2_Release webv2(ret)
+	oncmd 0
+	end
 	return
