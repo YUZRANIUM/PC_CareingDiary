@@ -15,6 +15,13 @@ SQL関係もデータを変数に格納するということでこちらで扱っています。
 変数直上のコメントを表示させるためです。
 ************************************************************/
 
+
+
+
+;-------------------------------------------------------------------------------
+;                            マクロ定数･文字列登録
+;-------------------------------------------------------------------------------
+
 	/*** 各ウィンドウID ***/
 	#enum ID_WIN_MASTER = 0
 	#enum ID_WIN_OPEN          ; OPウィンドウ
@@ -59,12 +66,131 @@ SQL関係もデータを変数に格納するということでこちらで扱っています。
 	// dir_cur + "\\SQL\\Syouhin.db"
 	#define db        dir_cur + "\\SQL\\Syouhin.db"
 
+;-------------------------------------------------------------------------------
+;                              ウィンドウ座標
+;-------------------------------------------------------------------------------
+
+	; リリースモード
+	#const dmode 0
+
+	#const double winw 800    ; ウィンドウサイズ
+	#const double winh 500    ; ウィンドウサイズ
+
+	#const eased    300
+	#const ease_cnt eased + 1
+
+	#enum eDate = 0
+	#enum eTime
+	#enum eStat
+	#enum eUser
+	#enum emodl
+
+	#const dcolor 0xCC3344
+	; #const dcolor 0xFFFFFF
+
+	; イージング座標取得用
+	; (0, 0) : eDate
+	; (0, 1) : eTime
+	; (0, 2) : eStat
+	; (0, 3) : eUser
+	; (0, 4) : emodl
+	easepos = 0.0 : ddim easepos, ease_cnt, 5
+
+	; イージング開始フラグ
+	; (0, 0) : eDate
+	; (0, 1) : eTime
+	; (0, 2) : eStat
+	; (0, 3) : eUser
+	; (0, 4) : emodl
+	ease_on = 0 : dim ease_on, 2, 5
+
+	; ウィンドウ座標管理
+	; (0, 0) : タイトル文字列 pos x
+	; (1, 0) : タイトル文字列 pos y
+	; (2, 0) : タイトルボタン pos x
+	; (3, 0) : タイトルボタン pos y
+	; (4, 0) : 各ウィンドウボタン座標基準点x
+	; (5, 0) : 各ウィンドウボタン座標基準点y
+	;
+	; (0, 1) : 画面右上, ゲーム内日付表示
+	; (0, 2) : 画面右上, ゲーム内時間表示
+	; (0, 3) : 画面左上, PC各ステータス表示
+	; (0, 4) : 画面左上, ユーザーポイント及び所持金表示
+	; (0, 5) : 画面中央,   PCモデル表示 (d3module)
+	; (0, 6) : 画面中央上, デバッグ用マウス座標
+	winxy = 0 : ddim winxy, 7, 10
+	winxy(2, 0) = (winw - 200.0) / 2.0
+	winxy(3, 0) = (winh - 40.0) / 2.0
+	winxy(4, 0) = 680.0
+	winxy(5, 0) = 60.0
+
+	; (0, 1) : 画面右上, ゲーム内日付表示
+	winxy(0, 1) = 660.0
+	winxy(1, 1) = 5.0
+	winxy(2, 1) = 790.0
+	winxy(3, 1) = 35.0
+	winxy(4, 1) = 570.0
+	winxy(5, 1) = winxy(0, 1)
+
+	setease winxy(4, 1), winxy(0, 1), ease_quad_inout
+	repeat ease_cnt:   easepos(cnt, eDate) = geteasef(cnt, eased)   :loop
+
+	; (0, 2) : 画面右上, ゲーム内時間表示
+	winxy(0, 2) = 690.0
+	winxy(1, 2) = 40.0
+	winxy(2, 2) = 790.0
+	winxy(3, 2) = 65.0
+	winxy(4, 2) = 0.0
+	winxy(5, 2) = 0.0
+
+	; (0, 3) : 画面左上, PC各ステータス表示
+	winxy(0, 3) = 5.0
+	winxy(1, 3) = 40.0
+	winxy(2, 3) = 200.0
+	winxy(3, 3) = 240.0
+	winxy(4, 3) = winxy(2, 3)
+	winxy(5, 3) = 0.0
+
+	setease 90.0, 200.0, ease_quad_inout
+	repeat ease_cnt:   easepos(cnt, eStat) = geteasef(cnt, eased)   :loop
+
+	; (0, 4) : 画面中央上, ユーザーポイント及び所持金表示
+	winxy(0, 4) = 5.0
+	winxy(1, 4) = 5.0
+	winxy(2, 4) = 200.0
+	winxy(3, 4) = 35.0
+	winxy(4, 4) = winxy(2, 4)
+	winxy(5, 4) = 0.0
+
+	setease 100.0, 200.0, ease_quad_inout
+	repeat ease_cnt:   easepos(cnt, eUser) = geteasef(cnt, eased)   :loop
+
+	; (0, 5) : 画面中央,   PCモデル表示 (d3module)
+	winxy(0, 5) = 205.0
+	winxy(1, 5) = 40.0
+	winxy(2, 5) = 670.0
+	winxy(3, 5) = 240.0
+	winxy(4, 5) = 0.0
+	winxy(5, 5) = 0.0
+
+	; (0, 6) : 画面中央上, デバッグ用マウス座標
+	winxy(0, 6) = 250.0
+	winxy(1, 6) = 005.0
+	winxy(2, 6) = 450.0
+	winxy(3, 6) = 035.0
+	winxy(4, 6) = 0.0
+	winxy(5, 6) = 0.0
+
+;-------------------------------------------------------------------------------
+;                                   管理用変数
+;-------------------------------------------------------------------------------
+
 	//バージョン
-	ver = "0.3.0"
+	ver = strf("%.1f", 0.3)
 	//titleバー
-	titlemes = "PC CareingDiary ver" + ver + " /HSP" + myhspver(hspver)
+	titlemes = "PC CareingDiary ver" + ver
 	//バージョン情報
-	infa = "" : sdim infa, 128, 5
+	infa = 0 : sdim infa, 128, 5
 	notesel infa
 	noteload "text\\verinfo.txt" : split infa, "\n", infa
 	strrep infa(1), "vv", ver : strrep infa(2), "hh", myhspver(hspver)
@@ -166,12 +292,6 @@ SQL関係もデータを変数に格納するということでこちらで扱っています。
 	logstr(8) = "ON"
 	logstr(9) = ""
 
-	//経過時間
-	hmoni = "" : sdim hmoni, 64
-	//ステータス表示用
-	mesmoni = "" : sdim mesmoni, 128
-	//単位表示用
-	mesmoni_u = "" : sdim mesmoni_u, 16
 	//セーブカウンター
 	savec = 0
 	//ゲーム内時間の速度変更
@@ -194,6 +314,11 @@ SQL関係もデータを変数に格納するということでこちらで扱っています。
 	//saveスロット番号
 	saveID = 6
 
+
+;-------------------------------------------------------------------------------
+;                              ステータス系
+;-------------------------------------------------------------------------------
+
 	; ポイント
 	; (0) : EXP
 	; (1) : ねこ
@@ -210,21 +335,31 @@ SQL関係もデータを変数に格納するということでこちらで扱っています。
 	; (7) : ZB
 	; (8) : YB
 	unit = "B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"
-
+	unit2 = "B", "K", "M", "G", "T", "P", "E", "Z", "Y"
+	ease_on = 0
 	; 単位変換カウンタ
 	; (0) : rom
 	; (1) : ssd
 	unit_cnt = 0 : dim unit_cnt, 2
 
 	; ステータス管理フォーマット
-	stformat = {"
-	Core i %d
-	%d
-	%.1f %s
-	%.1f %s
-	%.1f rpm
-	%.1f deg
-	%.1f %%"}
+	stformat(0) = {"
+		Core i %d
+		%d
+		%.1f %s
+		%.1f %s
+		%.1f rpm
+		%.1f deg
+		%.1f %%"}
+
+	stformat(1) = {"
+		C %d
+		G %d
+		R %d %s
+		S %d %s
+		F %d
+		T %d
+		P %d %%"}
 
 	; ステータス管理
 	; (0) : CPU
@@ -297,14 +432,15 @@ SQL関係もデータを変数に格納するということでこちらで扱っています。
 	gt(0) = 0
 	gt(1) = 3
 	gt(2) = 12
-	gt(3) = 30
-	gt(4) = 8
+	gt(3) = 10
+	gt(4) = 22
 	gt(5) = 0
 	gt(6) = 0
 
 	; 日付管理用フォーマット
-	gtformat(0) = "%2d年目 第%d四半期 %2d/%2d"
-	gtformat(1) = "%02d:%02d"
+	gtformat(0) = "%2d年目 第%d四半期 %d月%d日"
+	gtformat(1) = "%2d年 %d期 %d/%d"
+	gtformat(2) = "%02d:%02d"
 
 
 	sdim motimono, 2048 : sdim soukomoni, 2048 : sdim logmoni, 2048 : sdim omisemoni, 2048
@@ -334,9 +470,9 @@ SQL関係もデータを変数に格納するということでこちらで扱っています。
 	; (8) :
 	; (9) :
 	hFont = 0 : dim hFont, 10
-	hFont(3) = 22
-	hFont(4) = 18
-	hFont(5) = 16
+	hFont(3) = 20
+	hFont(4) = 16
+	hFont(5) = 13
 	hFont(6) = 0
 	hFont(7) = 0
 	hFont(8) = 0

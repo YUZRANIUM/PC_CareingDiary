@@ -14,7 +14,8 @@
 #packopt version "version.txt"
 #packopt type 0
 #packopt hide 1
-#pack "text\\verinfo.txt"
+
+#packdir "text\\verinfo.txt"
 
 	#addition "userdef.as"
 	#addition "hspdef.as"
@@ -37,7 +38,7 @@
 	#include "02_interface.hsp"
 	#include "03_process01.hsp"
 
-#cmpopt ppout 1
+; #cmpopt ppout 1
 /******************************  layerobjの処理  *********************************/
 
 
@@ -51,9 +52,9 @@
 		//変数リセット用ファイル
 	if      (layl = lay_init) {mysave fname(7)}
 	else:if (layl = lay_prmi) {layint1 = iparam
-		if      (layint1 = 0) {mysave fname(saveID) : G_prm ID_WIN_MAIN, 0, layidh(1), "log,asc"}
+		if      (layint1 = 0) {mysave fname(saveID) : G_prm ID_WIN_MAIN, 0, layidh(1), "log,asc" }
 		else:if (layint1 = 1) {mysave fname(saveID) : G_prm ID_WIN_MAIN, 0, layidh(1), "log,save"}
-		else:if (layint1 = 2) {vload  fname(saveID) : gosub *hlay_saveload} ; load
+		else:if (layint1 = 2) {vload  fname(saveID) : gosub *hlay_saveload : gosub *redraw_stat_ } ; load
 	}
 	else:if (layl = lay_prms) {laystr1 = refstr}
 
@@ -69,18 +70,13 @@
 	; Power用 プログレスバー設定
 	pbswmarq hPb(0), 0
 	pbset hPb(0), 0, 1000, 1000, -1
-	pbrepos hPb(0), int(st(6)), 0
+	pbrepos hPb(0), int(st(7) * 10), 0
 	pbstcol2 hPb(0), 25, 44
 
 	G_prm ID_TAB_MOTI, 1, id_motimono, motimono
 	G_prm ID_TAB_LOG, -1, id_logmoni, logmoni
 	gsel ID_TAB_SOUKO, -1
 	gsel ID_WIN_MAIN
-
-	//ゲーム内時間
-	sendmsg hStatic(0), $C, 0, strf(gtformat.0, gt.0, gt.1, gt.2, gt.3)
-	sendmsg hStatic(1), $C, 0, strf(gtformat.1, gt.4, gt.5)
-	//ステータス
 
 	/*** Settingウィンドウ各項目読み込み ***/
 	gsel ID_WIN_SETI, -1
@@ -108,13 +104,17 @@
 
 	/*** 各ウィンドウの非表示切り替え ***/
 	gsel ID_WIN_DOCK, -1 : gsel ID_WIN_SAVE, -1 : gsel ID_WIN_INFO, -1
-	G_prm ID_WIN_MAIN, 0, layidh(1), "log,load"
+
+	gsel ID_WIN_MAIN
+	objprm layidh(1), "log,load"
+	objprm layidh(2), 0.1
+	objprm layidh(2), 0.2
 	return
 
 
 
 //##############################################################################
-//                               <<  描画用  >>
+//                     <<  ゲーム内時間 & ログ用  >>
 //##############################################################################
 
 //ゲーム内時間とログ layid(1)
@@ -155,7 +155,7 @@
 *hlay_gt
 
 	if (gt(4) > 23) {gt(4) = 0 : gt(3)++ : TskFlg(0)++} else {return} ; 日数
-	if (gt(3) > 30) {gt(3) = 1 : gt(2)++ : TskFlg(1)++}               ; 月
+	if (gt(3) > 31) {gt(3) = 1 : gt(2)++ : TskFlg(1)++}               ; 月
 	if (gt(2) > 12) {gt(2) = 1 : gt(0)++ : TskFlg(3)++}               ; 年
 
 	; 四半期
@@ -163,16 +163,16 @@
 	else:if (gt(2) =  4) & (gt(1) = 4) {gt(1) = 1 : TskFlg(2)++}
 	else:if (gt(2) =  7) & (gt(1) = 1) {gt(1)++   : TskFlg(2)++}
 	else:if (gt(2) = 10) & (gt(1) = 2) {gt(1)++   : TskFlg(2)++}
+	G_prm ID_WIN_MAIN, 0, layidh(2), "user"
 
 	; 表示文字列の変更 (WM_SETTEXT)
-	sendmsg hStatic, $C, 0, strf(gtformat, gt.0, gt.1, gt.2, gt.3)
+	G_prm ID_WIN_MAIN, 0, layidh(2), 0.1
 
 	; ログ出力処理
 	if TskFlg.0 {TskLog(0, 0) = strf(TskLog(0, 1), gt.2, gt.3)} ; 日付変更線
 	if TskFlg.1 {TskLog(1, 0) = strf(TskLog(1, 1), gt.2)      } ; 月変更
 	if TskFlg.2 {TskLog(2, 0) = strf(TskLog(2, 1), gt.1)      } ; 四半期変更
 	if TskFlg.3 {TskLog(3, 0) = strf(TskLog(3, 1), gt.0)      } ; あけおめ
-	G_prm ID_WIN_MAIN, 0, layidh(2), "user"
 	G_prm ID_WIN_MAIN, 0, layidh(1), "time"
 	return
 
@@ -180,33 +180,29 @@
 
 
 //##############################################################################
-//                          <<  ステータス管理用  >>
+//                          <<  ステータス & 描画用  >>
 //##############################################################################
 
 //ステータス管理用 layidh(2)
 *laystat
 	layl(2) = lparam
 
-	if      (layl(2) = lay_init) {
-		sendmsg hStatic.0, $C, 0, strf(gtformat.0, gt.0, gt.1, gt.2, gt.3)
-		sendmsg hStatic.1, $C, 0, strf(gtformat.1, gt.4, gt.5)
-		gosub *redraw_stat_
-	}
+	if (layl(2) = lay_init) {gosub *redraw_stat_ : gosub *redraw_date_ : gosub *redraw_time_}
 	if (layl(2) = lay_prmi) {layint2 = iparam : if (layint2 = newst) {gosub *updatestatus : gosub *redraw_stat_} }
 	if (layl(2) = lay_prms) {laystr2 = refstr
 		if (laystr2 = "user") {
 			; ユーザーポイント関連
 			userp.0 += ((1.0 * TskFlg.0) + (30.0 * TskFlg.1) + (90.0 * TskFlg.2) + (360.0 * TskFlg.3))
-			userp.1 = userp.0 / 5.0
-			sendmsg hStatic.4, $C, 0, strf(" %.2f :  %.2f", userp.0, userp.1)
+			userp.1 = userp.0 / 3.0
+			sendmsg hStatic.0, $C, 0, strf("Cat : %.2f", userp.1)
 		}
 	}
-	if (layl(2) = lay_prmd) {}
+	if (layl(2) = lay_prmd) {laydbl2 = refdval : if (laydbl2 = 0.1) {gosub *redraw_date_} }
 
 	return
 
 
-/***********************************************************/
+;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 //ステータス更新
 *updatestatus
 	gsel ID_WIN_MAIN
@@ -214,8 +210,8 @@
 ;======================================= ユーザーポイント関連
 	; 経過時間に応じて
 	userp.0 += 0.1
-	userp.1 = userp.0 / 5.0
-	sendmsg hStatic.4, $C, 0, strf(" %.2f :  %.2f", userp.0, userp.1)
+	userp.1 = userp.0 / 3.0
+	sendmsg hStatic.0, $C, 0, strf("Cat : %.2f", userp.1)
 
 
 ;======================================= C P U
@@ -282,49 +278,156 @@
 
 
 
-
-/***********************************************************/
+;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 ; 各ステータスの描画処理
 *redraw_stat_
-
+	gsel ID_WIN_MAIN
 
 ;======================================= P R O G R E S S
 	/***  プログレスバー  ***/
 	pbrepos hPb(0), int(st(7) * 10), 0
 	pbstcol2 hPb(0), 25, 44
-;=======================================
 
-
-	gsel ID_WIN_MAIN
 
 	; 画面左上,PC各ステータス表示
-	;#######################################################
-	redraw 0, u1pos(0), u1pos(1), u1pos(2) - u1pos(0), u1pos(3) - u1pos(1)
+	;=======================================================
+	; 表示形式変更のイージング開始
+	if (ease_on(0, eStat) & (ease_on(1, eStat) = 0)) | ((ease_on(0, eStat) = 0) & ease_on(1, eStat)) {
+		;
+		repeat ease_cnt
+			;
+			; イージングの座標入力
+			if ease_on(1, eStat) {winxy(2, 3) = easepos(eased - cnt, eStat)}
+			else                 {winxy(2, 3) = easepos(cnt, eStat)}
+			;
+			;=======================================================
+			statredraw_start winxy, 0, 3, dmode
+			;
+			pos winxy(0, 3) + 5, winxy(1, 3) + 2
+			mes " C P U \n G P U \n R O M \n S S D \n F A N \nTHERMAL\n POWER "
+			;
+			pos winxy(0, 3) + 25 + ginfo_mesx, winxy(1, 3) + 2
+			mes strf(stformat.0, st.0, st.1, st.2, unit(unit_cnt.0), st.3, unit(unit_cnt.1), st.4, st.5, st.7)
+			;
+			if ease_on(1, eStat) {rgbcolor dcolor : boxf winxy(2, 3), winxy(1, 3), winxy(4, 3), winxy(3, 3) : winxy(2, 3) = winxy(4, 3)}
+			;
+			statredraw_end winxy, 0, 3
+			;=======================================================
+			;
+		loop
+		;
+		; 詳細表示継続フラグ
+		if ease_on(1, eStat) : ease_on(1, eStat) = 0 : else : ease_on(1, eStat) = 1
+		;
+	}
+	else:if ease_on(0, eStat) & ease_on(1, eStat) { ; 詳細表示中
+		;
+		;=======================================================
+		statredraw_start winxy, 0, 3, dmode
+		;
+		pos winxy(0, 3) + 5, winxy(1, 3) + 2
+		mes " C P U \n G P U \n R O M \n S S D \n F A N \nTHERMAL\n POWER "
+		;
+		pos winxy(0, 3) + 25 + ginfo_mesx, winxy(1, 3) + 2
+		mes strf(stformat.0, st.0, st.1, st.2, unit(unit_cnt.0), st.3, unit(unit_cnt.1), st.4, st.5, st.7)
+		;
+		statredraw_end winxy, 0, 3
+		;=======================================================
+		;
+	}
+	else:if (ease_on(0, eStat) = 0) & (ease_on(1, eStat) = 0) { ; 簡略表示中
+		;
+		;=======================================================
+		statredraw_start winxy, 0, 3, dmode
+		;
+		pos winxy(0, 3) + 5, winxy(1, 3) + 2
+		mes strf(stformat.1, st.0, st.1, st.2, unit2(unit_cnt.0), st.3, unit2(unit_cnt.1), st.4, st.5, st.7)
+		;
+		statredraw_end winxy, 0, 3
+		;=======================================================
+		;
+	}
 
-	rgbcolor 0x000000 : boxf u1pos(0) - 2, u1pos(1) - 2, u1pos(2) + 2, u1pos(3) + 2
-	rgbcolor 0xFFFFFF : boxf u1pos(0), u1pos(1), u1pos(2), u1pos(3)
+	; 画面中央,PCモデル表示 (d3module)
+	;=======================================================
+	; 詳細表示のイージング開始
+	if (ease_on(0, emodl) & (ease_on(1, emodl) = 0)) | ((ease_on(0, emodl) = 0) & ease_on(1, emodl)) {
 
-	pos u1pos(0) + 5, u1pos(1) + 5 : rgbcolor 0x000000
-	mes " C P U \n G P U \n R O M \n S S D \n F A N \nTHERMAL\n POWER "
+	}
+	else:if ease_on(0, emodl) & ease_on(1, emodl) { ; 詳細表示中
 
-	pos u1pos(0) + 25 + ginfo_mesx, u1pos(1) + 5
-	mes strf(stformat.0, st.0, st.1, st.2, unit(unit_cnt.0), st.3, unit(unit_cnt.1), st.4, st.5, st.7)
+	}
+	else:if (ease_on(0, emodl) = 0) & (ease_on(1, emodl) = 0) { ; 簡略表示中
 
-	redraw 1, u1pos(0), u1pos(1), u1pos(2) - u1pos(0), u1pos(3) - u1pos(1)
-	;#######################################################
+		;=======================================================
+		statredraw_start winxy, 0, 5, dmode
+		statredraw_end winxy, 0, 5
+		;=======================================================
+	}
+	return
 
 
-	; 画面中央,ユーザーポイント及び所持金表示
-	;#######################################################
-	redraw 0, u2pos(0), u2pos(1), u2pos(2) - u2pos(0), u2pos(3) - u2pos(1)
+;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+; ゲーム内日付の描画処理
+*redraw_date_
+	gsel ID_WIN_MAIN
+	; ゲーム内日付表示
+	;=======================================================
+	; 詳細表示のイージング開始
+	if (ease_on(0, eDate) & (ease_on(1, eDate) = 0)) | ((ease_on(0, eDate) = 0) & ease_on(1, eDate)) {
 
-	rgbcolor 0x000000 : boxf u2pos(0) - 2, u2pos(1) - 2, u2pos(2) + 2, u2pos(3) + 2
-	rgbcolor 0xFFFFFF : boxf u2pos(0), u2pos(1), u2pos(2), u2pos(3)
+		repeat ease_cnt
+			if ease_on(1, eDate) {winxy(0, 1) = easepos(cnt, eDate)}
+			else                 {winxy(0, 1) = easepos(eased - cnt, eDate)}
+			;
+			;=======================================================
+			statredraw_start winxy, 0, 1, dmode
+			;
+			pos winxy(0, 1) + 3, winxy(1, 1) + 5 : mes strf(gtformat.1, gt(0), gt(1), gt(2), gt(3))
+			;
+			if ease_on(1, eDate) {rgbcolor dcolor : boxf winxy(4, 1), winxy(1, 1), winxy(0, 1), winxy(3, 1) : winxy(0, 1) = winxy(4, 1)}
+			;
+			statredraw_end winxy, 0, 1
+			;=======================================================
+			;
+		loop
+		;
+		if ease_on(1, eDate) : ease_on(1, eDate) = 0 : else : ease_on(1, eDate) = 1
+		;
+	}
+	else:if ease_on(0, eDate) & ease_on(1, eDate) { ; 詳細表示中
+		;
+		;=======================================================
+		statredraw_start winxy, 0, 1, dmode
+		;
+		pos winxy(0, 1) + 3, winxy(1, 1) + 5 : mes strf(gtformat.0, gt(0), gt(1), gt(2), gt(3))
+		;
+		statredraw_end winxy, 0, 1
+		;=======================================================
+		;
+	}
+	else:if (ease_on(0, eDate) = 0) & (ease_on(1, eDate) = 0) { ; 簡略表示中
+		;
+		;=======================================================
+		statredraw_start winxy, 0, 1, dmode
+		;
+		pos winxy(5, 1) + 3, winxy(1, 1) + 5 : mes strf(gtformat.1, gt(0), gt(1), gt(2), gt(3))
+		;
+		statredraw_end winxy, 0, 1
+		;=======================================================
+		;
+	}
+	return
 
-	pos u2pos(0) + 10, u2pos(1) + 10 : rgbcolor 0x000000
-	mes strf("Exp %.2f\nCat %.2f", userp.0, userp.1)
 
-	redraw 1, u2pos(0), u2pos(1), u2pos(2) - u2pos(0), u2pos(3) - u2pos(1)
-	;#######################################################
-
+;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+; ゲーム内時間の描画処理
+*redraw_time_
+	gsel ID_WIN_MAIN
+	; ゲーム内時間表示
+	;=======================================================
+	statredraw_start winxy, 0, 2, dmode
+	pos winxy(0, 2) + 25, winxy(1, 2) + 3 : mes strf(gtformat.2, gt.4, gt.5)
+	statredraw_end winxy, 0, 2
+	;=======================================================
 	return

@@ -49,7 +49,7 @@
 
 
 #ifndef _my_pc_mod_
-#define global _my_pc_mod_
+	#define global _my_pc_mod_
 #module "my_pc_mod"
 
 #ifndef __USER32__
@@ -202,24 +202,51 @@ vsave_put bfpow :vsave_end%1
 	return
 
 
+	; redraw描画範囲設定確認
+	;
+#deffunc statredraw_start array pos_ary, int d1, int d2, int mode
+	redraw 0, pos_ary(d1, d2), pos_ary(d1 + 1, d2), (pos_ary(d1 + 2, d2) - pos_ary(d1, d2)), (pos_ary(d1 + 3, d2) - pos_ary(d1 + 1, d2))
+
+	if mode {}
+	else {
+		rgbcolor 0x000000
+		boxf pos_ary(d1, d2) - 1, pos_ary(d1 + 1, d2) - 1, pos_ary(d1 + 2, d2) + 1, pos_ary(d1 + 3, d2) + 1
+	}
+
+	rgbcolor 0xFFFFFF
+	boxf pos_ary(d1, d2), pos_ary(d1 + 1, d2), pos_ary(d1 + 2, d2), pos_ary(d1 + 3, d2)
+	rgbcolor 0x000000
+	return
+
+
+	; redraw描画範囲設定確認
+	;
+#deffunc statredraw_end array pos_ary, int d1, int d2
+	redraw 1, pos_ary(d1, d2), pos_ary(d1 + 1, d2), (pos_ary(d1 + 2, d2) - pos_ary(d1, d2)), (pos_ary(d1 + 3, d2) - pos_ary(d1 + 1, d2))
+	return
+
+
+#deffunc rm_init
+	WakSize = ((ginfo(10) - ginfo(12)) / 2)
+	TabSize = ((ginfo(11) - ginfo(13)) / 2) - 13
+	return
+
+
+#defcfunc musx
+	return (ginfo(0) - ginfo(4) - WakSize)
+
+#defcfunc musy
+	return (ginfo(1) - ginfo(5) - TabSize)
+
+
+
+#define global ctype comp_musxy(%1,%2,%3,%4) (%1 <= musx()) & (musx() <= %2) & (%3 <= musy()) & (musy() <= %4)
+
 #global // my_pc_mod
 
 #endif //_my_pc_mod_
 
-//#module
-//#deffunc rm_init
-//    WakuSize = (ginfo(10) - ginfo(12)) / 2
-//    TabSize = ginfo(11) - ginfo(13) - WakuSize
-//    return
 
-//#defcfunc rmousex
-//    x1 = ginfo(0) - ginfo(4) - WakuSize
-//    return x1
-
-//#defcfunc rmousey
-//    y1 = ginfo(1) - ginfo(5) - TabSize
-//    return y1
-//#global
 
 
 

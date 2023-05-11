@@ -14,12 +14,14 @@
 /*******************************************************************************
 								Master Window
 ********************************************************************************/
-	screen ID_WIN_MASTER, 800, 500, 2
+	screen ID_WIN_MASTER, winw, winh, 2
 	hWin_master = hwnd
 	title titlemes
-	font myricaMM, hFont(3) : objmode 2, 1
+	font "メイリオ", hFont(3) : objmode 2, 1
 	//HSPのBMSCR構造体からフォントハンドルを取得
 	mref BMSCR, 67 : hFont(0) = BMSCR.38
+
+	rm_init
 
 ;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% セーブ・ロード用
 	layerobj ,,1, *master_layer_var, 0 : layidh(0) = stat
@@ -29,31 +31,38 @@
 								Opening Window
 ********************************************************************************/
 
-	bgscr ID_WIN_OPEN, 800, 500, 2
+	bgscr ID_WIN_OPEN, winw, winh, 2
 	SetWindowLong hwnd, -16, WS_CHILD
 	SetParent hwnd, hWin_master
 
-	Mycolor color_data(3)
-	boxf 10, 10, 790, 480
+	; 表示文字列の長さ取得用
+	mes : font "メイリオ", 50, 1, 4 : mes titlemes
+	winxy(0, 0) = (winw / 2.0) - (ginfo_mesx / 2)
+	winxy(1, 0) = (winh / 4.0) - (ginfo_mesy / 2)
 
-	font myricaMM, 50, 1, 4
-	pos 120, 40
-	Mycolor color_data(4), 1    //輪郭線
-	Mycolor color_data(1), 0    //文字色
-	mes "PC CareingDiary ver" + ver, 4
 
-	font myricaMM, 50, 1, 2
-	pos 120, 40
-	Mycolor color_data(2), 1 //輪郭線
-	Mycolor color_data(1), 0 //文字色
-	mes "PC CareingDiary ver" + ver, 4
+	Mycolor color_data(0) : boxf 0, 10, winw, winh - 10
+	Mycolor color_data(4) : boxf 0, 20, winw, winh - 20
+	Mycolor color_data(3) : boxf 0, 30, winw, winh - 30
 
-	pos 300, 200 : objsize 200, 40, 60 : font "けいふぉんと", 20 : objmode 2, 1
+	; タイトル文字列表示
+	font "メイリオ", 50, 1, 4
+	Mycolor color_data(4), 1
+	Mycolor color_data(1), 0
+	pos winxy(0, 0), winxy(1, 0) : mes titlemes, 4
 
-	button gosub "新しく始める", *OP新規   : id_opB0 = stat
-	button gosub "続きから始める", *OPload : id_opB1 = stat
+	font "メイリオ", 50, 1, 2
+	Mycolor color_data(2), 1
+	Mycolor color_data(1), 0
+	pos winxy(0, 0), winxy(1, 0) : mes titlemes, 4
 
-	font myricaMM, hFont(4)
+	pos winxy(2, 0), winxy(3, 0)
+	objsize 200, 40, 60 : font "けいふぉんと", 20 : objmode 2, 1
+
+	button gosub "新しく始める", *OP新規
+	button gosub "続きから始める", *OPload
+
+	font "メイリオ", hFont(4)
 	//HSPのBMSCR構造体からフォントハンドルを取得
 	mref BMSCR3, 67 : hFont(2) = BMSCR3.38
 
@@ -62,38 +71,15 @@
 /*******************************************************************************
 								Main Window
 ********************************************************************************/
-	bgscr ID_WIN_MAIN, 800, 500, 2
+	bgscr ID_WIN_MAIN, winw, winh, 2
 	SetWindowLong hwnd, -16, WS_CHILD
 	SetParent hwnd, hWin_master
 
-	font myricaMM, hFont(4) : objmode 2, 1
 /*******************<<  ウィンドウオブジェクトの設置  >>********************/
-
-	/***ゲーム内時間***/
-	hx = 590 : hy = 10
-	pos hx - 70, hy
-	winobj "static", "ゲーム内時間を表記します", , $50000000 | $1 | $800000, 270, 28
-	hStatic(0) = objinfo(stat, 2)
-
-	pos hx + 100, hy + 30
-	winobj "static", "", , $50000000 | $1 | $800000, 100, 28
-	hStatic(1) = objinfo(stat, 2)
-
-	/***ステータス項目表示***/
-
-	u1pos(0) = 5
-	u1pos(1) = 5
-	u1pos(2) = 200
-	u1pos(3) = 210
-
-	u2pos(0) = 210
-	u2pos(1) = 45
-	u2pos(2) = 650
-	u2pos(3) = 230
 
 
 	/*****  Power用プログレスバー  *****/
-	pos 15, 220
+	pos 15, 250
 	mypb 170, 10, hPb(0), 0
 	pbset hPb(0), 0, 1000, 1000, -1
 
@@ -101,24 +87,24 @@
 
 
 	/*****  タブコントロール  *****/
-	pos 0, 240
-	My_CreateTab 800, 240, hTab_main
+	pos 0, 260
+	My_CreateTab 800, 230, hTab_main
 //==========================================================
 	InsertTab "Tools", ID_TAB_MOTI, 0, hTab_main
-	font myricaMM, hFont(5) : objmode 2, 0
+	font "メイリオ", hFont(5) : objmode 2, 0
 	pos 0, 0
-	mesbox motimono, 794, 210, 0
+	mesbox motimono, 794, 200, 0
 	id_motimono = stat
 
 //==========================================================
 	InsertTab "Arsenal", ID_TAB_SOUKO, 1, hTab_main
 	pos 0, 0
-	mylv 794, 210, hLVsouko
+	mylv 794, 200, hLVsouko
 
 //==========================================================
 	InsertTab "Logs", ID_TAB_LOG, 2, hTab_main
 	pos 0, 0
-	mesbox logmoni, 794, 210, 0
+	mesbox logmoni, 794, 200, 0
 	id_logmoni = stat
 
 //==========================================================
@@ -126,7 +112,7 @@
 	gsel ID_TAB_MOTI, 1 : gsel ID_WIN_MAIN
 
 
-
+	font "メイリオ", 15 : objmode 2, 1
 ;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% ゲーム内時間, ログ表示更新用
 	pos 0, 0
 	layerobj 800, 200, 3, *lay, 1
@@ -136,9 +122,10 @@
 	layerobj ,,1, *laystat, 2
 	layidh(2) = stat
 
-
+	font "メイリオ", hFont(4) : objmode 2, 1
 //--------------------------------------再開ボタン
-	pos hx + 90, hy + 65 : objsize 110, 30, 30
+
+	pos winxy(4, 0), winxy(5, 0) + 15 : objsize 110, 30, 30
 	button gosub "START", *ope
 	id_opebut = stat
 	SetWindowLong objinfo(id_opebut, 2), -16, $50000003 | $1000
@@ -153,12 +140,6 @@
 	gsel ID_WIN_MAIN
 
 	/******フォントの反映******/
-	sendmsg hStatic(0), $30, hFont(0)
-	sendmsg hStatic(1), $30, hFont(0)
-	; sendmsg hStatic(2), $30, hFont(0)
-	; sendmsg hStatic(3), $30, hFont(0)
-
-	/******フォントの反映******/
 	sendmsg hTab_main, $30, hFont(1)
 	sendmsg hLVsouko, $30, hFont(2)
 
@@ -170,21 +151,21 @@
 /*******************************************************************************
 								Amazoon
 ********************************************************************************/
-	bgscr ID_WIN_AMAZ, 800, 500, 2
+	bgscr ID_WIN_AMAZ, winw, winh, 2
 	SetWindowLong hwnd, -16, WS_CHILD
 	SetParent hwnd, hWin_master
 
 
-	font myricaMM, hFont(3) : objmode 2, 1
+	font "メイリオ", hFont(3) : objmode 2, 1
 
 	; 経験値と所持金
-	wx = 200, ((ginfo(12) / 2) - (wx / 2))
-	pos wx(1), hy : mes " Exp\tCat "
-	pos wx(1), 40 : winobj "static", "", , $50000000 | $800000, wx(0), (ginfo_mesy)
-	hStatic(4) = objinfo(stat, 2)
+	wx = 150, ((ginfo(12) / 2) - (wx / 2))
+	pos wx(1), 40
+	winobj "static", "", , $50000000 | $800000, wx(0), 30
+	hStatic(0) = objinfo(stat, 2)
 
 
-	pos hx + 90, hy + 50 : objsize 110, 30, 20
+	pos winxy(4, 0), winxy(5, 0) : objsize 110, 30, 20
 	button gosub "Exit", *remain
 
 	/*****  タブコントロール  *****/
@@ -258,7 +239,7 @@
 
 	/******フォントの反映******/
 	sendmsg hTabOMI, $30, hFont(2)
-	sendmsg hStatic(4), $30, hFont(0)
+	sendmsg hStatic(0), $30, hFont(0)
 
 	/*****  割り込み  *****/
 	oncmd gosub *tabchange, WM_NOTIFY //タブ項目切り替え処理時のメッセージ
@@ -268,13 +249,13 @@
 /*******************************************************************************
 							PC Dock
 ********************************************************************************/
-	bgscr ID_WIN_DOCK, 800, 500, 2
+	bgscr ID_WIN_DOCK, winw, winh, 2
 	SetWindowLong hwnd, -16, WS_CHILD
 	SetParent hwnd, hWin_master
 
-	font myricaMM, hFont(3) : objmode 2, 1
+	font "メイリオ", hFont(3) : objmode 2, 1
 
-	pos hx + 90, hy + 50 : objsize 110, 30, 20
+	pos winxy(4, 0), winxy(5, 0) : objsize 110, 30, 20
 	button gosub "Exit", *remain
 
 
@@ -287,13 +268,13 @@
 							SAVE & LOAD
 ********************************************************************************/
 
-	bgscr ID_WIN_SAVE, 800, 500, 2
+	bgscr ID_WIN_SAVE, winw, winh, 2
 	SetWindowLong hwnd, -16, WS_CHILD
 	SetParent hwnd, hWin_master
 
-	font myricaMM, hFont(3) : objmode 2, 0
+	font "メイリオ", hFont(3) : objmode 2, 0
 
-	pos hx + 90, hy + 50 : objsize 110, 30, 20
+	pos winxy(4, 0), winxy(5, 0) : objsize 110, 30, 20
 	button gosub "Exit", *remain
 	button gosub "Title", *retitle
 
@@ -315,12 +296,12 @@
 /*******************************************************************************
 								Setting
 ********************************************************************************/
-	bgscr ID_WIN_SETI, 800, 500, 2
+	bgscr ID_WIN_SETI, winw, winh, 2
 	SetWindowLong hwnd, -16, WS_CHILD
 	SetParent hwnd, hWin_master
 
-	font myricaMM, hFont(5) : objmode 2, 0
-	pos hx + 90, hy + 50 : objsize 110, 30, 30
+	font "メイリオ", hFont(5) : objmode 2, 0
+	pos winxy(4, 0), winxy(5, 0) : objsize 110, 30, 30
 
 	button gosub "Exit", *remain
 	button gosub "Information", *infomation
@@ -333,8 +314,8 @@
 
 
 	/******* ゲーム速度の変更 *******/
-	pos 20, 60 : objsize 80, 19 : font myricaMM, hFont(4)
-	mes "Game Speed" : font myricaMM, hFont(5)
+	pos 20, 60 : objsize 80, 19 : font "メイリオ", hFont(4)
+	mes "Game Speed" : font "メイリオ", hFont(5)
 
 	//----------------------------------chkbox
 	pos 20, 90
@@ -358,8 +339,8 @@
 
 
 	/*** メインウィンドウに戻る際にメインループを自動で開始するか ***/
-	pos 20, 130 : objsize 180, 19, 30 : font myricaMM, hFont(3)
-	mes "Auto starting Game when return to Main" : font myricaMM, hFont(5)
+	pos 20, 130 : objsize 180, 19, 30 : font "メイリオ", hFont(3)
+	mes "Auto starting Game when return to Main" : font "メイリオ", hFont(5)
 
 	pos 20, 160
 	chkbox re_amaz(setting(8)), setting(8)
@@ -386,11 +367,11 @@
 /*******************************************************************************
 							Infomation Window
 ********************************************************************************/
-	bgscr ID_WIN_INFO, 800, 500, 2
+	bgscr ID_WIN_INFO, winw, winh, 2
 	SetWindowLong hwnd, -16, WS_CHILD
 	SetParent hwnd, hWin_master
 
-	font myricaMM, hFont(4) : objmode 2, 0
+	font "メイリオ", hFont(4) : objmode 2, 0
 	pos 10, 2 : repeat 4, 6:   mes infa(cnt)   :loop
 	pos 90, 2 : repeat 4:      mes infa(cnt)   :loop
 
@@ -403,11 +384,11 @@
 	pos ginfo_mesx + 210, (ginfo_mesy * 3) + 2
 	mylmb "GitHub", 100, 25, hLinkgi, SS_CENTER | WS_BORDER
 
-	font myricaMM, hFont(5) : objmode 2, 1
+	font "メイリオ", hFont(5) : objmode 2, 1
 	//HSPのBMSCR構造体からフォントハンドルを取得
 	mref BMSCR2, 67 : hFont(1) = BMSCR2.38
 
-	pos hx + 90, hy + 50 : objsize 110, 30, 30
+	pos winxy(4, 0), winxy(5, 0) : objsize 110, 30, 30
 	button gosub "Exit", *remain
 
 	pos 0, 110
@@ -415,11 +396,11 @@
 
 	/*****  WebView2  *****/
 	mes "  UPDATE HISTORY  "
-	font myricaMM, hFont(5)
+	font "メイリオ", hFont(5)
 
 	webv2(pEnv) = WebView2_CreateEnv()
 	webv2(pCtrl) = WebView2_CreateCtrl(webv2(pEnv), hwnd)
-	WebView2_Size webv2(pCtrl), 0, 130, 800, 500
+	WebView2_Size webv2(pCtrl), 0, 130, winw, winh
 	webv2(pView) = WebView2_GetView(webv2(pCtrl))
 	WebView2_Navigate webv2(pView), changelog
 
