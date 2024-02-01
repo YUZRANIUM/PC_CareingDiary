@@ -1,7 +1,7 @@
 // INFO ****************************************************
 // FileName : 00_module.hsp
-// Version : 0.3.0
-// Date    : 2022/11/02
+// Version : 0.3.1
+// Date    : 2024/01/25
 // Author  : YUZRANIUM（ゆずらにうむ）
 // Twitter : https://twitter.com/YUZRANIUM
 // Git Hub : https://github.com/YUZRANIUM/PC_CareingDiary
@@ -43,13 +43,88 @@
 	#const global TCM_SETCURSEL         0x130C
 
 
-	#const global TCN_SELCHANGE         0xFFFFFDD9
+	#const global TCN_SELCHANGE   0xFFFFFDD9
 #global
 /*******************************************************************************/
 
 
+
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+#ifndef __my_boxf_mod__
+	#define global __my_boxf_mod__
+
+#module "my_boxf"
+
+#deffunc local _my_boxf_init_
+	; boxf用の算出座標
+	pary@my_boxf = 0 : dim pary@my_boxf, 4
+	return
+
+	;=======================================================
+	; 座標計算機能付きboxf
+	;
+	; myboxf x, y, w, h, mode1, mode2
+	;
+	;	[ int ] x, y  : 描画時のX, Y座標
+	;	[ int ] w, h  : 描画領域のXサイズ, Yサイズ
+	;	[ int ] mode1 : 領域確認用枠線フラグ (= 0)
+	;	[ int ] mode2 : 基準点切替 (= 0, 0:カレントポジション / 1:中心)
+	;
+#deffunc myboxf int x, int y, int w, int h, int mode1, int mode2
+	dim pary, 4
+
+	if mode2 {pary(0) = (x - int(w / 2)), (y - int(h / 2)), (x + int(w / 2)), (y + int(h / 2))}
+	else     {pary(0) = x, y, (x + w), (y + h)}
+
+	if mode1 {rgbcolor 0x000000 : boxf (pary(0) - 1), (pary(1) - 1), (pary(2) + 1), (pary(3) + 1)}
+	rgbcolor 0xFFFFFF : boxf pary(0), pary(1), pary(2), pary(3)
+	return
+
+	;=======================================================
+	; 座標計算機能付きboxf (配列バージョン)
+	;
+	; myfeld drary, d2, mode1
+	;
+	;	[array] drary : redraw 描画範囲を格納した2次元配列
+	;	[ int ] d2    : 描画範囲配列変数の第2次元要素 (描画グループ)
+	;	[ int ] mode1 : 領域確認用枠線フラグ (= 0)
+	;
+	;	drary(d1, d2)
+	;	d1 = 0, 1 : カレントポジション x, y
+	;	d1 = 2, 3 : X, Yサイズ
+	;
+#deffunc myfeld array drary, int d2, int mode1
+	dim pary, 4
+	pary(0) = drary(0, d2), drary(1, d2), (drary(0, d2) + drary(2, d2)), (drary(1, d2) + drary(3, d2))
+
+	if mode1 {rgbcolor 0x000000 : boxf (pary(0) - 1), (pary(1) - 1), (pary(2) + 1), (pary(3) + 1)}
+	rgbcolor 0xFFFFFF : boxf pary(0), pary(1), pary(2), pary(3)
+	return
+
+	;=======================================================
+	; myboxfの座標取得命令
+	;
+#deffunc mygetboxf array ary
+	dim ary, 4
+	ary(0) = pary(0), pary(1), pary(2), pary(3)
+	return
+
+
+#global // my_boxf
+	;
+	_my_boxf_init_@my_boxf
+	;
+	;
+#endif // __my_boxf_mod__
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 #ifndef _my_pc_mod_
 	#define global _my_pc_mod_
+
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 #module "my_pc_mod"
 
 #ifndef __USER32__
@@ -60,8 +135,53 @@
 	#include "hsedsdk.as"
 #endif
 
-// vsave短縮
-// %1 : ファイル名
+	;===========================================================================
+	;四半期判定
+	;
+	; my_season_chk month_, season_
+	;
+	; [ var ] month_  : 月を管理する変数
+	; [ var ] season_ : 四半期を管理する変数
+	;
+#deffunc my_season_chk var month_, var season_
+	; 四半期
+	if      (01 <= month_) & (month_ <= 03) {season_ = 4}
+	else:if (04 <= month_) & (month_ <= 06) {season_ = 1}
+	else:if (07 <= month_) & (month_ <= 09) {season_ = 2}
+	else:if (10 <= month_) & (month_ <= 12) {season_ = 3}
+	return
+
+
+	;===========================================================================
+	;ゲーム内時間更新命令
+	;
+	; my_daytime_chk day_ary, cnt_var, flg_ary
+	;
+	; [array] day_ary : 日付管理変数
+	; [ var ] cnt_var : 日付更新用カウンタ
+	; [array] flg_ary : 日時更新フラグ
+	;
+#deffunc my_daytime_chk array day_ary, var cnt_var, array flg_ary, int mode, \
+local prmchk
+
+	if ((mode = 0) & (cnt_var > 59)) {cnt_var = 0 : day_ary(4)++}                    ; 時間
+
+	if (day_ary.4 > 23) {day_ary.4 = 0 : day_ary(3)++ : flg_ary.0 = 1} else {return} ; 日付
+	if (day_ary.3 > 31) {day_ary.3 = 1 : day_ary(2)++                }               ; 月
+	if (day_ary.2 > 12) {day_ary.2 = 1 : day_ary(0)++ : flg_ary.2 = 1}               ; 年
+
+	; 四半期
+	my_season_chk day_ary(2), day_ary(1)
+	prmchk = ((day_ary.2 = 1) | (day_ary.2 = 4) | (day_ary.2 = 7) | (day_ary.2 = 10))
+
+	if (day_ary.3 = 1) & prmchk {flg_ary.1 = 1}
+	return
+
+
+	;===========================================================================
+	; vsave短縮
+	; %1 : ファイル名
+	;
 #define global mysave(%1) \
 vsave_start: \
 vsave_put saveID:\
@@ -81,12 +201,14 @@ vsave_put bffan:\
 vsave_put bfpow :vsave_end%1
 
 
+	;===========================================================================
 	; gsel + objprm
 	; G_prm win_id, p1, obj_id, prm
 	;
-#define global G_prm(%1,%2=0,%3,%4) gsel%1,%2 : objprm%3,%4
+#define global G_prm(%1, %2=0, %3, %4) gsel %1, %2 : objprm %3, %4
 
 
+	;===========================================================================
 	; SQLリストビュー昇降順切り替え命令
 	;
 	;	[array] lv_hwnd  : リストビューのオブジェクトハンドル
@@ -111,51 +233,53 @@ vsave_put bfpow :vsave_end%1
 	return
 
 
-// HSPバージョン"beta文字"付き出力
-// %1 : __hspver__ もしくは hspver
-// hsedsdk.asをインクルードすること
+	;===========================================================================
+	; HSPバージョン"beta文字"付き出力
+	; p1 : __hspver__ もしくは hspver
+	; hsedsdk.asをインクルードすること
+	;
 #defcfunc myhspver int p1, local res
-	sdim res
-	hsed_cnvverstr p1
+	sdim res : hsed_cnvverstr p1
 	res += refstr
 	if (instr(res, 0, "b") != -1) {strrep res, "b", "beta"}
 	return res
 
 
+	;===========================================================================
 	; RGB指定
 	;
 	;	[ int ] rgb_ : $000000形式のRGBコード (0xも可)
 	;	[ int ] mode : (= 0, 0:rgbcolor / 1:objcolor / 2:両方)
+	;
 #deffunc Mycolor int rgb_, int mode, local r_, local g_, local b_
 
 	r_ = (rgb_ & $FF) : g_ = ((rgb_ >> 8) & $FF) : b_ = ((rgb_ >> 16) & $FF)
 
 	if      (mode = 0) {rgbcolor rgb_      }
 	else:if (mode = 1) {objcolor r_, g_, b_}
-	else:if (mode = 2) {
-		rgbcolor rgb_
-		objcolor r_, g_, b_
-	}
+	else:if (mode = 2) {rgbcolor rgb_ : objcolor r_, g_, b_}
 	return
 
 
+	;===========================================================================
 	; マウスクリックに反応するオブジェクト
 	;
-	; p1    : 表示する文字列
-	; p2,p3 : マウスが反応するXサイズ,Yサイズ
-	; p4    : オブジェクトハンドルを受け取る変数
-	; p5    : ウィンドウスタイル($1:中央揃え, $2:右揃え)
+	; p1        : 表示する文字列
+	; x_, y_    : マウスが反応するXサイズ,Yサイズ
+	; obj_hwnd  : オブジェクトハンドルを受け取る変数
+	; win_stile : ウィンドウスタイル($1:中央揃え, $2:右揃え)
 	;
-#deffunc mylmb str p1, int p2, int p3, var p4, int p5
+#deffunc mylmb str p1, int x, int y, var obj_hwnd, int win_stile
 	dim RECT, 4
-	winobj "static", p1, , $50000000 | SS_NOTIFY | p5, p2, p3
-	p4 = objinfo(stat, 2)
+	winobj "static", p1, , $50000000 | SS_NOTIFY | win_stile, x, y
+	obj_hwnd = objinfo(stat, 2)
 	//スタティックテキスト上のカーソルをハンドカーソルに変更
 	LoadCursor 0, 32649
-	SetClassLong p4, -12, stat
+	SetClassLong obj_hwnd, -12, stat
 	return
 
 
+	;===========================================================================
 	; データスロット用ウィンドウオブジェクト設置
 	;
 	;	[array] obj_hwnd : mylmcのオブジェクトハンドル
@@ -164,6 +288,7 @@ vsave_put bfpow :vsave_end%1
 	;	[ int ] d     : 枠線の太さ
 	;	[array] color : 枠線の色 (RGB形式)
 	;	[ int ] id    : データスロットID
+	;
 #deffunc data_slot array obj_hwnd, int x, int y, int w, int h, int d, array color_, int id
 
 	; 枠線部分
@@ -185,63 +310,33 @@ vsave_put bfpow :vsave_end%1
 
 	return
 
-
-	; セーブロードサブルーチン処理
+	;===========================================================================
 	;
-	;	[ var ] slot_id : スロットID管理用変数
-	;	[ int ] lay_id  : レイヤーのオブジェクトID
-	;	[ int ] lay_prm : レイヤーオブジェクトに渡す値
-	;	[ int ] id      : スロットID
-#deffunc data_sl var slot_id, int lay_id, int lay_prm, int id
-
-	slot_id = id
-	if (lay_prm - 1) {dialog "Save Data " + slot_id + " をロードしますか?", 2, "LOAD"}
-	else             {dialog "Save Data " + slot_id + " にセーブしますか?", 2, "SAVE"}
-
-	if (stat = 6) {objprm lay_id, lay_prm}
-	return
-
-
-	; redraw描画範囲設定確認
-	;
-#deffunc statredraw_start array pos_ary, int d1, int d2, int mode
-	redraw 0, pos_ary(d1, d2), pos_ary(d1 + 1, d2), (pos_ary(d1 + 2, d2) - pos_ary(d1, d2)), (pos_ary(d1 + 3, d2) - pos_ary(d1 + 1, d2))
-
-	if mode {}
-	else {
-		rgbcolor 0x000000
-		boxf pos_ary(d1, d2) - 1, pos_ary(d1 + 1, d2) - 1, pos_ary(d1 + 2, d2) + 1, pos_ary(d1 + 3, d2) + 1
-	}
-
-	rgbcolor 0xFFFFFF
-	boxf pos_ary(d1, d2), pos_ary(d1 + 1, d2), pos_ary(d1 + 2, d2), pos_ary(d1 + 3, d2)
-	rgbcolor 0x000000
-	return
-
-
-	; redraw描画範囲設定確認
-	;
-#deffunc statredraw_end array pos_ary, int d1, int d2
-	redraw 1, pos_ary(d1, d2), pos_ary(d1 + 1, d2), (pos_ary(d1 + 2, d2) - pos_ary(d1, d2)), (pos_ary(d1 + 3, d2) - pos_ary(d1 + 1, d2))
-	return
-
-
 #deffunc rm_init
 	WakSize = ((ginfo(10) - ginfo(12)) / 2)
 	TabSize = ((ginfo(11) - ginfo(13)) / 2) - 13
 	return
 
 
+	;===========================================================================
+	;
 #defcfunc musx
 	return (ginfo(0) - ginfo(4) - WakSize)
 
+
+	;===========================================================================
+	;
 #defcfunc musy
 	return (ginfo(1) - ginfo(5) - TabSize)
 
 
-
+	;===========================================================================
+	;
 #define global ctype comp_musxy(%1,%2,%3,%4) (%1 <= musx()) & (musx() <= %2) & (%3 <= musy()) & (musy() <= %4)
 
+
+
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 #global // my_pc_mod
 
 #endif //_my_pc_mod_
@@ -310,7 +405,7 @@ vsave_put bfpow :vsave_end%1
 	sendmsg tab_hwnd_, TCM_GETCURSEL
 	wID = stat
 	gsel wID + bgscr_id_, 1
-	gsel win_id_
+	gsel win_id_, 1
 	return
 #global
 /*******************************************************************************/

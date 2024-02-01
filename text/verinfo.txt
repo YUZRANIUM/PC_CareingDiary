@@ -7,4 +7,4 @@ https://github.com/YUZRANIUM/PC_CareingDiary
 N A M E
 VERSION
 made by
-AUTHOR
+CREATER

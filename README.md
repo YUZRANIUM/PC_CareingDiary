@@ -102,8 +102,8 @@ style id1 fill:#26a, strole:#aaa, stroke-width:3px
 
 ### 開発環境 (Development Environment)
 - Windows11 Pro 22H2 x64
-- Visual Studio Code
-- HSP3.7beta3
+- Visual Studio Code 1.79.1
+- HSP3.7beta5
 
 <br />
 

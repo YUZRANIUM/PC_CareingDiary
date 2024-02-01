@@ -1,7 +1,7 @@
 // INFO ****************************************************
 // FileName : 01_variable.hsp
-// Version : 0.3.0
-// Date    : 2022/11/02
+// Version : 0.3.1
+// Date    : 2024/01/25
 // Author  : YUZRANIUM（ゆずらにうむ）
 // Twitter : https://twitter.com/YUZRANIUM
 // Git Hub : https://github.com/YUZRANIUM/PC_CareingDiary
@@ -16,6 +16,58 @@ SQL関係もデータを変数に格納するということでこちらで扱っています。
 ************************************************************/
 
 
+
+
+;-------------------------------------------------------------------------------
+;                                 ゲーム情報
+;-------------------------------------------------------------------------------
+
+	//バージョン
+	ver = "0.3.1"
+	//titleバー
+	titlemes = "PC CareingDiary ver" + ver
+	//バージョン情報
+	infa = 0 : sdim infa, 128, 5
+	notesel infa
+	noteload "text\\verinfo.txt" : split infa, "\n", infa
+	strrep infa(1), "vv", ver : strrep infa(2), "hh", myhspver(hspver)
+
+
+;-------------------------------------------------------------------------------
+;                          saveフォルダ・ディレクトリ関連
+;-------------------------------------------------------------------------------
+
+	//saveフォルダの有無
+	sdim fname
+	dirlist fname, "savedata", 5 : logmes fname
+	if fname = "" : mkdir "savedata"
+
+	//ファイル名変数
+	fname = "" : sdim fname, 512, 8
+	fname(0) = "" + dir_cur + "\\savedata\\Save0.var"
+	fname(1) = "" + dir_cur + "\\savedata\\Save1.var"
+	fname(2) = "" + dir_cur + "\\savedata\\Save2.var"
+	fname(3) = "" + dir_cur + "\\savedata\\Save3.var"
+	fname(4) = "" + dir_cur + "\\savedata\\Save4.var"
+	fname(5) = "" + dir_cur + "\\savedata\\Save5.var"
+	fname(6) = "" + dir_cur + "\\savedata\\AutoSave.var"
+	fname(7) = "" + dir_cur + "\\savedata\\Reset.var"
+
+	//saveスロット番号, MASTER_layerへのセーブ・ロード指示
+	saveID = 0 : dim saveID, 3
+	//save,load時ダイアログフォーマット
+	dformat = "" : sdim dformat, 64, 4
+	dformat(0) = "Save Data %d をロードしますか?"
+	dformat(1) = "Save Data %d をセーブしますか?"
+	dformat(2) = "LOAD"
+	dformat(3) = "SAVE"
+
+	// dir_cur + \\text\\changelog.html
+	#define changelog dir_cur + "\\text\\changelog.html"
+	// dir_cur + \\savedata\\backup.var
+	#define backupdir dir_cur + "\\savedata\\backup.var"
+	// dir_cur + "\\SQL\\Syouhin.db"
+	#define db        dir_cur + "\\SQL\\Syouhin.db"
 
 
 ;-------------------------------------------------------------------------------
@@ -59,12 +111,6 @@ SQL関係もデータを変数に格納するということでこちらで扱っています。
 	#enum newst = 0
 	#enum unitc
 
-	// dir_cur + \\text\\changelog.html
-	#define changelog dir_cur + "\\text\\changelog.html"
-	// dir_cur + \\savedata\\backup.var
-	#define backupdir dir_cur + "\\savedata\\backup.var"
-	// dir_cur + "\\SQL\\Syouhin.db"
-	#define db        dir_cur + "\\SQL\\Syouhin.db"
 
 ;-------------------------------------------------------------------------------
 ;                              ウィンドウ座標
@@ -73,36 +119,64 @@ SQL関係もデータを変数に格納するということでこちらで扱っています。
 	; リリースモード
 	#const dmode 0
 
-	#const double winw 800    ; ウィンドウサイズ
-	#const double winh 500    ; ウィンドウサイズ
+	#const winw 800    ; ウィンドウサイズ X
+	#const winh 600    ; ウィンドウサイズ Y
 
-	#const eased    300
-	#const ease_cnt eased + 1
+	; Mainウィンドウのタブ Y座標
+	#const mainTab_y 300
+	#const mainTab_h (winh - mainTab_y - 10)
 
-	#enum eDate = 0
-	#enum eTime
-	#enum eStat
-	#enum eUser
-	#enum emodl
+	; Amazウィンドウのタブ Y座標
+	#const amazTab_y 120
+	#const amazTab_w  (winw -  50)
+	#const amazTab_h  (winh - 100)
+	#const listx      (amazTab_w - 100)
+	#const listy      (amazTab_h - 100)
 
-	#const dcolor 0xCC3344
-	; #const dcolor 0xFFFFFF
 
-	; イージング座標取得用
-	; (0, 0) : eDate
-	; (0, 1) : eTime
-	; (0, 2) : eStat
-	; (0, 3) : eUser
-	; (0, 4) : emodl
-	easepos = 0.0 : ddim easepos, ease_cnt, 5
+	/***  redraw領域管理配列 第1次元要素  ***/
 
-	; イージング開始フラグ
-	; (0, 0) : eDate
-	; (0, 1) : eTime
-	; (0, 2) : eStat
-	; (0, 3) : eUser
-	; (0, 4) : emodl
-	ease_on = 0 : dim ease_on, 2, 5
+	; redraw領域管理配列要素 d1 (=0) カレントポジション(x)
+	#enum drwx = 0
+	; redraw領域管理配列要素 d1 (=1) カレントポジション(y)
+	#enum drwy
+	; redraw領域管理配列要素 d1 (=2) Xサイズ(w)
+	#enum drww
+	; redraw領域管理配列要素 d1 (=3) Yサイズ(h)
+	#enum drwh
+
+	/***  redraw領域管理配列 第2次元要素  ***/
+
+	; redraw領域管理配列要素 d2 (=0) 画面右上/ゲーム内日付表示
+	#enum drwDate = 0
+	; redraw領域管理配列要素 d2 (=1) 画面左上/PC各ステータス表示
+	#enum drwStat
+	; redraw領域管理配列要素 d2 (=2) 画面左上/ユーザーポイント及び所持金表示
+	#enum drwCoin
+	; redraw領域管理配列要素 d2 (=3) 画面中央/PCモデル表示 (d3module)
+	#enum drw3Dpc
+	; redraw領域管理配列要素 d2 (=4) 画面中央/デバッグ用マウス座標
+	#enum drwMuse
+
+	; redraw領域管理配列
+	; drawsize(d1, d2)
+	;	d1 = 0, 1 : カレントポジション x, y
+	;	d1 = 2, 3 : X, Yサイズ
+	;
+	; (0, 0) : 画面右上 / ゲーム内日付表示
+	; (0, 1) : 画面左上 / PC各ステータス表示
+	; (0, 2) : 画面左上 / ユーザーポイント及び所持金表示
+	; (0, 3) : 画面中央 / PCモデル表示 (d3module)
+	; (0, 4) : 画面中央 / デバッグ用マウス座標
+	;
+	drawsize = 0 : dim drawsize, 4, 6
+	drawsize(drwx, drwDate) = 205,  5, 300,  30
+	drawsize(drwx, drwStat) =   5, 40, 195, 200
+	drawsize(drwx, drwCoin) =   5,  5, 195,  30
+	drawsize(drwx, drw3Dpc) = 205, 40, 465, 200
+	drawsize(drwx, drwMuse) = 510,  5, 160,  30
+	drawpos = 0 : dim drawpos, 4
+
 
 	; ウィンドウ座標管理
 	; (0, 0) : タイトル文字列 pos x
@@ -112,88 +186,24 @@ SQL関係もデータを変数に格納するということでこちらで扱っています。
 	; (4, 0) : 各ウィンドウボタン座標基準点x
 	; (5, 0) : 各ウィンドウボタン座標基準点y
 	;
-	; (0, 1) : 画面右上, ゲーム内日付表示
-	; (0, 2) : 画面右上, ゲーム内時間表示
-	; (0, 3) : 画面左上, PC各ステータス表示
-	; (0, 4) : 画面左上, ユーザーポイント及び所持金表示
-	; (0, 5) : 画面中央,   PCモデル表示 (d3module)
-	; (0, 6) : 画面中央上, デバッグ用マウス座標
-	winxy = 0 : ddim winxy, 7, 10
-	winxy(2, 0) = (winw - 200.0) / 2.0
-	winxy(3, 0) = (winh - 40.0) / 2.0
-	winxy(4, 0) = 680.0
-	winxy(5, 0) = 60.0
-
-	; (0, 1) : 画面右上, ゲーム内日付表示
-	winxy(0, 1) = 660.0
-	winxy(1, 1) = 5.0
-	winxy(2, 1) = 790.0
-	winxy(3, 1) = 35.0
-	winxy(4, 1) = 570.0
-	winxy(5, 1) = winxy(0, 1)
-
-	setease winxy(4, 1), winxy(0, 1), ease_quad_inout
-	repeat ease_cnt:   easepos(cnt, eDate) = geteasef(cnt, eased)   :loop
-
-	; (0, 2) : 画面右上, ゲーム内時間表示
-	winxy(0, 2) = 690.0
-	winxy(1, 2) = 40.0
-	winxy(2, 2) = 790.0
-	winxy(3, 2) = 65.0
-	winxy(4, 2) = 0.0
-	winxy(5, 2) = 0.0
-
-	; (0, 3) : 画面左上, PC各ステータス表示
-	winxy(0, 3) = 5.0
-	winxy(1, 3) = 40.0
-	winxy(2, 3) = 200.0
-	winxy(3, 3) = 240.0
-	winxy(4, 3) = winxy(2, 3)
-	winxy(5, 3) = 0.0
-
-	setease 90.0, 200.0, ease_quad_inout
-	repeat ease_cnt:   easepos(cnt, eStat) = geteasef(cnt, eased)   :loop
-
-	; (0, 4) : 画面中央上, ユーザーポイント及び所持金表示
-	winxy(0, 4) = 5.0
-	winxy(1, 4) = 5.0
-	winxy(2, 4) = 200.0
-	winxy(3, 4) = 35.0
-	winxy(4, 4) = winxy(2, 4)
-	winxy(5, 4) = 0.0
-
-	setease 100.0, 200.0, ease_quad_inout
-	repeat ease_cnt:   easepos(cnt, eUser) = geteasef(cnt, eased)   :loop
-
-	; (0, 5) : 画面中央,   PCモデル表示 (d3module)
-	winxy(0, 5) = 205.0
-	winxy(1, 5) = 40.0
-	winxy(2, 5) = 670.0
-	winxy(3, 5) = 240.0
-	winxy(4, 5) = 0.0
-	winxy(5, 5) = 0.0
-
-	; (0, 6) : 画面中央上, デバッグ用マウス座標
-	winxy(0, 6) = 250.0
-	winxy(1, 6) = 005.0
-	winxy(2, 6) = 450.0
-	winxy(3, 6) = 035.0
-	winxy(4, 6) = 0.0
-	winxy(5, 6) = 0.0
+	winxy = 0 : dim winxy, 7, 2
+	winxy(2, 0) = int((winw - 200) / 2)
+	winxy(3, 0) = int((winh - 40) / 2)
+	winxy(4, 0) = 680
+	winxy(5, 0) = 60
 
 ;-------------------------------------------------------------------------------
 ;                                   管理用変数
 ;-------------------------------------------------------------------------------
 
-	//バージョン
-	ver = strf("%.1f", 0.3)
-	//titleバー
-	titlemes = "PC CareingDiary ver" + ver
-	//バージョン情報
-	infa = 0 : sdim infa, 128, 5
-	notesel infa
-	noteload "text\\verinfo.txt" : split infa, "\n", infa
-	strrep infa(1), "vv", ver : strrep infa(2), "hh", myhspver(hspver)
+	/*****  ゲーム内速度  *****/
+
+	; ゲーム速度[ふつう]
+	#const int GameSpeed_2 30
+	; ゲーム速度[遅  め]
+	#const int GameSpeed_1 GameSpeed_2 * 4
+	; ゲーム速度[早  め]
+	#const int GameSpeed_3 GameSpeed_2 / 6
 
 	; 設定項目配列
 	; (0):オートセーブON/OFF
@@ -209,20 +219,22 @@ SQL関係もデータを変数に格納するということでこちらで扱っています。
 	; (10):sett auto start
 	; (11):dock auto start
 	; (12):info auto start
-	setting = 0 : dim setting, 13, 0
+	setting = 0 : dim setting, 13
 	setting(0) = 0
 	setting(1) = 0
 	setting(2) = 1
 	setting(3) = 0
-	setting(4) = 8
+	setting(4) = GameSpeed_2
 	setting(5) = -1
 	setting(6) = 0
 	setting(7) = 0
+
+	remainflg = 0
 	; 実績解除･イベント･課題達成フラグ
 	; (0) : 日付変更フラグ
-	; (1) : 月変更フラグ
-	; (2) : 四半期変更フラグ
-	; (3) : 新年あけおめフラグ
+	; (1) : 四半期変更フラグ
+	; (2) : 新年あけおめフラグ
+	; (3) :
 	; (4) :
 	; (5) :
 	; (6) :
@@ -231,10 +243,11 @@ SQL関係もデータを変数に格納するということでこちらで扱っています。
 	; (9) :
 	TskFlg = 0 : dim TskFlg, 10
 	; 実績解除･イベント･課題達成ログ
+	; 第2次元要素 0:文字列(ログ)保存用, 1:strf用書式
 	; (0) : 日付変更
-	; (1) : 月変更
-	; (2) : 四半期変更
-	; (3) : 新年あけおめ
+	; (1) : 四半期変更
+	; (2) : 新年あけおめ
+	; (3) :
 	; (4) :
 	; (5) :
 	; (6) :
@@ -242,10 +255,10 @@ SQL関係もデータを変数に格納するということでこちらで扱っています。
 	; (8) :
 	; (9) :
 	TskLog = "" : sdim TskLog, 64, 10, 2
-	TskLog(0, 0) = "" : TskLog(0, 1) = " : Game times %d/%d になりました."
-	TskLog(1, 0) = "" : TskLog(1, 1) = " : Game times %d 月--------------"
-	TskLog(2, 0) = "" : TskLog(2, 1) = " : Game times %d 四半期---------"
-	TskLog(3, 0) = "" : TskLog(3, 1) = " : Happy New Year!!--------------\t\t%d 年目に突入"
+	TskLog(0, 0) = "" : TskLog(0, 1) = " : Game times %02d/%02d になりました."
+	TskLog(1, 0) = "" : TskLog(1, 1) = " : Game times %d 四半期---------"
+	TskLog(2, 0) = "" : TskLog(2, 1) = " : Happy New Year!!--------------\t\t%d 年目に突入"
+	TskLog(3, 0) = "" : TskLog(3, 1) = ""
 	TskLog(4, 0) = "" : TskLog(4, 1) = ""
 	TskLog(5, 0) = "" : TskLog(5, 1) = ""
 	TskLog(6, 0) = "" : TskLog(6, 1) = ""
@@ -269,7 +282,7 @@ SQL関係もデータを変数に格納するということでこちらで扱っています。
 	//return Inform
 	re_info = "Inform Return OFF", "Inform Return ON"
 	//設定変更時のログ表示
-	logstr = "" : sdim logstr, 1024, 10
+	logstr = "" : sdim logstr, 1024, 11
 	logstr(0) = {"
 		\n--- Settings Change ---
 		Game Speed [ %s ]
@@ -291,29 +304,15 @@ SQL関係もデータを変数に格納するということでこちらで扱っています。
 	logstr(7) = "OFF"
 	logstr(8) = "ON"
 	logstr(9) = ""
+	logstr(10) = ""
+	//ログ時間表示フォーマット
+	logtime = "\n-------------------------- %d/%02d/%02d %02d:%02d:%02d\n"
 
-	//セーブカウンター
-	savec = 0
 	//ゲーム内時間の速度変更
 	gtcontrol = 0
-	//saveフォルダの有無
-	sdim fname
-	logmes fname  :  dirlist fname, "savedata", 5  :  logmes fname
-	if fname = "" : mkdir "savedata"
-	sdim fname
-	//ファイル名変数
-	fname = "" : sdim fname, 512, 8
-	fname(0) = "" + dir_cur + "\\savedata\\Save0.var"
-	fname(1) = "" + dir_cur + "\\savedata\\Save1.var"
-	fname(2) = "" + dir_cur + "\\savedata\\Save2.var"
-	fname(3) = "" + dir_cur + "\\savedata\\Save3.var"
-	fname(4) = "" + dir_cur + "\\savedata\\Save4.var"
-	fname(5) = "" + dir_cur + "\\savedata\\Save5.var"
-	fname(6) = "" + dir_cur + "\\savedata\\AutoSave.var"
-	fname(7) = "" + dir_cur + "\\savedata\\Reset.var"
-	//saveスロット番号
-	saveID = 6
 
+	// オートセーブチェッカー
+	autoch = 0
 
 ;-------------------------------------------------------------------------------
 ;                              ステータス系
@@ -370,7 +369,7 @@ SQL関係もデータを変数に格納するということでこちらで扱っています。
 	; (5) : THERMAL
 	; (6) : POWER
 	; (7) : POWER計算途中
-	; (7) : POWER max値
+	; (8) : POWER max値
 	st = 0 : ddim st, 9
 	st(0) = 1.0
 	st(1) = 1.0
@@ -427,21 +426,19 @@ SQL関係もデータを変数に格納するということでこちらで扱っています。
 	; (3) : 日
 	; (4) : 時間
 	; (5) : 分
-	; (6)
+	; (6) : ゲーム内時間カウンターエンジン
 	gt = 0 : dim gt, 7
-	gt(0) = 0
-	gt(1) = 3
-	gt(2) = 12
-	gt(3) = 10
-	gt(4) = 22
-	gt(5) = 0
+	gt(0) = 0          ;年
+	gt(1) = 0          ;四半期
+	gt(2) = gettime(1) ;月
+	gt(3) = gettime(3) ;日
+	gt(4) = gettime(4) ;時間
+	gt(5) = gettime(5) ;分
 	gt(6) = 0
+	my_season_chk gt(2), gt(1) ; 四半期 判定
 
 	; 日付管理用フォーマット
-	gtformat(0) = "%2d年目 第%d四半期 %d月%d日"
-	gtformat(1) = "%2d年 %d期 %d/%d"
-	gtformat(2) = "%02d:%02d"
-
+	gtformat = "%2d年目 第%d四半期 %02d月%02d日 %02d:%02d"
 
 	sdim motimono, 2048 : sdim soukomoni, 2048 : sdim logmoni, 2048 : sdim omisemoni, 2048
 	//持ち物表示用その他1
@@ -463,8 +460,8 @@ SQL関係もデータを変数に格納するということでこちらで扱っています。
 	; (1) : MyricaMM, 14
 	; (2) : MyricaMM, 13
 	; (3) : 20
-	; (4) : 17
-	; (5) : 15
+	; (4) : 16
+	; (5) : 13
 	; (6) :
 	; (7) :
 	; (8) :
@@ -516,6 +513,11 @@ SQL関係もデータを変数に格納するということでこちらで扱っています。
 	; (0, 5) : hLoad5
 	; (1, 5) : hSave5
 	hls = 0 : dim hls, 2, 6
+
+	; button オブジェクトID, ハンドル
+	; 第2次元要素 0 = ID, 1 = objct hWnd
+	Btnidh = 0 : dim Btnidh, 3, 2
+
 
 	//プログレスバーオブジェクトハンドル
 	hPb = 0 : dim hPb, 1
