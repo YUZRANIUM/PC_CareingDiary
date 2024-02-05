@@ -1,7 +1,7 @@
 // INFO ****************************************************
 // FileName : 02_interface.hsp
-// Version : 0.3.1
-// Date    : 2024/01/25
+// Version : 0.3.2
+// Date    : 2024/02/05
 // Author  : YUZRANIUM（ゆずらにうむ）
 // Twitter : https://twitter.com/YUZRANIUM
 // Git Hub : https://github.com/YUZRANIUM/PC_CareingDiary
@@ -89,7 +89,7 @@
 
 	/*****  タブコントロール  *****/
 	pos 0, mainTab_y
-	My_CreateTab winw, mainTab_h, hTab_main
+	CreateTab winw, mainTab_h, hTab_main
 //==========================================================
 	InsertTab "Tools", ID_TAB_MOTI, 0, hTab_main
 	font "メイリオ", hFont(5) : objmode 2, 0
@@ -173,9 +173,7 @@
 
 	/*****  タブコントロール  *****/
 	pos 5, amazTab_y
-	My_CreateTab amazTab_w, amazTab_h, hTabOMI
-	; listx = 550
-	; listy = 280
+	CreateTab amazTab_w, amazTab_h, hTabOMI
 
 //==========================================================
 	InsertTab "C P U", ID_OMTAB_CPU, 5, hTabOMI

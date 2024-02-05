@@ -1,7 +1,7 @@
 // INFO ****************************************************
 // FileName : 00_module.hsp
-// Version : 0.3.1
-// Date    : 2024/01/25
+// Version : 0.3.2
+// Date    : 2024/02/05
 // Author  : YUZRANIUM（ゆずらにうむ）
 // Twitter : https://twitter.com/YUZRANIUM
 // Git Hub : https://github.com/YUZRANIUM/PC_CareingDiary
@@ -11,49 +11,15 @@
 その他モジュール等を記述しています。
 ************************************************************/
 
-#module
-//タブ項目の文字列の長さに関わらずタブつまみの横幅をすべて同じサイズにします
-	#const global TCS_FIXEDWIDTH $400
-//スタティックテキスト
-//winobj "static", "表示するもの", <拡張ウィンドウスタイル>, <ウィンドウスタイル>, Xサイズ, Yサイズ
-//<拡張ウィンドウスタイル> : 深い凹み
-	#const global WS_EX_WINDOWEDGE $200
-//<ウィンドウスタイル>
-	#const global WS_BORDER     $800000    //境界枠線
-	#const global WS_DISABLED   $8000000   //無効
-	#const global WS_DLGFRAME   $400000    //膨らみ
-	#const global SS_CENTER     $1         //中央揃え
-	#const global SS_RIGHT      $2         //右揃え
-	#const global SS_SUNKEN     $1000      //浅い凹み
-	#const global SS_NOTIFY     0x00000100  // STN_CLICKEDメッセージを親ウィンドウに送らせる
-	#const global STN_CLICKED   $00000000
-#global
-	/***  メッセージID  ***/
-
-	#const WS_VISIBLE                   0x10000000
-	#const WS_CHILD                     0x40000000
-#module
-	#const global WM_NOTIFY             0x004E
-
-	#const global LVN_COLUMNCLICK       $FFFFFF94
-
-	#const global TCM_ADJUSTRECT        0x1328
-	#const global TCM_INSERTITEM        0x1307
-	#const global TCM_GETCURSEL         0x130B
-	#const global TCM_SETCURSEL         0x130C
-
-
-	#const global TCN_SELCHANGE   0xFFFFFDD9
-#global
-/*******************************************************************************/
-
 
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 #ifndef __my_boxf_mod__
 	#define global __my_boxf_mod__
 
+
 #module "my_boxf"
+
 
 #deffunc local _my_boxf_init_
 	; boxf用の算出座標
@@ -120,12 +86,11 @@
 
 
 
+
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 #ifndef _my_pc_mod_
 	#define global _my_pc_mod_
 
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-#module "my_pc_mod"
 
 #ifndef __USER32__
 	#include "user32.as"
@@ -134,6 +99,49 @@
 #ifndef __hsedsdk__
 	#include "hsedsdk.as"
 #endif
+
+
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+#module "my_pc_mod"
+
+
+#ifndef __MY_WIN_CONST__
+
+
+//タブ項目の文字列の長さに関わらずタブつまみの横幅をすべて同じサイズにします
+	#const TCS_FIXEDWIDTH 0x400
+//スタティックテキスト
+//winobj "static", "表示するもの", <拡張ウィンドウスタイル>, <ウィンドウスタイル>, Xサイズ, Yサイズ
+//<拡張ウィンドウスタイル> : 深い凹み
+	#const WS_EX_WINDOWEDGE 0x200
+//<ウィンドウスタイル>
+	#const WS_BORDER     0x800000    //境界枠線
+	#const WS_DISABLED   0x8000000   //無効
+	#const WS_DLGFRAME   0x400000    //膨らみ
+	#const SS_CENTER     0x1         //中央揃え
+	#const SS_RIGHT      0x2         //右揃え
+	#const SS_SUNKEN     0x1000      //浅い凹み
+	#const SS_NOTIFY     0x00000100  // STN_CLICKEDメッセージを親ウィンドウに送らせる
+	#const STN_CLICKED   0x00000000
+
+	/***  メッセージID  ***/
+
+	#const WS_VISIBLE      0x10000000
+	#const WS_CHILD        0x40000000
+	#const WM_NOTIFY       0x004E
+
+	#const LVN_COLUMNCLICK 0xFFFFFF94
+
+	#const TCM_ADJUSTRECT  0x1328
+	#const TCM_INSERTITEM  0x1307
+	#const TCM_GETCURSEL   0x130B
+	#const TCM_SETCURSEL   0x130C
+
+	#const TCN_SELCHANGE   0xFFFFFDD9
+
+#endif // __MY_WIN_CONST__
+
+
 
 	;===========================================================================
 	;四半期判定
@@ -271,7 +279,7 @@ vsave_put bfpow :vsave_end%1
 	;
 #deffunc mylmb str p1, int x, int y, var obj_hwnd, int win_stile
 	dim RECT, 4
-	winobj "static", p1, , $50000000 | SS_NOTIFY | win_stile, x, y
+	winobj "static", p1, , CHILD_VIS | SS_NOTIFY | win_stile, x, y
 	obj_hwnd = objinfo(stat, 2)
 	//スタティックテキスト上のカーソルをハンドカーソルに変更
 	LoadCursor 0, 32649
@@ -340,72 +348,3 @@ vsave_put bfpow :vsave_end%1
 #global // my_pc_mod
 
 #endif //_my_pc_mod_
-
-
-
-
-
-/*******************************************************************************
-					タブコントロールモジュール
-********************************************************************************/
-#module "MyTab_1"
-#uselib "user32"
-#func GetClientRect "GetClientRect" int, int
-#func SetWindowLong "SetWindowLongA" int, int, int
-#func SetParent "SetParent" int, int
-#uselib "gdi32"
-#cfunc GetStockObject "GetStockObject" int
-
-
-// CreateTab p1, p2, p3, p4
-// タブコントロールを設置します。statにタブコントロールのハンドルが返ります。
-// p1,p2 : タブコントロールのX/Y方向のサイズ
-// p3 : タブコントロールのハンドルを受け取る変数
-// p4 : タブコントロールの追加ウィンドウスタイル
-#deffunc CreateTab int p1, int p2, var p3, int p4
-	winobj "systabcontrol32", "", , $52000000 | p4, p1, p2
-	p3 = objinfo(stat, 2)
-	sendmsg p3, $30, GetStockObject(17)
-	dim rect, 4
-	return p3
-/*******************************************************************************/
-// My_CreateTab p1, p2, p3, p4
-// タブコントロールを設置します。
-// p1,p2 : タブコントロールのX/Y方向のサイズ
-// p3 : タブコントロールのハンドルを受け取る変数
-// p4 : タブコントロールの追加ウィンドウスタイル(=$400)
-#define global My_CreateTab(%1, %2, %3, %4 = $400) CreateTab %1,%2,%3,%4
-/*******************************************************************************/
-// InsertTab p1,p2,index,p3
-// タブコントロールに項目を追加します。
-// p1 : "タブつまみ部分の文字列"
-// p2 : タブの項目として貼り付けるbgscr命令のウィンドウID値
-// index : タブの序列(= 0～)
-// p3 : タブコントロールのオブジェクトハンドル
-#deffunc InsertTab str p1, int p2, int index, var p3
-	pszText = p1 : tcitem = 1, 0, 0, varptr(pszText)
-	sendmsg p3, TCM_INSERTITEM, index, varptr(tcitem)
-	GetClientRect p3, varptr(rect)
-	sendmsg p3, TCM_ADJUSTRECT, , varptr(rect)
-	bgscr p2, rect(2) - rect(0) + 2, rect(3) - rect(1) + 8, 2, rect(0) + 2, rect(1) + 8
-	SetWindowLong hwnd, -16, WS_CHILD
-	SetParent hwnd, p3
-	return
-#global
-
-
-#module "MyTab_2"
-; ChangeTab bgscr_id_, tab_hwnd_, win_id_
-; タブ切り替え処理用
-; bgscr_id_ : タブの項目として貼り付けるbgscr命令の初回ウィンドウID値
-; tab_hwnd_ : タブコントロールのオブジェクトハンドル
-; win_id_   : タブが設置されているウィンドウID
-#deffunc ChangeTab int bgscr_id_, var tab_hwnd_, int win_id_, local wID
-	gsel wID + bgscr_id_, -1
-	sendmsg tab_hwnd_, TCM_GETCURSEL
-	wID = stat
-	gsel wID + bgscr_id_, 1
-	gsel win_id_, 1
-	return
-#global
-/*******************************************************************************/

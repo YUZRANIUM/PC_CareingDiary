@@ -1,13 +1,17 @@
 // INFO ****************************************************
 // FileName : 04_process02.hsp
-// Version : 0.3.1
-// Date    : 2024/01/25
+// Version : 0.3.2
+// Date    : 2024/02/05
 // Author  : YUZRANIUM（ゆずらにうむ）
 // Twitter : https://twitter.com/YUZRANIUM
 // Git Hub : https://github.com/YUZRANIUM/PC_CareingDiary
 //**********************************************************
 /* Description
 このファイルは各モジュールのインクルードとlayerobjのサブルーチン処理を行っています。
+
+	"hsedsdk.as"    // hspver
+	"hspda.as"      // vsave系
+	"d3m.hsp"       // fps
 ************************************************************/
 
 #packopt name "PC Careing Diary"
@@ -20,17 +24,15 @@
 	#addition "userdef.as"
 	#addition "hspdef.as"
 	/*** 外部モジュール ***/
-	#include "user32.as"
-	#include "gdi32.as"
-	#include "WebView2_10115038.as"
-	#include "hsp3util.as"
-	#include "hsedsdk.as"      //hspver
-	#include "hspda.as"        //vsave系
-	#include "d3m.hsp"         //fps
+	#use user32, gdi32, hsedsdk, hspda, WebView2_10115038
+	#include "d3m.hsp"
 	#include "sqlele.hsp"
 	/*** 分割自作モジュール ***/
 	#include "C:\\gitproject\\doclib\\02_myarray.hsp"
+
+	#include "my_win_const.hsp"
 	#include "00_module.hsp"
+	#include "00_mytab.hsp"
 	#include "00_mylv.hsp"
 	#include "01_mypb.hsp"
 	/*** 分割ファイル ***/
@@ -38,7 +40,7 @@
 	#include "02_interface.hsp"
 	#include "03_process01.hsp"
 
-#cmpopt ppout 1
+#cmpopt ppout 0
 #cmpopt varname 1
 #cmpopt varinit 0
 /******************************  layerobjの処理  *********************************/
@@ -208,7 +210,7 @@
 			if th_prmchk(4) {cooler(1) += (cooler * 1.75)}
 			if th_prmchk(5) {cooler(1) += (cooler * 2.00)}
 
-			st(4) = limitf(cooler(0) + cooler(1), 90.0, 180.0)
+			st(4) = limitf(cooler(0) + cooler(1), 90.0, 200.0)
 			if (st(5) < 35.0) {st(4) = 90.0}
 
 			;======================================= T H E R M A L

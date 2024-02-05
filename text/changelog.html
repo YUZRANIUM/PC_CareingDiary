@@ -2,7 +2,7 @@
     <html>
     <head>
         <meta charset="UTF-8">
-        <title>ver 0&period;3&period;1 &amp;nbsp&semi;&lowbar;&lt;sub&gt;&lpar;2024&sol;01&sol;25&rpar;&lt;&sol;sub&gt;&lowbar;</title>
+        <title>ver 0&period;3&period;2 &amp;nbsp&semi;&lt;sub&gt;&lowbar;&lpar;2024&sol;02&sol;05&rpar; hsp3&period;7beta6 &rarr; hsp3&period;7beta7&lowbar;&lt;&sol;sub&gt;</title>
         <style>
 /* From extension vscode.github */
 /*---------------------------------------------------------------------------------------------
@@ -2856,13 +2856,30 @@ body,
             <div class="github-markdown-content"><span id="markdown-mermaid" aria-hidden="true"
                     data-dark-mode-theme="dark"
                     data-light-mode-theme="default"></span>
-                <h2 id="ver-031-20240125">ver 0.3.1  <em><sub>(2024/01/25)</sub></em></h2>
+                <h2 id="ver-032-20240205-hsp37beta6--hsp37beta7">ver 0.3.2  <sub><em>(2024/02/05) hsp3.7beta6 → hsp3.7beta7</em></sub></h2>
 <h3 id="修正">修正</h3>
 <ul>
-<li></li>
+<li>
+<p>タブコントロールのタブ切替がうまく実行できていたのは実はまぐれだった.</p>
+<ul>
+<li>タブコントロールのモジュールを別ファイル&quot;00_mytab.hsp&quot;へ独立し<code>ChangeTab</code>命令を修正.</li>
+</ul>
+</li>
+<li>
+<p>レイヤーオブジェクトのサブルーチン先で <code>redraw</code>命令を使用していた.</p>
+<ul>
+<li>サブルーチン先でコールバックルーチンの仕様を厳守するようにし, また不必要な<code>gosub ~ return</code>を廃した.</li>
+</ul>
+</li>
 </ul>
 <h3 id="変更">変更</h3>
 <ul>
+<li>
+<p><strong>HSP3のバージョンを <code>3.7beta6</code> から <code>3.7beta7</code> へバージョンアップ.</strong></p>
+</li>
+<li>
+<p>プロジェクトで使用しているwin32API関連のウィンドウメッセージのマクロ定義場所が定まっておらず管理が煩雑になったため, 別ファイル &quot;my_win_const.hsp&quot; へ独立させ, インクルードガードを利用し管理場所をまとめた.</p>
+</li>
 <li>
 <p>ログの表示を一部変更.</p>
 <ul>
