@@ -1,0 +1,270 @@
+; INFO *************************************************************************
+; FileName : my_win_const.hsp
+; Version  : 0.0.1
+; Date     : 2024/02/02
+; Author   : YUZRANIUM（ゆずらにうむ）
+; Twitter  : https://twitter.com/YUZRANIUM
+;*******************************************************************************
+/* Description
+
+このファイルは個人的によく利用するwin32APIのウィンドウメッセージをマクロ登録しています
+他から独立しているため複数のプロジェクトからinclude出来ます
+********************************************************************************/
+
+
+#ifndef __MY_WIN_CONST__
+	#define global __MY_WIN_CONST__
+
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+//                            ウィンドウクラス名
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+	; アニメーションコントロール
+#define global WinClass_Anime "SysAnimate32"
+	; プログレスバー
+#define global WinClass_Prog  "msctls_Progress32"
+	; ステータスバー
+#define global WinClass_Statb "msctls_Statusbar32"
+	; ツールバー
+#define global WinClass_Toolb "ToolbarWindow32"
+	; ツールチップコントロール
+#define global WinClass_Toolt "Tooltips_class32"
+	; トラックバー
+#define global WinClass_Track "msctls_Trackbar32"
+	; リストビュー
+#define global WinClass_List  "SysListView32"
+	; タブコントロール
+#define global WinClass_Tab   "SysTabControl32"
+	;-------------------------------------------------------
+	; DTP(DateTimePick)コントロール
+#define global WinClass_DTP   "SysDateTimePick32"
+	; 月間カレンダーコントロール
+#define global WinClass_Cal   "SysMonthCal32"
+	; レバーコントロール
+#define global WinClass_Rebar "ReBarWindow32"
+
+
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+//                            汎用 メッセージID
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+	; 親に通知
+	#const global WM_NOTIFY             0x004E
+/*     ================ WM_NOTIFY形式でのメーッセージの受け取り方 ================
+
+WM_NOTIFYはlparamにNMHDR構造体のアドレスを指定, そのNMHDR構造体には以下の情報がある
+
+	hwndFrom : メッセージを送信したコントロールのウィンドウハンドル (HSPでのobjhwnd)
+	idFrom   : メッセージを送信したコントロールのID
+	code     : 通知コード
+
+HSPではdupptr命令を利用することで上記の情報を取得できる
+
+(サブルーチン先)
+//*ラベル
+	dupptr NMHDR, lparam, 12, 4
+	obj_hwnd = NMHDR(0)     // メッセージ送信元のオブジェクトハンドル
+
+	if (NMHDR(2) = (通知コード)) {
+		if      (obj_hwnd = ...) {}
+		else:if (obj_hwnd = ...) {}
+	}
+	return
+==============================================================================*/
+
+
+
+	; 親に通知2
+	#const global WM_COMMAND            0x0111
+/*     ================ WM_COMMAND形式でのメッセージの受け取り方 ================
+
+WM_COMMANDはコントロールが親ウィンドウに通知メッセージを送った場合に送られます
+
+	wID         =  wParam        & 0xFFFF
+	wNotifyCode = (wParam >> 16) & 0xFFFF
+	hwndControl =  lParam
+
+	wID
+		wParam パラメータの下位ワード値
+
+	wNotifyCode
+		wParam パラメータの上位ワード値
+		コントロールから送られている場合にはコントロールからの通知コードが指定
+
+	hwndControl
+		lParam パラメータの値
+		コントロールから送られている場合にはコントロールのウィンドウハンドルが
+		それ以外の場合は0(NULL)
+
+==============================================================================*/
+
+	; 子ウィンドウ設定
+	#const global WS_CHILD              0x40000000
+	; 表示させる
+	#const global WS_VISIBLE            0x10000000
+	; 子ウィンドウ + 表示 (WS_CHILD | WS_VISIBLE)
+	#const global CHILD_VIS             WS_CHILD | WS_VISIBLE
+
+
+
+
+
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+//                             スタティックテキスト
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+; winobj "static", "表示するもの", <拡張ウィンドウスタイル>, <ウィンドウスタイル>, Xサイズ, Yサイズ
+
+	; < Window Style > : 境界枠線
+	#const global WS_BORDER             0x800000
+	; < Window Style > : 無効
+	#const global WS_DISABLED           0x8000000
+	; < Window Style > : 膨らみ
+	#const global WS_DLGFRAME           0x400000
+	; < Window Style > : 中央揃え
+	#const global SS_CENTER             0x1
+	; < Window Style > : 右揃え
+	#const global SS_RIGHT              0x2
+	; < Window Style > : 浅い凹み
+	#const global SS_SUNKEN             0x1000
+	; < Window Style > : STN_CLICKEDメッセージを親ウィンドウに送らせる
+	#const global SS_NOTIFY             0x00000100
+	#const global STN_CLICKED           0x00000000
+
+	; < Ex Window Style > : 深い凹み
+	#const global WS_EX_WINDOWEDGE      0x200
+
+
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+//                            タブコントロール
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+	//タブ項目の文字列の長さに関わらずタブつまみの横幅をすべて同じサイズにします
+	#const global TCS_FIXEDWIDTH        0x400
+
+	; ウィンドウ領域と表示領域を相互に変換
+	#const global TCM_ADJUSTRECT        0x1328
+	; 新しいタブを挿入
+	#const global TCM_INSERTITEM        0x1307
+	; 選択されているタブインデックスを取得
+	#const global TCM_GETCURSEL         0x130B
+	; タブを選択
+	#const global TCM_SETCURSEL         0x130C
+
+	; 選択されているタブが変更された
+	#const global TCN_SELCHANGE         0xFFFFFDD9
+
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+//                            リストビュー
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+	; < Window Style > : リストビューの詳細表示
+	#const global LVS_REPORT            0x0001
+
+	; < Ex Window Style > : グリッド線の表示
+	#const global LVS_EX_GRIDLINES      0x00000001
+	; < Ex Window Style > : レコード（行）の一括選択
+	#const global LVS_EX_FULLROWSELECT  0x00000020
+	; < Ex Window Style > : カラム（列）並び替え可能
+	#const global LVS_EX_HEADERDRAGDROP 0x00000010
+
+
+	; アイテムの取得
+	#const global LVM_GETITEM           0x1005
+	; アイテム、またはサブアイテムの追加
+	#const global LVM_SETITEM           0x1006
+	; アイテムの追加
+	#const global LVM_INSERTITEM        0x1007
+	; アイテムの削除
+	#const global LVM_DELETEITEM        0x1008
+	; アイテムの全消去
+	#const global LVM_DELETEALLITEMS    0x1009
+	; アイテムの検索
+	#const global LVM_GETNEXTITEM       0x100C
+	; カラムの追加
+	#const global LVM_INSERTCOLUMN      0x101B
+	; カラムの削除
+	#const global LVM_DELETECOLUMN      0x101c
+
+
+	#const global LVCF_FMT              0x0001
+	#const global LVCF_WIDTH            0x0002
+	#const global LVCF_TEXT             0x0004
+	#const global LVCF_SUBITEM          0x0008
+
+	#const global LVIF_TEXT             0x0001
+
+	#const global LVN_COLUMNCLICK       0xFFFFFF94
+
+
+
+
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+//                            プログレスバー
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+	; < Window Style > : なめらかな表示
+	#const global PBS_SMOOTH            0x0001
+	; < Window Style > : 垂直プログレスバー
+	#const global PBS_VERTICAL          0x0004
+	; < Window Style > : マーキーアニメーション
+	#const global PBS_MARQUEE           0x0008
+	; < Window Style > : 減少時もなめらかに
+	#const global PBS_SMOOTHREVERSE     0x0010
+
+	;-----------------------------------
+	; 最大･最小値の設定(32bit)
+	#const global PBM_SETRANGE32        0x0406
+	; 最大･最小値の取得
+	#const global PBM_GETRANGE          0x0407
+	;-----------------------------------
+	; 増分値の取得
+	#const global PBM_GETSTEP           0x040D
+	; 増分値の設定
+	#const global PBM_SETSTEP           0x0404
+	; 増分値だけ進める
+	#const global PBM_STEPIT            0x0405
+	;-----------------------------------
+	; 現在位置の取得
+	#const global PBM_GETPOS            0x0408
+	; 現在位置の設定
+	#const global PBM_SETPOS            0x0402
+	; 現在位置の相対設定
+	#const global PBM_DELTAPOS          0x0403
+	;-----------------------------------
+	; バーの状態取得
+	#const global PBM_GETSTATE          0x0411
+	; バーの状態設定
+	#const global PBM_SETSTATE          0x0410
+	; マーキーの操作
+	#const global PBM_SETMARQUEE        0x040A
+
+
+	/*****  Progress Bar status  *****/
+
+	; 通常     (緑色)
+	#const global PBST_NORMAL           0x0001
+	; エラー   (赤色)
+	#const global PBST_ERROR            0x0002
+	; 一時停止 (黄色)
+	#const global PBST_PAUSED           0x0003
+
+	//======================================================
+	; 通常
+	#const global MYPB_STYLE0     0x50000000 | PBS_SMOOTH | PBS_SMOOTHREVERSE
+	; 垂直
+	#const global MYPB_STYLE1    MYPB_STYLE0 | PBS_VERTICAL
+	; マーキー
+	#const global MYPB_STYLE2    MYPB_STYLE0 | PBS_MARQUEE
+	; 垂直マーキー
+	#const global MYPB_STYLE3    MYPB_STYLE0 | PBS_MARQUEE | PBS_VERTICAL
+
+
+
+
+#endif // __MY_WIN_CONST__

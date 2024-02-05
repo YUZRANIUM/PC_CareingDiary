@@ -1,0 +1,158 @@
+; INFO *************************************************************************
+; FileName : 00_mytab.hsp
+; Version  : 0.0.1
+; Date     : 2024/02/04
+; Author   : YUZRANIUM（ゆずらにうむ）
+; Twitter  : https://twitter.com/YUZRANIUM
+;*******************************************************************************
+/* Description
+
+このモジュールはwin32APIのタブコントロールをHSPのウィンドウオブジェクトとして
+比較的簡単に設置するためのものです
+
+********************************************************************************/
+
+
+
+
+#ifndef __MY_TAB_CONTROL__
+	#define global __MY_TAB_CONTROL__
+
+
+#ifndef __USER32__
+	#include "user32.as"
+#endif // __USER32__
+
+#ifndef __GDI32__
+	#include "gdi32.as"
+#endif // __GDI32__
+
+
+
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+#module "myTab"
+
+
+;-----------------------------------------------------------
+;                      定数マクロ登録
+;-----------------------------------------------------------
+
+#ifndef __MY_WIN_CONST__
+
+	; タブコントロール ウィンドウクラス名 ("SysTabControl32")
+	#define WinClass_Tab "SysTabControl32"
+
+	;-----------------------------------
+	;タブ項目の文字列の長さに関わらずタブつまみの横幅をすべて同じサイズにします
+	#const TCS_FIXEDWIDTH 0x400
+
+	;-----------------------------------
+	; 子ウィンドウ設定
+	#const WS_CHILD       0x40000000
+
+	;-----------------------------------
+	; ウィンドウ領域と表示領域を相互に変換
+	#const TCM_ADJUSTRECT 0x1328
+	; 新しいタブを挿入
+	#const TCM_INSERTITEM 0x1307
+	; 選択されているタブインデックスを取得
+	#const TCM_GETCURSEL  0x130B
+	; タブを選択
+	#const TCM_SETCURSEL  0x130C
+
+	;-----------------------------------
+	; 選択されているタブが変更された
+	#const TCN_SELCHANGE  0xFFFFFDD9
+
+#endif // __MY_WIN_CONST__
+
+
+
+
+
+;-----------------------------------------------------------
+;                          命 令
+;-----------------------------------------------------------
+
+
+
+	;=======================================================
+	; モジュール内部変数初期化用
+	;
+#deffunc local _myTab_init_
+	; タブつまみ部分の表示文字列
+	pszText = "" : sdim pszText, 64
+	; タブ情報格納用
+	TCITEM = 0   : dim TCITEM, 4
+	; 描画範囲取得用
+	RECT = 0     : dim RECT, 4
+	return
+
+
+	;=======================================================
+	; タブコントロールを設置します
+	; CreateTab x, y, obj_hwnd, win_style
+	;
+	;	[ int ] x, y      : タブコントロールのX/Y方向のサイズ
+	;	[ var ] obj_hwnd  : タブコントロールのハンドルを受け取る変数
+	;	[ int ] win_style : タブコントロールの追加ウィンドウスタイル
+	;
+#deffunc CreateTab int x, int y, var obj_hwnd, int win_style
+
+	winobj WinClass_Tab, "", , 0x52000000 | TCS_FIXEDWIDTH | win_style, x, y
+	obj_hwnd = objinfo(stat, 2)
+	return
+
+
+
+	;=======================================================
+	; タブコントロールに項目を追加します
+	; InsertTab tab_name, bgwinID, index, obj_hwnd
+	;
+	;	[ str ] tab_name : "タブつまみ部分の文字列"
+	;	[ int ] bgwinID  : タブの項目として貼り付けるbgscr命令のウィンドウID値
+	;	[ int ] index    : タブの序列 (= 0～)
+	;	[ var ] obj_hwnd : タブコントロールのオブジェクトハンドル
+	;
+#deffunc InsertTab str tab_name, int bgwinID, int index, var obj_hwnd
+
+	pszText = tab_name
+	TCITEM = 0x0001, 0, 0, varptr(pszText)
+	sendmsg obj_hwnd, TCM_INSERTITEM, index, varptr(TCITEM)
+
+	dim RECT, 4
+	GetClientRect obj_hwnd, varptr(RECT)
+	sendmsg obj_hwnd, TCM_ADJUSTRECT, , varptr(RECT)
+
+	bgscr bgwinID, (RECT(2) - RECT(0) + 2), (RECT(3) - RECT(1) + 8), 2, (RECT(0) + 2), (RECT(1) + 8)
+	SetWindowLong hwnd, -16, WS_CHILD
+	SetParent hwnd, obj_hwnd
+	return
+
+
+
+	;=======================================================
+	; タブを切り替えます
+	; ChangeTab obj_hwnd, winid, bgwinID
+	;
+	;	[ var ] obj_hwnd : タブコントロールのオブジェクトハンドル
+	;	[ var ] winid    : 現在表示されているタブに張り付けられているbgscrのウィンドウID
+	;	[ int ] bgwinID  : タブコントロールの初回のbgscrのウィンドウID
+	;
+#deffunc ChangeTab var obj_hwnd, var winid, int bgwinID
+	gsel winid, -1
+	sendmsg obj_hwnd, TCM_GETCURSEL : winid = stat + bgwinID
+	gsel winid, 1
+	return
+
+
+
+
+#global // myTab
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	;
+	;
+	_myTab_init_@myTab    // myTabモジュール初期化用
+
+
+#endif // __MY_TAB_CONTROL__
