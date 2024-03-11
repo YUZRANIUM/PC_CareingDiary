@@ -43,15 +43,17 @@ SQL関係もデータを変数に格納するということでこちらで扱っています。
 	if fname = "" : mkdir "savedata"
 
 	//ファイル名変数
-	fname = "" : sdim fname, 512, 8
+	fname = "" : sdim fname, 512, 10
 	fname(0) = "" + dir_cur + "\\savedata\\Save0.var"
 	fname(1) = "" + dir_cur + "\\savedata\\Save1.var"
 	fname(2) = "" + dir_cur + "\\savedata\\Save2.var"
 	fname(3) = "" + dir_cur + "\\savedata\\Save3.var"
 	fname(4) = "" + dir_cur + "\\savedata\\Save4.var"
 	fname(5) = "" + dir_cur + "\\savedata\\Save5.var"
-	fname(6) = "" + dir_cur + "\\savedata\\AutoSave.var"
-	fname(7) = "" + dir_cur + "\\savedata\\Reset.var"
+	fname(6) = "" + dir_cur + "\\savedata\\Save6.var"
+	fname(7) = "" + dir_cur + "\\savedata\\Save7.var"
+	fname(8) = "" + dir_cur + "\\savedata\\Save8.var"
+	fname(9) = "" + dir_cur + "\\savedata\\Save9.var"
 
 	//saveスロット番号, MASTER_layerへのセーブ・ロード指示
 	saveID = 0 : dim saveID, 3
@@ -62,12 +64,16 @@ SQL関係もデータを変数に格納するということでこちらで扱っています。
 	dformat(2) = "LOAD"
 	dformat(3) = "SAVE"
 
-	// dir_cur + \\text\\changelog.html
-	#define changelog dir_cur + "\\text\\changelog.html"
+	// dir_cur + "\\savedata\\AutoSave.var"
+	#define AutoSavedir dir_cur + "\\savedata\\AutoSave.var"
+	// dir_cur + "\\savedata\\Reset.var"
+	#define Resetdir    dir_cur + "\\savedata\\Reset.var"
 	// dir_cur + \\savedata\\backup.var
-	#define backupdir dir_cur + "\\savedata\\backup.var"
+	#define backupdir   dir_cur + "\\savedata\\backup.var"
+	// dir_cur + \\text\\changelog.html
+	#define changelog   dir_cur + "\\text\\changelog.html"
 	// dir_cur + "\\SQL\\Syouhin.db"
-	#define db        dir_cur + "\\SQL\\Syouhin.db"
+	#define db          dir_cur + "\\SQL\\Syouhin.db"
 
 
 ;-------------------------------------------------------------------------------
@@ -232,13 +238,14 @@ SQL関係もデータを変数に格納するということでこちらで扱っています。
 	setting(5) = -1
 	setting(6) = 0
 	setting(7) = 0
+	; varprop setting, varprop_xtype | varprop_logarray
 
 	remainflg = 0
 	; 実績解除･イベント･課題達成フラグ
 	; (0) : 日付変更フラグ
 	; (1) : 四半期変更フラグ
 	; (2) : 新年あけおめフラグ
-	; (3) :
+	; (3) : オンライン復帰フラグ (オフライン報告)
 	; (4) :
 	; (5) :
 	; (6) :
@@ -251,7 +258,7 @@ SQL関係もデータを変数に格納するということでこちらで扱っています。
 	; (0) : 日付変更
 	; (1) : 四半期変更
 	; (2) : 新年あけおめ
-	; (3) :
+	; (3) : オフライン報告
 	; (4) :
 	; (5) :
 	; (6) :
@@ -259,10 +266,10 @@ SQL関係もデータを変数に格納するということでこちらで扱っています。
 	; (8) :
 	; (9) :
 	TskLog = "" : sdim TskLog, 64, 10, 2
-	TskLog(0, 0) = "" : TskLog(0, 1) = " : Game times %02d/%02d になりました."
-	TskLog(1, 0) = "" : TskLog(1, 1) = " : Game times %d 四半期---------"
-	TskLog(2, 0) = "" : TskLog(2, 1) = " : Happy New Year!!--------------\t\t%d 年目に突入"
-	TskLog(3, 0) = "" : TskLog(3, 1) = ""
+	TskLog(0, 0) = "" : TskLog(0, 1) = " Game times %02d/%02d になりました."
+	TskLog(1, 0) = "" : TskLog(1, 1) = " Game times %d 四半期---------"
+	TskLog(2, 0) = "" : TskLog(2, 1) = " Happy New Year!!--------------\t\t%d 年目に突入"
+	TskLog(3, 0) = "" : TskLog(3, 1) = " オ カ エ リ ナ サ イ\n %02d日 %02d時間%02d分%02d秒 オフラインでした"
 	TskLog(4, 0) = "" : TskLog(4, 1) = ""
 	TskLog(5, 0) = "" : TskLog(5, 1) = ""
 	TskLog(6, 0) = "" : TskLog(6, 1) = ""
@@ -444,6 +451,14 @@ SQL関係もデータを変数に格納するということでこちらで扱っています。
 	; 日付管理用フォーマット
 	gtformat = "%2d年目 第%d四半期 %02d月%02d日 %02d:%02d"
 
+	; ログイン時間管理用 モジュール型変数
+	ltime = 0
+	; ログイン関係用多目的変数
+	ltmpary = 0 : dim ltmpary, 4
+	; フォーカストグル
+	ftgl = 0
+
+
 	sdim motimono, 2048 : sdim soukomoni, 2048 : sdim logmoni, 2048 : sdim omisemoni, 2048
 	//持ち物表示用その他1
 	motimono += "持ち物一覧です\n\n"
@@ -493,6 +508,11 @@ SQL関係もデータを変数に格納するということでこちらで扱っています。
 	; (7, 0) : info auto start
 	Shkidh = 0  :  dim Shkidh, 8, 2
 
+
+	;=======================================================
+	; レイヤーオブジェクト関連
+	;
+
 	; レイヤーオブジェクトID
 	; 第2次元要素 0 = ID, 1 = objct hWnd
 	; (0) : MASTER / セーブ・ロード用
@@ -502,6 +522,26 @@ SQL関係もデータを変数に格納するということでこちらで扱っています。
 
 	//レイヤーオブジェクトlparam受け取り
 	layl = 0 : dim layl, 3
+
+	//レイヤーオブジェクト 整数値 受け取り
+	layint = 0 :  dim layint, 3
+	//レイヤーオブジェクト 文字列 受け取り
+	laystr = 0 : sdim laystr, 64, 3
+	//レイヤーオブジェクト 実数値 受け取り
+	laydbl = 0 : ddim laydbl, 3
+
+	; レイヤーオブジェクト文字列分割用配列
+	lstrary0 = ""
+	; レイヤーオブジェクト文字列分割用配列
+	lstrary1 = "" : varprop lstrary1, varprop_xtype | varprop_logarray
+	; レイヤーオブジェクト文字列分割用配列
+	lstrary2 = ""
+
+	;
+	;
+	;=======================================================
+
+
 
 	; save & load オブジェクトハンドル
 	; (0, 0) : hLoad0
@@ -516,7 +556,7 @@ SQL関係もデータを変数に格納するということでこちらで扱っています。
 	; (1, 4) : hSave4
 	; (0, 5) : hLoad5
 	; (1, 5) : hSave5
-	hls = 0 : dim hls, 2, 6
+	hls = 0 : dim hls, 2, 10
 
 	; button オブジェクトID, ハンドル
 	; 第2次元要素 0 = ID, 1 = objct hWnd

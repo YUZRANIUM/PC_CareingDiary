@@ -34,10 +34,16 @@
 	;=======================================================
 	; オートセーブの制御
 	;
-	if setting & (autoch = 0) & ((gettime(5) \ 5) = 0) & (gettime(6) = 0) {
-		G_prm ID_WIN_MASTER, 0, layidh(0), lay_autosave : autoch = 1
-	}
-	else:if setting & autoch & ((gettime(5) \ 5) = 0) & (gettime(6) = 1) {autoch = 0}
+	if setting & ((gettime(5) \ 5) = 0) & (gettime(6) = 0) {seton autoch} else {setoff autoch}
+	if (autoch = TGR_ON) {G_prm ID_WIN_MASTER, 0, layidh(0), lay_autosave}
+
+	;=======================================================
+	; オフラインタイマーの制御
+	;
+	if (setting(5) = -1) {setoff ftgl} else {seton ftgl}
+	gsel ID_WIN_MAIN, 0
+	if      (ftgl = TGR_OFF) {focus_lost ltime : objprm layidh(1), "login,fcs_lost"}
+	else:if (ftgl = TGR_ON)  {focus_gain ltime : objprm layidh(1), "login,fcs_gain"}
 
 	;=======================================================
 	; メインループの制御
@@ -47,6 +53,10 @@
 	if (setting(5) = -1) {opebut_text(2) = "あ" : goto *main}
 	else                 {opebut_text(2) = "1"}
 //////////////////////////// ゲームSTOP中でも行う処理 /////////////////// ここまで
+
+
+
+
 
 	;=======================================================
 	; 描画処理
@@ -93,7 +103,6 @@
 
 //amazoonリストビュー昇降順の処理
 *lisupdn
-	setting(5) = -1
 	//タブコントロールのオブジェクトハンドル取得
 	dupptr nmhdr, lparam, 12, 4 : hTab = nmhdr(0)
 	if (nmhdr(2) = LVN_COLUMNCLICK) {
@@ -125,7 +134,7 @@
 	else:if (hL = hLinkgi) {exec infa(5), 16 : return} //情報githubハイパーリンク
 	if (hL = Btnidh(0, 1)) | (hL = Btnidh(1, 1)) | (hL = Btnidh(2, 1)) : return
 
-	repeat 6
+	repeat 10
 		if      (hL = hls(0, cnt)) {saveID = cnt, lay_load : break} ; load
 		else:if (hL = hls(1, cnt)) {saveID = cnt, lay_save : break} ; save
 	loop
@@ -141,6 +150,9 @@
 
 *OP新規
 	gsel ID_WIN_OPEN, -1 : gsel ID_WIN_MAIN, 1
+	/*****  ログイン処理  *****/
+	login_reset ltime
+	game_login ltime
 	return
 
 *OPload
@@ -205,8 +217,11 @@
 	setting(5) = -1
 	dialog "Return to Opening Really?", 2, "Return to Opening"
 	if stat = 6 {
+		/*****  ログアウト処理  *****/
+		game_logout ltime
+
 		mysave fname(saveID)
-		saveID = 7
+		saveID = 20
 		G_prm ID_WIN_MASTER, 0, layidh(0), lay_load
 		gsel ID_WIN_MAIN, -1 : gsel ID_WIN_OPEN, 1
 	}
@@ -250,9 +265,11 @@
 //終了の処理
 *exit
 	setting(5) = -1
+	/*****  ログアウト処理  *****/
+	game_logout ltime
 	/*****  自動保存  *****/
 	mysave fname(saveID)
-	mysave fname(6)
+	mysave AutoSavedir
 	vsave backupdir
 
 	/*****  WebView2の後処理  *****/

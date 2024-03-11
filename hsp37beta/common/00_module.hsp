@@ -101,6 +101,12 @@
 #endif
 
 
+#ifndef __HSPDA__
+	#use hspda
+#endif
+
+
+
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 #module "my_pc_mod"
 
@@ -190,23 +196,27 @@ local prmchk
 	; vsave’Zk
 	; %1 : ƒtƒ@ƒCƒ‹–¼
 	;
-#define global mysave(%1) \
-vsave_start: \
-vsave_put saveID:\
-vsave_put setting:\
-vsave_put userp:\
-vsave_put dsta:\
-vsave_put st:\
-vsave_put gt:\
-vsave_put unit_cnt:\
-vsave_put motimono:\
-vsave_put logmoni:\
-vsave_put bfcpu:\
-vsave_put bfgpu:\
-vsave_put bfrom:\
-vsave_put bfssd:\
-vsave_put bffan:\
-vsave_put bfpow :vsave_end%1
+#deffunc mysave str file_name
+	vsave_start
+	vsave_put ltime@
+	vsave_put saveID@
+	vsave_put ontime@
+	vsave_put setting@
+	vsave_put userp@
+	vsave_put dsta@
+	vsave_put st@
+	vsave_put gt@
+	vsave_put unit_cnt@
+	vsave_put motimono@
+	vsave_put logmoni@
+	vsave_put bfcpu@
+	vsave_put bfgpu@
+	vsave_put bfrom@
+	vsave_put bfssd@
+	vsave_put bffan@
+	vsave_put bfpow@
+	vsave_end file_name
+	return
 
 
 	;===========================================================================

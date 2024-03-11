@@ -35,12 +35,13 @@
 	#include "00_mytab.hsp"
 	#include "00_mylv.hsp"
 	#include "01_mypb.hsp"
+	#include "logintest.hsp"
 	/*** 分割ファイル ***/
 	#include "01_variable.hsp"
 	#include "02_interface.hsp"
 	#include "03_process01.hsp"
 
-#cmpopt ppout 0
+#cmpopt ppout 1
 #cmpopt varname 1
 #cmpopt varinit 0
 /******************************  layerobjの処理  *********************************/
@@ -54,13 +55,19 @@
 *master_layer_var
 	layl(0) = lparam
 		//変数リセット用ファイル
-	if      (layl = lay_init) {mysave fname(7)}
-	else:if (layl = lay_prmi) {layint1 = iparam
-		if      (layint1 = 0) {mysave fname(saveID) : G_prm ID_WIN_MAIN, 0, layidh(1), "log,asc" }
-		else:if (layint1 = 1) {mysave fname(saveID) : G_prm ID_WIN_MAIN, 0, layidh(1), "log,save"}
-		else:if (layint1 = 2) { ; load
+	if      (layl(0) = lay_init) {newmod ltime, LoginTimer : mysave Resetdir}
+	else:if (layl(0) = lay_prmi) {layint(0) = iparam
+		if      (layint(0) = 0) {mysave fname(saveID) : G_prm ID_WIN_MAIN, 0, layidh(1), "log,asc" : mysave AutoSavedir}
+		else:if (layint(0) = 1) {mysave fname(saveID) : G_prm ID_WIN_MAIN, 0, layidh(1), "log,save"}
+		else:if (layint(0) = 2) { ; load
 			//セーブデータのロード･各変数とオブジェクトの更新
-			vload fname(saveID)
+			if (saveID = 20) {vload Resetdir
+				gt(2) = gettime(1), gettime(3), gettime(4), gettime(5)
+				login_reset ltime
+			}
+			else {vload fname(saveID)}
+
+			game_login ltime
 			setting(5) = -1
 
 			/*** Mainウィンドウ各変数読み込み ***/
@@ -118,9 +125,9 @@
 //ゲーム内時間とログ layid(1)
 *lay
 	layl(1) = lparam
-	if (layl(1) = lay_prms) {laystr0 = refstr
-
-		split laystr0, ",", laystr0
+	if (layl(1) = lay_prms) {laystr(1) = refstr
+		lstrary1 = ""
+		split laystr(1), ",", lstrary1
 		/*** Mainウィンドウログ表示内容 ***/
 		notesel logmoni
 		time = strf(logtime, gettime(0), gettime(1), gettime(3), gettime(4), gettime(5), gettime(6))
@@ -141,14 +148,27 @@
 
 		;===================================================
 		; セーブ・ロードの報告
-		if laystr0(0) = "log" {
-			if      (laystr0.1 = "asc")  {noteadd time + logstr.1 + fname(saveID), 1, 0} ; オートセーブ事後報告
-			else:if (laystr0.1 = "load") {noteadd time + logstr.2 + fname(saveID), 1, 0} ; ロードの事後報告
-			else:if (laystr0.1 = "save") {noteadd time + logstr.3 + fname(saveID), 1, 0} ; セーブの事後報告
-			else:if (laystr0.1 = "setch") & (logstr.10 ! logstr.9) { ; 設定変更報告 (前回のログ内容と同じ場合は出力しない)
+		if      (lstrary1.0 = "log") {
+			if      (lstrary1.1 = "asc")  {noteadd time + logstr.1 + fname(saveID), 1, 0} ; オートセーブ事後報告
+			else:if (lstrary1.1 = "load") {noteadd time + logstr.2 + fname(saveID), 1, 0} ; ロードの事後報告
+			else:if (lstrary1.1 = "save") {noteadd time + logstr.3 + fname(saveID), 1, 0} ; セーブの事後報告
+			else:if (lstrary1.1 = "setch") & (logstr.10 ! logstr.9) { ; 設定変更報告 (前回のログ内容と同じ場合は出力しない)
 				noteadd time + logstr.9, 1, 0
 			}
 		}
+		else:if (lstrary1.0 = "login") {
+			if      (lstrary1.1 = "fcs_lost") {
+
+			}
+			else:if (lstrary1.1 = "fcs_gain") {
+				getline ltime, ltmpary, 1
+				TskLog(3, 0) = strf(TskLog(3, 1), ltmpary.0, ltmpary.1, ltmpary.2, ltmpary.3)
+				noteadd time + TskLog(3, 0), 1, 0
+			}
+		}
+		;===================================================
+		; ログイン関係の報告
+
 		noteunsel
 		;===================================================
 		; ログの出力
@@ -165,9 +185,9 @@
 *laystat
 	layl(2) = lparam
 
-	if (layl(2) = lay_init) {gosub *redraw_date_}
-	if (layl(2) = lay_prmi) {layint2 = iparam
-		if (layint2 = newst) { //ステータス更新
+	if      (layl(2) = lay_init) {gosub *redraw_date_}
+	else:if (layl(2) = lay_prmi) {layint(2) = iparam
+		if (layint(2) = newst) { //ステータス更新
 			gsel ID_WIN_MAIN
 			;======================================= ユーザーポイント関連
 			sendmsg hStatic.0, $C, 0, strf("Cat : %.2f", userp.1)
@@ -230,7 +250,7 @@
 			if (st.3 > 1023.0) {unit_cnt(1)++ : repeat unit_cnt(1):   st.3 /= 1024.0   :loop} ; SSD
 		}
 	}
-	if (layl(2) = lay_draw) {gosub *redraw_date_}
+	else:if (layl(2) = lay_draw) {gosub *redraw_date_}
 	return
 
 
