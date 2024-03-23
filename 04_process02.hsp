@@ -1,13 +1,17 @@
 // INFO ****************************************************
 // FileName : 04_process02.hsp
-// Version : 0.3.0
-// Date    : 2022/11/02
+// Version : 0.3.2
+// Date    : 2024/02/05
 // Author  : YUZRANIUM（ゆずらにうむ）
 // Twitter : https://twitter.com/YUZRANIUM
 // Git Hub : https://github.com/YUZRANIUM/PC_CareingDiary
 //**********************************************************
 /* Description
 このファイルは各モジュールのインクルードとlayerobjのサブルーチン処理を行っています。
+
+	"hsedsdk.as"    // hspver
+	"hspda.as"      // vsave系
+	"d3m.hsp"       // fps
 ************************************************************/
 
 #packopt name "PC Careing Diary"
@@ -20,25 +24,26 @@
 	#addition "userdef.as"
 	#addition "hspdef.as"
 	/*** 外部モジュール ***/
-	#include "user32.as"
-	#include "gdi32.as"
-	#include "WebView2_10115038.as"
-	#include "hsp3util.as"
-	#include "hsedsdk.as"      //hspver
-	#include "hspda.as"        //vsave系
-	#include "d3m.hsp"         //fps
+	#use user32, gdi32, hsedsdk, hspda, WebView2_10115038
+	#include "d3m.hsp"
 	#include "sqlele.hsp"
 	/*** 分割自作モジュール ***/
 	#include "C:\\gitproject\\doclib\\02_myarray.hsp"
+
+	#include "my_win_const.hsp"
 	#include "00_module.hsp"
+	#include "00_mytab.hsp"
 	#include "00_mylv.hsp"
 	#include "01_mypb.hsp"
+	#include "LoginTimer.hsp"
 	/*** 分割ファイル ***/
 	#include "01_variable.hsp"
 	#include "02_interface.hsp"
 	#include "03_process01.hsp"
 
-; #cmpopt ppout 1
+#cmpopt ppout 1
+#cmpopt varname 1
+#cmpopt varinit 0
 /******************************  layerobjの処理  *********************************/
 
 
@@ -50,67 +55,67 @@
 *master_layer_var
 	layl(0) = lparam
 		//変数リセット用ファイル
-	if      (layl = lay_init) {mysave fname(7)}
-	else:if (layl = lay_prmi) {layint1 = iparam
-		if      (layint1 = 0) {mysave fname(saveID) : G_prm ID_WIN_MAIN, 0, layidh(1), "log,asc" }
-		else:if (layint1 = 1) {mysave fname(saveID) : G_prm ID_WIN_MAIN, 0, layidh(1), "log,save"}
-		else:if (layint1 = 2) {vload  fname(saveID) : gosub *hlay_saveload : gosub *redraw_stat_ } ; load
+	if      (layl(0) = lay_init) {newmod ltime, LoginTimer : mysave Resetdir}
+	else:if (layl(0) = lay_prmi) {layint(0) = iparam
+		if      (layint(0) = 0) {mysave fname(saveID) : G_prm ID_WIN_MAIN, 0, layidh(1), "log,asc" : mysave AutoSavedir}
+		else:if (layint(0) = 1) {mysave fname(saveID) : G_prm ID_WIN_MAIN, 0, layidh(1), "log,save"}
+		else:if (layint(0) = 2) { ; load
+			//セーブデータのロード･各変数とオブジェクトの更新
+			if (saveID = 20) {vload Resetdir
+				gt(2) = gettime(1), gettime(3), gettime(4), gettime(5)
+				login_reset ltime
+			}
+			else {vload fname(saveID)}
+
+			game_login ltime
+			setting(5) = -1
+
+			/*** Mainウィンドウ各変数読み込み ***/
+			gsel ID_WIN_MAIN, -1
+			; Power用 プログレスバー設定
+			pbswmarq hPb(0), 0
+			pbset hPb(0), 0, 1000, 1000, -1
+			pbrepos hPb(0), int(st(7) * 10), 0
+			pbstcol2 hPb(0), 25, 44
+
+			G_prm ID_TAB_MOTI, 1, id_motimono, motimono
+			G_prm ID_TAB_LOG, -1, id_logmoni, logmoni
+			gsel ID_TAB_SOUKO, -1
+			gsel ID_WIN_MAIN
+
+			/*** Settingウィンドウ各項目読み込み ***/
+			gsel ID_WIN_SETI, -1
+			objprm id_savebut, setting(0)
+			objprm Shkidh(0, 0), setting(1)
+			objprm Shkidh(1, 0), setting(2)
+			objprm Shkidh(2, 0), setting(3)
+			objprm Shkidh(3, 0), setting(8)
+			objprm Shkidh(4, 0), setting(9)
+			objprm Shkidh(5, 0), setting(10)
+			objprm Shkidh(6, 0), setting(11)
+			objprm Shkidh(7, 0), setting(12)
+
+			/*** Amazoonリストビュー読み込み ***/
+			gsel ID_WIN_AMAZ, -1
+			gsel ID_OMTAB_CPU, 1
+			gsel ID_OMTAB_GPU, -1 : gsel ID_OMTAB_ROM, -1 : gsel ID_OMTAB_SSD, -1 : gsel ID_OMTAB_FAN, -1 : gsel ID_OMTAB_POW, -1
+
+			dellv LVidh(0, 0), 2 : insqlitem LVidh(0, 0), bfcpu ; CPU
+			dellv LVidh(1, 0), 2 : insqlitem LVidh(1, 0), bfgpu ; GPU
+			dellv LVidh(2, 0), 2 : insqlitem LVidh(2, 0), bfrom ; ROM
+			dellv LVidh(3, 0), 2 : insqlitem LVidh(3, 0), bfssd ; SSD
+			dellv LVidh(4, 0), 2 : insqlitem LVidh(4, 0), bffan ; FAM
+			dellv LVidh(5, 0), 2 : insqlitem LVidh(5, 0), bfpow ; POWER
+
+			/*** 各ウィンドウの非表示切り替え ***/
+			gsel ID_WIN_DOCK, -1 : gsel ID_WIN_SAVE, -1 : gsel ID_WIN_INFO, -1
+
+			gsel ID_WIN_MAIN, 1
+			objprm layidh(1), "log,load"
+			gosub *redraw_date_
+		}
 	}
-	else:if (layl = lay_prms) {laystr1 = refstr}
-
 	return
-
-/***********************************************************/
-//セーブデータのロード･各変数とオブジェクトの更新
-*hlay_saveload
-	setting(5) = -1
-
-	/*** Mainウィンドウ各変数読み込み ***/
-	gsel ID_WIN_MAIN, -1
-	; Power用 プログレスバー設定
-	pbswmarq hPb(0), 0
-	pbset hPb(0), 0, 1000, 1000, -1
-	pbrepos hPb(0), int(st(7) * 10), 0
-	pbstcol2 hPb(0), 25, 44
-
-	G_prm ID_TAB_MOTI, 1, id_motimono, motimono
-	G_prm ID_TAB_LOG, -1, id_logmoni, logmoni
-	gsel ID_TAB_SOUKO, -1
-	gsel ID_WIN_MAIN
-
-	/*** Settingウィンドウ各項目読み込み ***/
-	gsel ID_WIN_SETI, -1
-	objprm id_savebut, setting(0)
-	objprm Shkidh(0, 0), setting(1)
-	objprm Shkidh(1, 0), setting(2)
-	objprm Shkidh(2, 0), setting(3)
-	objprm Shkidh(3, 0), setting(8)
-	objprm Shkidh(4, 0), setting(9)
-	objprm Shkidh(5, 0), setting(10)
-	objprm Shkidh(6, 0), setting(11)
-	objprm Shkidh(7, 0), setting(12)
-
-	/*** Amazoonリストビュー読み込み ***/
-	gsel ID_WIN_AMAZ, -1
-	gsel ID_OMTAB_CPU, 1
-	gsel ID_OMTAB_GPU, -1 : gsel ID_OMTAB_ROM, -1 : gsel ID_OMTAB_SSD, -1 : gsel ID_OMTAB_FAN, -1 : gsel ID_OMTAB_POW, -1
-
-	dellv LVidh(0, 0), 2 : insqlitem LVidh(0, 0), bfcpu ; CPU
-	dellv LVidh(1, 0), 2 : insqlitem LVidh(1, 0), bfgpu ; GPU
-	dellv LVidh(2, 0), 2 : insqlitem LVidh(2, 0), bfrom ; ROM
-	dellv LVidh(3, 0), 2 : insqlitem LVidh(3, 0), bfssd ; SSD
-	dellv LVidh(4, 0), 2 : insqlitem LVidh(4, 0), bffan ; FAM
-	dellv LVidh(5, 0), 2 : insqlitem LVidh(5, 0), bfpow ; POWER
-
-	/*** 各ウィンドウの非表示切り替え ***/
-	gsel ID_WIN_DOCK, -1 : gsel ID_WIN_SAVE, -1 : gsel ID_WIN_INFO, -1
-
-	gsel ID_WIN_MAIN
-	objprm layidh(1), "log,load"
-	objprm layidh(2), 0.1
-	objprm layidh(2), 0.2
-	return
-
 
 
 //##############################################################################
@@ -120,63 +125,56 @@
 //ゲーム内時間とログ layid(1)
 *lay
 	layl(1) = lparam
-
-	if (layl(1) = lay_init) {}
-	if (layl(1) = lay_prmi) {layint0 = iparam : if (layint0 = gameh) {gosub *hlay_gt} }
-	if (layl(1) = lay_prms) {laystr0 = refstr
-
-		split laystr0, ",", laystr0
+	if (layl(1) = lay_prms) {laystr(1) = refstr
+		lstrary1 = ""
+		split laystr(1), ",", lstrary1
 		/*** Mainウィンドウログ表示内容 ***/
-		notesel logmoni : noteadd "\n", 1, 0
-		time = strf("%d/%d %d:%d:%d", gettime(1), gettime(3), gettime(4), gettime(5), gettime(6))
+		notesel logmoni
+		time = strf(logtime, gettime(0), gettime(1), gettime(3), gettime(4), gettime(5), gettime(6))
 
-		if TskFlg(0) {noteadd time + TskLog(0, 0), 1, 0} ; 日付変更線
-		if TskFlg(1) {noteadd time + TskLog(1, 0), 1, 0} ; 月変更
-		if TskFlg(2) {noteadd time + TskLog(2, 0), 1, 0} ; 四半期変更
-		if TskFlg(3) {noteadd time + TskLog(3, 0), 1, 0} ; あけおめ
-		TskFlg.0 = 0, 0, 0, 0
-
-		if laystr0(0) = "log" {
-			if  (laystr0.1 = "auto_chk") {noteadd time + logstr.9, 1, 0} ; 設定変更報告
-			else:if (laystr0.1 = "asc")  {noteadd time + logstr.1 + fname(saveID), 1, 0} ; オートセーブ事後報告
-			else:if (laystr0.1 = "load") {noteadd time + logstr.2 + fname(saveID), 1, 0} ; ロードの事後報告
-			else:if (laystr0.1 = "save") {noteadd time + logstr.3 + fname(saveID), 1, 0} ; セーブの事後報告
+		;===================================================
+		; 時間経過の実績解除
+		if TskFlg(0) { ; 日付変更線
+			;-----------------------------------------------
+			; 経過時間に応じて
+			userp.0 += ((1.5 * TskFlg.0) + (3.5 * TskFlg.1) + (6.5 * TskFlg.2))
+			userp.1 = userp.0 / 2.0
+			;-----------------------------------------------
+			TskLog(0, 0) = strf(TskLog(0, 1), gt.2, gt.3)
+			noteadd time + TskLog(0, 0), 1, 0 : TskFlg(0) = 0
 		}
+		if TskFlg(1) {TskLog(1, 0) = strf(TskLog(1, 1), gt.1) : noteadd time + TskLog(1, 0), 1, 0 : TskFlg(1) = 0} ; 四半期変更
+		if TskFlg(2) {TskLog(2, 0) = strf(TskLog(2, 1), gt.0) : noteadd time + TskLog(2, 0), 1, 0 : TskFlg(2) = 0} ; あけおめ
+
+		;===================================================
+		; セーブ・ロードの報告
+		if      (lstrary1.0 = "log") {
+			if      (lstrary1.1 = "asc")  {noteadd time + logstr.1 + fname(saveID), 1, 0} ; オートセーブ事後報告
+			else:if (lstrary1.1 = "load") {noteadd time + logstr.2 + fname(saveID), 1, 0} ; ロードの事後報告
+			else:if (lstrary1.1 = "save") {noteadd time + logstr.3 + fname(saveID), 1, 0} ; セーブの事後報告
+			else:if (lstrary1.1 = "setch") & (logstr.10 ! logstr.9) { ; 設定変更報告 (前回のログ内容と同じ場合は出力しない)
+				noteadd time + logstr.9, 1, 0
+			}
+		}
+		else:if (lstrary1.0 = "login") {
+			if      (lstrary1.1 = "fcs_lost") {
+
+			}
+			else:if (lstrary1.1 = "fcs_gain") {
+				getline ltime, ltmpary, 1
+				TskLog(3, 0) = strf(TskLog(3, 1), ltmpary.0, ltmpary.1, ltmpary.2, ltmpary.3)
+				noteadd time + TskLog(3, 0), 1, 0
+			}
+		}
+		;===================================================
+		; ログイン関係の報告
 
 		noteunsel
+		;===================================================
+		; ログの出力
 		G_prm ID_TAB_LOG, 0, id_logmoni, logmoni : gsel ID_WIN_MAIN
 	}
-	if (layl(1) = lay_prmd) {laydbl0 = refdval}
-
 	return
-
-/***********************************************************/
-//ゲーム内時間
-*hlay_gt
-
-	if (gt(4) > 23) {gt(4) = 0 : gt(3)++ : TskFlg(0)++} else {return} ; 日数
-	if (gt(3) > 31) {gt(3) = 1 : gt(2)++ : TskFlg(1)++}               ; 月
-	if (gt(2) > 12) {gt(2) = 1 : gt(0)++ : TskFlg(3)++}               ; 年
-
-	; 四半期
-	if      (gt(2) =  1) & (gt(1) = 3) {gt(1)++   : TskFlg(2)++}
-	else:if (gt(2) =  4) & (gt(1) = 4) {gt(1) = 1 : TskFlg(2)++}
-	else:if (gt(2) =  7) & (gt(1) = 1) {gt(1)++   : TskFlg(2)++}
-	else:if (gt(2) = 10) & (gt(1) = 2) {gt(1)++   : TskFlg(2)++}
-	G_prm ID_WIN_MAIN, 0, layidh(2), "user"
-
-	; 表示文字列の変更 (WM_SETTEXT)
-	G_prm ID_WIN_MAIN, 0, layidh(2), 0.1
-
-	; ログ出力処理
-	if TskFlg.0 {TskLog(0, 0) = strf(TskLog(0, 1), gt.2, gt.3)} ; 日付変更線
-	if TskFlg.1 {TskLog(1, 0) = strf(TskLog(1, 1), gt.2)      } ; 月変更
-	if TskFlg.2 {TskLog(2, 0) = strf(TskLog(2, 1), gt.1)      } ; 四半期変更
-	if TskFlg.3 {TskLog(3, 0) = strf(TskLog(3, 1), gt.0)      } ; あけおめ
-	G_prm ID_WIN_MAIN, 0, layidh(1), "time"
-	return
-
-
 
 
 //##############################################################################
@@ -187,183 +185,72 @@
 *laystat
 	layl(2) = lparam
 
-	if (layl(2) = lay_init) {gosub *redraw_stat_ : gosub *redraw_date_ : gosub *redraw_time_}
-	if (layl(2) = lay_prmi) {layint2 = iparam : if (layint2 = newst) {gosub *updatestatus : gosub *redraw_stat_} }
-	if (layl(2) = lay_prms) {laystr2 = refstr
-		if (laystr2 = "user") {
-			; ユーザーポイント関連
-			userp.0 += ((1.0 * TskFlg.0) + (30.0 * TskFlg.1) + (90.0 * TskFlg.2) + (360.0 * TskFlg.3))
-			userp.1 = userp.0 / 3.0
+	if      (layl(2) = lay_init) {gosub *redraw_date_}
+	else:if (layl(2) = lay_prmi) {layint(2) = iparam
+		if (layint(2) = newst) { //ステータス更新
+			gsel ID_WIN_MAIN
+			;======================================= ユーザーポイント関連
 			sendmsg hStatic.0, $C, 0, strf("Cat : %.2f", userp.1)
+
+			;======================================= C P U
+			/***** CPU *****/
+			randomize
+			; st(0) += dsta(0)
+			work  = double(st(0) * rnd(3)) + 1.5
+
+			;======================================= G P U
+			/***** GPU *****/
+			randomize int(st(1))
+			; st(1) += dsta(1)
+			work += double(st(1) * rnd(3)) + 1.5
+
+			;======================================= R O M
+			/***** ROM *****/
+			; st(2) += dsta(2)
+
+			;======================================= S S D
+			/***** SSD *****/
+			; st(3) += dsta(3)
+
+			;======================================= F A N
+			/***** FAN *****/
+			cooler(0) = 100.0 + (thermal), 0.0
+
+			th_prmchk = (thermal < 0.0), ((0.0 < thermal) & (thermal <= 3.0))
+			th_prmchk(2) = (st(5) < 45.0)
+			th_prmchk(3) = (45.0 < st(5)) & (st(5) <= 50.0)
+			th_prmchk(4) = (50.0 < st(5)) & (st(5) <= 75.0)
+			th_prmchk(5) = (75.0 < st(5))
+
+			if      th_prmchk(0) {cooler(1) = cooler * 0.00}
+			else:if th_prmchk(1) {cooler(1) = cooler * 0.50}
+
+			if th_prmchk(2) {cooler(1) += (cooler * 0.01)}
+			if th_prmchk(3) {cooler(1) += (cooler * 1.25)}
+			if th_prmchk(4) {cooler(1) += (cooler * 1.75)}
+			if th_prmchk(5) {cooler(1) += (cooler * 2.00)}
+
+			st(4) = limitf(cooler(0) + cooler(1), 90.0, 200.0)
+			if (st(5) < 35.0) {st(4) = 90.0}
+
+			;======================================= T H E R M A L
+			/***** THERMAL *****/
+			thermal(1) = 1.0 + ((st.0 * pst.0 + dsta.0)) + ((st.1 * pst.1 + dsta.1))
+			thermal = ((work * thermal.1) - (st.4 * (pst.4 + pst.5))) / 10.0
+			st(5) += limitf(thermal, -1.0)
+
+			;======================================= P O W E R
+			/***** Power *****/
+			st(6) -= dsta(6)
+			st(7) = ((st(6) / st(8)) * 100.0)
+
+			;======================================= U N I T S
+			/*****   単位変換チェック  *****/
+			if (st.2 > 1023.0) {unit_cnt(0)++ : repeat unit_cnt(0):   st.2 /= 1024.0   :loop} ; ROM
+			if (st.3 > 1023.0) {unit_cnt(1)++ : repeat unit_cnt(1):   st.3 /= 1024.0   :loop} ; SSD
 		}
 	}
-	if (layl(2) = lay_prmd) {laydbl2 = refdval : if (laydbl2 = 0.1) {gosub *redraw_date_} }
-
-	return
-
-
-;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-//ステータス更新
-*updatestatus
-	gsel ID_WIN_MAIN
-
-;======================================= ユーザーポイント関連
-	; 経過時間に応じて
-	userp.0 += 0.1
-	userp.1 = userp.0 / 3.0
-	sendmsg hStatic.0, $C, 0, strf("Cat : %.2f", userp.1)
-
-
-;======================================= C P U
-	/***** CPU *****/
-	randomize
-	; st(0) += dsta(0)
-	work  = double(st(0) * rnd(3)) + 1.5
-
-
-;======================================= G P U
-	/***** GPU *****/
-	randomize int(st(1))
-	; st(1) += dsta(1)
-	work += double(st(1) * rnd(3)) + 1.5
-
-;======================================= R O M
-	/***** ROM *****/
-	; st(2) += dsta(2)
-
-;======================================= S S D
-	/***** SSD *****/
-	; st(3) += dsta(3)
-
-;======================================= F A N
-	/***** FAN *****/
-	cooler(0) = 100.0 + (thermal), 0.0
-
-	th_prmchk = (thermal < 0.0), ((0.0 < thermal) & (thermal <= 3.0))
-	th_prmchk(2) = (st(5) < 45.0)
-	th_prmchk(3) = (45.0 < st(5)) & (st(5) <= 50.0)
-	th_prmchk(4) = (50.0 < st(5)) & (st(5) <= 75.0)
-	th_prmchk(5) = (75.0 < st(5))
-
-	if      th_prmchk(0) {cooler(1) = cooler * 0.00}
-	else:if th_prmchk(1) {cooler(1) = cooler * 0.50}
-
-	if th_prmchk(2) {cooler(1) += (cooler * 0.01)}
-	if th_prmchk(3) {cooler(1) += (cooler * 1.25)}
-	if th_prmchk(4) {cooler(1) += (cooler * 1.75)}
-	if th_prmchk(5) {cooler(1) += (cooler * 2.00)}
-
-	st(4) = limitf(cooler(0) + cooler(1), 90.0, 180.0)
-
-	if (st(5) < 35.0) {st(4) = 90.0}
-
-;======================================= T H E R M A L
-	/***** THERMAL *****/
-	thermal(1) = 1.0 + ((st.0 * pst.0 + dsta.0)) + ((st.1 * pst.1 + dsta.1))
-
-	thermal = ((work * thermal.1) - (st.4 * (pst.4 + pst.5))) / 10.0
-
-	st(5) += limitf(thermal, -1.0)
-
-;======================================= P O W E R
-	/***** Power *****/
-	st(6) -= dsta(6)
-	st(7) = ((st(6) / st(8)) * 100.0)
-
-;======================================= U N I T S
-	/*****   単位変換チェック  *****/
-	if (st.2 > 1023.0) {unit_cnt(0)++ : repeat unit_cnt(0):   st.2 /= 1024.0   :loop} ; ROM
-	if (st.3 > 1023.0) {unit_cnt(1)++ : repeat unit_cnt(1):   st.3 /= 1024.0   :loop} ; SSD
-	return
-
-
-
-;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-; 各ステータスの描画処理
-*redraw_stat_
-	gsel ID_WIN_MAIN
-
-;======================================= P R O G R E S S
-	/***  プログレスバー  ***/
-	pbrepos hPb(0), int(st(7) * 10), 0
-	pbstcol2 hPb(0), 25, 44
-
-
-	; 画面左上,PC各ステータス表示
-	;=======================================================
-	; 表示形式変更のイージング開始
-	if (ease_on(0, eStat) & (ease_on(1, eStat) = 0)) | ((ease_on(0, eStat) = 0) & ease_on(1, eStat)) {
-		;
-		repeat ease_cnt
-			;
-			; イージングの座標入力
-			if ease_on(1, eStat) {winxy(2, 3) = easepos(eased - cnt, eStat)}
-			else                 {winxy(2, 3) = easepos(cnt, eStat)}
-			;
-			;=======================================================
-			statredraw_start winxy, 0, 3, dmode
-			;
-			pos winxy(0, 3) + 5, winxy(1, 3) + 2
-			mes " C P U \n G P U \n R O M \n S S D \n F A N \nTHERMAL\n POWER "
-			;
-			pos winxy(0, 3) + 25 + ginfo_mesx, winxy(1, 3) + 2
-			mes strf(stformat.0, st.0, st.1, st.2, unit(unit_cnt.0), st.3, unit(unit_cnt.1), st.4, st.5, st.7)
-			;
-			if ease_on(1, eStat) {rgbcolor dcolor : boxf winxy(2, 3), winxy(1, 3), winxy(4, 3), winxy(3, 3) : winxy(2, 3) = winxy(4, 3)}
-			;
-			statredraw_end winxy, 0, 3
-			;=======================================================
-			;
-		loop
-		;
-		; 詳細表示継続フラグ
-		if ease_on(1, eStat) : ease_on(1, eStat) = 0 : else : ease_on(1, eStat) = 1
-		;
-	}
-	else:if ease_on(0, eStat) & ease_on(1, eStat) { ; 詳細表示中
-		;
-		;=======================================================
-		statredraw_start winxy, 0, 3, dmode
-		;
-		pos winxy(0, 3) + 5, winxy(1, 3) + 2
-		mes " C P U \n G P U \n R O M \n S S D \n F A N \nTHERMAL\n POWER "
-		;
-		pos winxy(0, 3) + 25 + ginfo_mesx, winxy(1, 3) + 2
-		mes strf(stformat.0, st.0, st.1, st.2, unit(unit_cnt.0), st.3, unit(unit_cnt.1), st.4, st.5, st.7)
-		;
-		statredraw_end winxy, 0, 3
-		;=======================================================
-		;
-	}
-	else:if (ease_on(0, eStat) = 0) & (ease_on(1, eStat) = 0) { ; 簡略表示中
-		;
-		;=======================================================
-		statredraw_start winxy, 0, 3, dmode
-		;
-		pos winxy(0, 3) + 5, winxy(1, 3) + 2
-		mes strf(stformat.1, st.0, st.1, st.2, unit2(unit_cnt.0), st.3, unit2(unit_cnt.1), st.4, st.5, st.7)
-		;
-		statredraw_end winxy, 0, 3
-		;=======================================================
-		;
-	}
-
-	; 画面中央,PCモデル表示 (d3module)
-	;=======================================================
-	; 詳細表示のイージング開始
-	if (ease_on(0, emodl) & (ease_on(1, emodl) = 0)) | ((ease_on(0, emodl) = 0) & ease_on(1, emodl)) {
-
-	}
-	else:if ease_on(0, emodl) & ease_on(1, emodl) { ; 詳細表示中
-
-	}
-	else:if (ease_on(0, emodl) = 0) & (ease_on(1, emodl) = 0) { ; 簡略表示中
-
-		;=======================================================
-		statredraw_start winxy, 0, 5, dmode
-		statredraw_end winxy, 0, 5
-		;=======================================================
-	}
+	else:if (layl(2) = lay_draw) {gosub *redraw_date_}
 	return
 
 
@@ -371,63 +258,34 @@
 ; ゲーム内日付の描画処理
 *redraw_date_
 	gsel ID_WIN_MAIN
-	; ゲーム内日付表示
 	;=======================================================
-	; 詳細表示のイージング開始
-	if (ease_on(0, eDate) & (ease_on(1, eDate) = 0)) | ((ease_on(0, eDate) = 0) & ease_on(1, eDate)) {
+	; プログレスバー
+	pbrepos hPb(0), int(st(7) * 10), 0
+	pbstcol2 hPb(0), 25, 44
 
-		repeat ease_cnt
-			if ease_on(1, eDate) {winxy(0, 1) = easepos(cnt, eDate)}
-			else                 {winxy(0, 1) = easepos(eased - cnt, eDate)}
-			;
-			;=======================================================
-			statredraw_start winxy, 0, 1, dmode
-			;
-			pos winxy(0, 1) + 3, winxy(1, 1) + 5 : mes strf(gtformat.1, gt(0), gt(1), gt(2), gt(3))
-			;
-			if ease_on(1, eDate) {rgbcolor dcolor : boxf winxy(4, 1), winxy(1, 1), winxy(0, 1), winxy(3, 1) : winxy(0, 1) = winxy(4, 1)}
-			;
-			statredraw_end winxy, 0, 1
-			;=======================================================
-			;
-		loop
-		;
-		if ease_on(1, eDate) : ease_on(1, eDate) = 0 : else : ease_on(1, eDate) = 1
-		;
-	}
-	else:if ease_on(0, eDate) & ease_on(1, eDate) { ; 詳細表示中
-		;
-		;=======================================================
-		statredraw_start winxy, 0, 1, dmode
-		;
-		pos winxy(0, 1) + 3, winxy(1, 1) + 5 : mes strf(gtformat.0, gt(0), gt(1), gt(2), gt(3))
-		;
-		statredraw_end winxy, 0, 1
-		;=======================================================
-		;
-	}
-	else:if (ease_on(0, eDate) = 0) & (ease_on(1, eDate) = 0) { ; 簡略表示中
-		;
-		;=======================================================
-		statredraw_start winxy, 0, 1, dmode
-		;
-		pos winxy(5, 1) + 3, winxy(1, 1) + 5 : mes strf(gtformat.1, gt(0), gt(1), gt(2), gt(3))
-		;
-		statredraw_end winxy, 0, 1
-		;=======================================================
-		;
-	}
-	return
-
-
-;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-; ゲーム内時間の描画処理
-*redraw_time_
-	gsel ID_WIN_MAIN
-	; ゲーム内時間表示
 	;=======================================================
-	statredraw_start winxy, 0, 2, dmode
-	pos winxy(0, 2) + 25, winxy(1, 2) + 3 : mes strf(gtformat.2, gt.4, gt.5)
-	statredraw_end winxy, 0, 2
+	; ゲーム内日付
+	myfeld drawsize, drwDate, 1 : mygetboxf drawpos : rgbcolor 0x000000
+	pos drawpos(0) + 3, drawpos(1) + 5 : mes strf(gtformat, gt(0), gt(1), gt(2), gt(3), gt(4), gt(5))
+
 	;=======================================================
+	; 画面左上,PC各ステータス表示
+	myfeld drawsize, drwStat, 1 : mygetboxf drawpos : rgbcolor 0x000000
+	pos drawpos(0) + 5, drawpos(1) + 2
+	mes " C P U \n G P U \n R O M \n S S D \n F A N \nTHERMAL\n POWER "
+	pos drawpos(0) + 25 + ginfo_mesx, drawpos(1) + 2
+	mes strf(stformat.0, st.0, st.1, st.2, unit(unit_cnt.0), st.3, unit(unit_cnt.1), st.4, st.5, st.7)
+
+	;=======================================================
+	; 画面中央上部,ユーザーポイント及び所持金表示
+	myfeld drawsize, drwCoin, 1 : mygetboxf drawpos : rgbcolor 0x000000
+	pos drawpos(0) + 5, drawpos(1) + 2 : mes strf("Cat : %.2f", userp.1)
+
+	;=======================================================
+	; 画面中央,PCモデル表示 (d3module)
+	myfeld drawsize, drw3Dpc, 1 : mygetboxf drawpos : rgbcolor 0x000000
+	;=======================================================
+	; デバッグ用マウス座標
+	myfeld drawsize, drwMuse, 1 : mygetboxf drawpos : rgbcolor 0x000000
+	pos drawpos(0) + 2, drawpos(1) + 2 : mes strf("mouse(%d, %d)", musx(), musy())
 	return

@@ -1,0 +1,372 @@
+// INFO ****************************************************
+// FileName : 00_mylv.hsp
+// Version  : 0.30
+// Date     : 2022/11/28
+// Author   : YUZRANIUM（ゆずらにうむ）
+// Twitter  : https://twitter.com/YUZRANIUM
+// GitHub   : https://github.com/YUZRANIUM/00_mylv
+//**********************************************************
+/* Description
+リストビューを設置するモジュールです。
+SQLite(sqlele)との連携でより使いやすくなります。
+リストビューの設置にはuser32.asをインクルードする必要があります。
+
+不具合報告や要望等はTwitterのDM、
+もしくはHSPの掲示板等で頂けると幸いです。
+************************************************************/
+
+
+//============= リストビュー操作モジュール ===============
+
+#ifndef __mylv__
+	#define global __mylv__
+
+
+#module "MyListView"
+
+#uselib "comctl32.dll"
+#func InitCommonControlsEx "InitCommonControlsEx" int
+
+
+	#const ICC_LISTVIEW_CLASSES    4
+
+
+#ifndef __MY_WIN_CONST__
+
+	/*****  Window Style  *****/
+
+	#const WS_CHILD      0x40000000     // 子オブジェクトにする
+	#const WS_VISIBLE    0x10000000     // 表示可能にする
+
+	#const LVS_REPORT    0x0001         // リストビューの詳細表示
+
+	/*****  Extended Window Style  *****/
+
+	#const LVS_EX_GRIDLINES        0x00000001          // グリッド線の表示
+	#const LVS_EX_FULLROWSELECT    0x00000020          // レコード（行）の一括選択
+	#const LVS_EX_HEADERDRAGDROP   0x00000010          // カラム（列）並び替え可能
+//==============================================================================
+
+	/*****  Message  *****/
+
+	#const LVM_GETITEM         0x1005   // アイテムの取得
+	#const LVM_SETITEM         0x1006   // アイテム、またはサブアイテムの追加
+	#const LVM_INSERTITEM      0x1007   // アイテムの追加
+	#const LVM_DELETEITEM      0x1008   // アイテムの削除
+	#const LVM_DELETEALLITEMS  0x1009   // アイテムの全消去
+
+	#const LVM_GETNEXTITEM     0x100C   // アイテムの検索
+	#const LVM_INSERTCOLUMN    0x101B   // カラムの追加
+	#const LVM_DELETECOLUMN    0x101c   // カラムの削除
+	// #const LVM_SORTITEMS       0x1030
+
+	#const LVCF_FMT            0x0001
+	#const LVCF_WIDTH          0x0002
+	#const LVCF_TEXT           0x0004
+	#const LVCF_SUBITEM        0x0008
+
+	#const LVIF_TEXT           0x0001
+//==============================================================================
+
+#endif // __MY_WIN_CONST__
+
+
+
+//----------------------------------------------------------
+//リストビューの設置
+//----------------------------------------------------------
+
+
+// リストビュー設置
+//
+// x, y     : Xサイズ,Yサイズ
+// obj_hwnd : オブジェクトハンドルを受け取る変数
+#deffunc mylv int x, int y, var obj_hwnd, local obj_id
+
+	initinfo = 8, ICC_LISTVIEW_CLASSES
+	InitCommonControlsEx varptr(initinfo)
+
+	winobj "SysListView32", "", , WS_CHILD | WS_VISIBLE | LVS_REPORT, x, y
+	obj_id = stat : obj_hwnd = objinfo(stat, 2)
+
+	sendmsg obj_hwnd, 0x1036, , LVS_EX_FULLROWSELECT | LVS_EX_HEADERDRAGDROP | LVS_EX_GRIDLINES
+	return obj_id
+
+
+
+//----------------------------------------------------------
+//リストビューにカラム（列）の追加
+//----------------------------------------------------------
+
+
+//リストビューにカラムを追加する内部命令
+//
+// obj_hwnd : 設置したリストビューのオブジェクトハンドル
+// colm_idx : カラムのインデックス
+// colm_ary : カラムを格納した配列変数
+// p4 : 0=左揃え / 1=右揃え / 2=中央揃え
+// colm_w : カラムの幅
+#deffunc local InsertListViewColumn_ int obj_hwnd, int colm_idx, var colm_ary, int p4, int colm_w
+	dim lvcolumn, 8
+	lvcolumn(0) = LVCF_FMT | LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM
+	lvcolumn(1) = p4
+	lvcolumn(2) = colm_w
+	lvcolumn(3) = varptr(colm_ary)
+	sendmsg obj_hwnd, LVM_INSERTCOLUMN, colm_idx, varptr(lvcolumn)
+	return
+
+
+//リストビューにカラム追加する内部命令1
+#deffunc local incolm_ int p1, array p2, int p3, array p4, int p5
+	repeat p3
+		InsertListViewColumn_@MyListView p1, cnt, p2(cnt), p5, p4(cnt)
+	loop
+	return
+
+
+// リストビューにカラム追加1
+//
+// %1    : 設置したリストビューのオブジェクトハンドル
+// %2    : カラムを格納した配列変数
+// %3    : カラムの数
+// %4    : カラムの幅(整数型の配列変数)
+// %5(0) : 0=左揃え / 1=右揃え / 2=中央揃え
+#define global incolm(%1,%2,%3,%4,%5=0) incolm_@MyListView %1,%2,%3,%4,%5
+
+
+
+//リストビューにカラム追加する内部命令2
+#deffunc local incolm2_ int p1, array p2, int p3, int p4, int p5
+	repeat p3
+		InsertListViewColumn_@MyListView p1, cnt, p2(cnt), p5, p4
+	loop
+	return
+
+
+// リストビューにカラム追加2
+//
+// %1     : 設置したリストビューのオブジェクトハンドル
+// %2     : カラムを格納した配列変数
+// %3     : カラムの数
+// %4(75) : カラムの幅(整数)
+// %5(0)  : 0=左揃え / 1=右揃え / 2=中央揃え
+#define global incolm2(%1,%2,%3,%4=75,%5=0) incolm2_@MyListView %1,%2,%3,%4,%5
+
+
+
+//----------------------------------------------------------
+//リストビューに項目の追加
+//----------------------------------------------------------
+
+
+// リストビューにアイテム追加する内部命令
+// %1 : 設置したリストビューのオブジェクトハンドル
+// %2 : 項目のインデックス
+// %3 : 追加する項目
+#deffunc local InsertListViewItem_ int p1, int p2, var p3
+
+	; この内部命令で追加されるアイテムを便宜上メインアイテムと呼んでいます
+	; リストビューで一番左端に位置するアイテムです
+	; サブアイテムはこのメインアイテムを元に追加されます
+	;
+	dim lvitem, 13
+	lvitem(0) = LVIF_TEXT
+	lvitem(1) = p2
+	lvitem(5) = varptr(p3)
+	sendmsg p1, LVM_INSERTITEM, 0, varptr(lvitem)
+	return
+
+
+
+// リストビューのサブアイテム設定する内部命令
+#deffunc local SetListViewItemText_ int p1, int p2, int p3, var p4
+
+	; サブアイテムを追加します
+	; メインアイテムが存在していないと失敗します
+	;
+	dim lvitem, 13
+	lvitem(0) = LVIF_TEXT
+	lvitem(1) = p2
+	lvitem(2) = p3
+	lvitem(5) = varptr(p4)
+	sendmsg p1, LVM_SETITEM, 0, varptr(lvitem)
+	return stat
+
+
+
+// リストビューにレコードを追加(1次元配列変数)
+//
+// %1 : 設置したリストビューのオブジェクトハンドル
+// %2 : レコードを格納した配列変数
+// %3 : レコードの数
+// %4 : カラムの数
+#deffunc inlv1item int p1, array p2, int p3, int p4
+	i = 0           ; （メイン）アイテムのインデックス
+	repeat p3
+		InsertListViewItem_@MyListView p1, i, p2(i * p4)
+		repeat p4 - 1, 1
+			SetListViewItemText_@MyListView p1, i, cnt, p2(cnt + (i * p4))
+		loop
+		i++
+	loop
+	return
+
+
+
+
+// リストビューにレコードを追加(2次元配列変数に対応)
+//
+// %1 : 設置したリストビューのオブジェクトハンドル
+// %2 : レコードを格納した配列変数
+#deffunc inlv2item int p1, array p2
+
+	i = 0           ;  サブアイテムのインデックス
+	j = 0           ; （メイン）アイテムのインデックス
+
+	repeat length2(p2)
+		; リストビューで一番左端（＝カラムのインデックスが0）のアイテム（メインアイテム）
+		;
+		i = 0
+		InsertListViewItem_@MyListView p1, j, p2(i, j)
+		;
+		repeat length(p2)
+			; サブアイテム
+			;
+			SetListViewItemText_@MyListView p1, j, i, p2(i, j)
+			;
+			i++         ; 次のサブアイテムへ
+			;
+		loop
+		;
+		j++         ; 次のメインアイテムへ
+		;
+	loop
+
+	return
+
+
+
+// リストビューにレコードを追加(SQLele専用)
+//
+// %1 : 設置したリストビューのオブジェクトハンドル
+// %2 : レコードを格納した配列変数
+#deffunc insqlitem int p1, array p2
+
+	i = 0           ;  サブアイテムのインデックス
+	j = 0           ; （メイン）アイテムのインデックス
+	; sqleleのレコードセット変数はアイテムデータの最後にカラム名が格納されています
+	; カラム名までアイテムとしてリストビューに追加しないよう -1 としています
+	; それ以外は inlv2item命令 と変わりありません
+	;
+	repeat length2(p2) - 1
+		i = 0
+		InsertListViewItem_@MyListView p1, j, p2(i, j)
+		repeat length(p2)
+			SetListViewItemText_@MyListView p1, j, i, p2(i, j)
+			i++
+		loop
+		j++
+	loop
+	return
+
+
+
+//----------------------------------------------------------
+//リストビューのアイテム取得
+//----------------------------------------------------------
+
+
+// リストビューアイテムの文字列取得
+//
+// p1 : リストビューのオブジェクトハンドル
+// p2 : アイテムのインデックス
+// p3 : サブアイテムのインデックス
+// p4 : 取得文字列を格納する文字列型変数
+// p5 : バッファサイズ
+#deffunc local GetListItem_ int p1, int p2, int p3, var p4, int p5
+	dim lvitem, 13
+	lvitem(0) = 0x0001
+	lvitem(1) = p2
+	lvitem(2) = p3
+	lvitem(5) = varptr(p4)
+	lvitem(6) = p5
+	sendmsg p1, LVM_GETITEM, 0, varptr(lvitem)
+	return
+
+
+
+// リストビューのアイテムの文字列取得(内部命令)
+//
+// p1 : リストビューのオブジェクトハンドル
+// p2 : カラムの数
+// p3 : 取得文字列を格納する文字列型変数
+// p4 : 配列変数のバッファサイズ
+// p5 : 区切り文字
+#deffunc local getlvitem_ int p1, int p2, array p3, int p4, str p5
+	i = -1 : j = 0
+
+	repeat
+		; i に選択したメインアイテムのインデックスが代入されます
+		; アイテムが選択されていない場合は-1が返ります
+		sendmsg p1, LVM_GETNEXTITEM, i, 0x0002
+		i = stat
+		if (i = -1) {break}
+
+		repeat p2
+			;  i = メインアイテムインデックス, cnt = サブアイテムのインデックス
+			;
+			GetListItem_@MyListView p1, i, cnt, p3(j + 1), p4
+			;
+			; メインアイテムに連なるすべてのサブアイテムを 1レコードとして配列に格納
+			;
+			p3(j) += p3(j + 1) + p5
+			p3(j + 1) = ""
+			;
+		loop
+		j++
+
+	loop
+
+	return j        ; 選択されたアイテムの総数を戻り値としてstatに代入しています
+
+
+
+// リストビューのアイテムの文字列取得
+//
+// p1 : リストビューのオブジェクトハンドル
+// p2 : カラムの数
+// p3 : 取得文字列を格納する文字列型変数
+// p4 : 配列変数のバッファサイズ
+// p5 : 区切り文字
+#define global getlvitem(%1,%2,%3,%4,%5=",") getlvitem_@MyListView %1,%2,%3,%4,%5
+
+
+
+//----------------------------------------------------------
+//アイテム削除
+//----------------------------------------------------------
+
+
+// リストビュー削除(内部命令)
+//
+// p1    : リストビューのオブジェクトハンドル
+// p2(0) : 削除するタイプ(0 = アイテム, 1 = カラム, 2 = アイテムの全削除)
+// p3    : 削除するアイテム,カラムのインデックス
+#deffunc local dellv_ int p1, int p2, int p3
+
+	if      (p2 = 0) {sendmsg p1, LVM_DELETEITEM,    p3, 0}
+	else:if (p2 = 1) {sendmsg p1, LVM_DELETECOLUMN,  p3, 0}
+	else:if (p2 = 2) {sendmsg p1, LVM_DELETEALLITEMS, 0, 0}
+	return stat
+
+
+// リストビュー削除
+//
+// p1    : リストビューのオブジェクトハンドル
+// p2(0) : 削除するタイプ(0 = アイテム, 1 = カラム, 2 = アイテムの全削除)
+// p3    : 削除するアイテム,カラムのインデックス
+#define global dellv(%1,%2=0,%3=0) dellv_@MyListView %1,%2,%3
+
+
+#global // "MyListView"
+#endif  // __mylv__

@@ -8,7 +8,7 @@
 //**********************************************************
 
 #ifndef MOD_WEBVIEW2_HSP_
-#define global MOD_WEBVIEW2_HSP_
+	#define global MOD_WEBVIEW2_HSP_
 
 #include "user32.as"
 #include "kernel32.as"

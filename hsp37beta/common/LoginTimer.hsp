@@ -1,0 +1,658 @@
+; INFO *************************************************************************
+; FileName : LoginTimer.hsp
+; Version  : 0.03
+; Date     : 2024/03/23
+; Author   : YUZRANIUM（ゆずらにうむ）
+; Twitter  : https://twitter.com/YUZRANIUM
+; GitHub   : https://github.com/YUZRANIUM/PC_CareingDiary
+;*******************************************************************************
+/* Description
+
+このモジュールは, ゲームへログイン/ログアウトした時間やオフライン時間を
+算出するものです.
+
+閏年対応済み
+
+将来的には「1年以内であれば日数差･時間差を1秒以上の誤差なく求めることが可能」な
+モジュールにしていきたい.
+********************************************************************************/
+
+
+
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+#ifndef __MY_LOGIN_TIMER__
+	#define global __MY_LOGIN_TIMER__
+
+
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+	////////////////////////////////////
+	; login (ログイン時間管理)
+	;		(0) : old_login (前回 (主にゲーム自体の起動など) )
+	;		(1) : new_login (最新 (上に同じく) )
+	;		(2) : fcs_login (フォーカス復帰時など)
+	////////////////////////////////////
+	; logout (ログアウト時間管理)
+	;		(0) : old_logout (前回 (主にゲーム自体の終了など) )
+	;		(1) : new_logout (最新 (上に同じく) )
+	;		(2) : fcs_logout (フォーカスを失った時など)
+	;
+#module "LoginTimer" first_login, login, logout, \
+on_fcs_time, off_fcs_time, \
+online_time, offline_time, cnvtime
+
+
+	/***  モジュール内マクロ登録  ***/
+
+	; login/logout配列要素 (d1 = 0)
+	#enum old = 0
+	; login/logout配列要素 (d1 = 1)
+	#enum new
+	; login/logout配列要素 (d1 = 2)
+	#enum fcs
+
+
+
+	;=======================================================
+	; モジュール内部変数初期化
+	;
+#deffunc local _login_timer_init_
+
+	dim sectime, 2
+
+	; 曜日
+	week = "日", "月", "火", "水", "木", "金", "土", "--"
+
+	;-----------------------------------
+	; モジュール型変数デバッグ表示用
+	;
+	;	(0) : ログイン･ログアウト表示用
+	;	(1) : フォーカス･累計時間表示用
+	;	(2) : モジュール型変数初期値
+	;
+	format = "" : sdim format, 64, 10
+	format(0) = "%s/%s/%s (%s) %s:%s:%s\n"
+	format(1) = "%02d / %02d:%02d:%02d\n"
+	format(2) = "----,--,7,--,--,--,--"
+
+	subfmt = "" : sdim subfmt, 64, 10
+	subfmt(0) = "%s/%s/%s (%s) %s:%s:%s"
+
+	mvname = "" : sdim mvname, 64, 11
+	mvname(0)  = "first_login\t:\t"
+	mvname(1)  = "\nlogin (old)\t:\t"
+	mvname(2)  = "logout(old)\t:\t"
+	mvname(3)  = "login (new)\t:\t"
+	mvname(4)  = "logout(new)\t:\t"
+	mvname(5)  = "login (fcs)\t:\t"
+	mvname(6)  = "logout(fcs)\t:\t"
+	mvname(7)  = "\n on_fcs_time\t:\t"
+	mvname(8)  = "off_fcs_time\t:\t"
+	mvname(9)  = "\n online_time\t:\t"
+	mvname(10) = "offline_time\t:\t"
+	return
+
+
+
+	;=======================================================
+	; モジュール型変数初期化
+	;
+#modinit
+	first_login = "" : mygetime first_login
+
+	;-----------------------------------
+	; ログイン時間管理
+	; (0) : old_login (前回 (主にゲーム自体の起動など) )
+	; (1) : new_login (最新 (上に同じく) )
+	; (2) : fcs_login (フォーカス復帰時など)
+	;
+	login = "" : sdim login, 64, 3 : login = format(2), format(2), format(2)
+
+	;-----------------------------------
+	; ログアウト時間管理
+	; (0) : old_logout (前回 (主にゲーム自体の終了など) )
+	; (1) : new_logout (最新 (上に同じく) )
+	; (2) : fcs_logout (フォーカスを失った時など)
+	;
+	logout = "" : sdim logout, 64, 3 : logout = format(2), format(2), format(2)
+
+	dim on_fcs_time, 4 : dim off_fcs_time, 4
+	dim online_time, 4 : dim offline_time, 4
+	dim cnvtime, 4
+	return
+
+
+
+
+//############################################################################//
+//                                 内部処理用
+//############################################################################//
+
+
+
+	;=======================================================
+	; 秒変換マクロ
+	; ((%1 * 3600) + (%2 * 60) + %3)
+	;
+#define ctype stime(%1,%2,%3) ((%1 * 3600) + (%2 * 60) +%3)
+
+
+
+	;=======================================================
+	; 指定年月日の曜日を取得 (閏年対応)
+	; var = getweek(year, month, day)
+	;
+	;	[ var ] year  :
+	;	[ var ] month : (= 0 / 1 - 12)
+	;	[ var ] day   :
+	;
+#defcfunc getweek var year, var month, var day, \
+local tmp
+
+	if (month < 3) {year-- : month += 12}
+	tmp = (year + int(year / 4) - int(year / 100) + int(year / 400))
+	return ((tmp + ((13 * month + 8) / 5) + day) \ 7)
+
+
+
+	;=======================================================
+	; 指定年の指定月の日数を取得 (閏年対応)
+	; var = mday(year, month)
+	;
+	;	[ int ] year  :
+	;	[ int ] month : (= 0 / 1 - 12)
+	;
+#defcfunc mday int year, int month, \
+local prm
+
+	; うるう月(2月)ではない場合
+	prm = ((month = 4) | (month = 6) | (month = 9) | (month = 11))
+	if prm {return 30} else:if (month ! 2) {return 31}
+
+	; うるう年の条件
+	prm = (((year \ 400) = 0) | (((year \ 100) ! 0) & ((year \ 4) = 0)))
+
+	if      (prm & (month = 2)) {return 29}
+	else:if        (month = 2)  {return 28}
+
+
+
+	;=======================================================
+	; 指定年の1月から指定月までの累計日数を取得
+	; var = mygetdate(year, month)
+	;
+	;	[ int ] year  :
+	;	[ int ] month : (= 0 / 1 - 12)
+	;
+#defcfunc mygetdate int year, int month, \
+local days_
+
+	days_ = 0
+	repeat month, 1:   days_ += mday(year, cnt)   :loop
+	return days_
+
+
+
+	;=======================================================
+	; 現在の日時をコンマ区切りの文字列で取得
+	;
+#deffunc mygetime var dvar
+	dvar = ""
+	repeat 7:   dvar += strf("%02d,", gettime(cnt))   :loop
+	dvar = strtrim(dvar, 2, ',')
+	return
+
+
+
+	;=======================================================
+	; 日数差を求める
+	; date_calc dvar1, dvar2, dary
+	;
+	;	[ var ] dvar1,dvar2 : 文字列時間
+	;	[array] dary        : 計算結果を受け取る配列変数名
+	;
+	;	dary(0) = dd, hh, mm, ss
+	;
+#deffunc date_calc var dvar1, var dvar2, array dary, \
+local dtime1, local dtime2
+
+	;-----------------------------------
+	; 文字列時間を配列に変換
+	split dvar1, ",", dtime1
+	split dvar2, ",", dtime2
+
+	;-----------------------------------
+	; 指定年の1月から指定月の累計日数 - 指定月の日数 + 指定日の日付
+	dim sectime, 2
+	sectime(0) = mygetdate(int(dtime1.0), int(dtime1.1)) - mday(int(dtime1.0), int(dtime1.1)) + int(dtime1.3)
+	sectime(1) = mygetdate(int(dtime2.0), int(dtime2.1)) - mday(int(dtime2.0), int(dtime2.1)) + int(dtime2.3)
+	; 月, 日の比較
+	dim dary, 4 : dary(0) = abs(sectime.1 - sectime.0)
+
+	;-----------------------------------
+	; 時間差を求める
+	dim sectime, 2
+	sectime(0) = stime(int(dtime2.4), int(dtime2.5), int(dtime2.6)), stime(int(dtime1.4), int(dtime1.5), int(dtime1.6))
+	time_calc sectime(0), sectime(1), dary, 0
+	return
+
+
+
+	;=======================================================
+	; 時間差を求める
+	; time_calc sect1, sect2, dary, mode
+	;
+	;	[ var ] sect1,sect2 : 秒時間
+	;	[array] dary        : 計算結果を受け取る配列変数名
+	;	[ int ] mode        : 演算モード (= 0 / 0:減算, 1:加算)
+	;
+	;	dary(0) = dd, hh, mm, ss
+	;
+#deffunc time_calc int sect1, int sect2, array dary, int mode, \
+local tmp
+
+	if mode {tmp = abs(sect1 + sect2)} else {tmp = abs(sect1 - sect2)}
+	dary(1) = tmp / 3600 : tmp \= 3600
+	dary(2) = tmp / 60
+	dary(3) = tmp \ 60
+	return
+
+
+
+//############################################################################//
+//                           ログイン/ログアウト処理
+//############################################################################//
+
+
+
+	;=======================================================
+	; ログイン処理
+	;
+	;
+#modfunc game_login
+
+	if (first_login = format(2)) : mygetime first_login
+
+	// ログイン時間を記録
+	mygetime login(new)
+
+	login(fcs) = format(2)
+	logout(fcs) = format(2)
+
+	; 以前にログアウトした時間が存在する場合,
+	; 今回のログイン時間を用いてオフラインの時間を求める
+	;
+	if (logout(old) ! format(2)) {
+
+		// 前回のログアウトから今回のログインまでの時間 (= オフライン時間)
+		date_calc login(new), logout(old), cnvtime
+
+		// 秒時間に変換
+		sectime = stime(offline_time.1, offline_time.2, offline_time.3), stime(cnvtime.1, cnvtime.2, cnvtime.3)
+
+		// オフラインの累計時間取得
+		time_calc sectime(0), sectime(1), offline_time, 1
+		offline_time(0) += cnvtime(0)
+	}
+	return
+
+
+
+	;=======================================================
+	; ログアウト処理
+	;
+	;
+#modfunc game_logout
+
+	if (login(new) = format(2)) {
+		dialog "ログインしていません!", 1, "LOGIN ERROR"
+		return
+	}
+
+	// ログアウト時間を記録
+	mygetime logout(new)
+
+	// 今回のログインから今回のログアウトまでの時間 (= オンライン時間)
+	if (login(fcs) = format(2)) {date_calc login(new), logout(new), cnvtime}
+	else                        {date_calc login(fcs), logout(new), cnvtime}
+
+	// 秒時間に変換
+	sectime = stime(online_time.1, online_time.2, online_time.3), stime(cnvtime.1, cnvtime.2, cnvtime.3)
+
+	// オンラインの累計時間取得
+	time_calc sectime(0), sectime(1), online_time, 1
+	online_time(0) += cnvtime(0)
+
+
+	;-----------------------------------
+	; "今回の"ログイン時間を "前回の"ログインとする
+	login(old) = login(new) : logout(old) = logout(new)
+
+	;-----------------------------------
+	; ログアウト時にフォーカス時間を初期化する
+	login(new) = format(2) : logout(new) = format(2)
+	login(fcs) = format(2) : logout(fcs) = format(2)
+
+	dim on_fcs_time, 4
+	dim off_fcs_time, 4
+	return
+
+
+
+	;=======================================================
+	;
+	;
+	;
+#modfunc focus_gain
+
+	; ログアウト中の場合は動作しない
+	if (login(new) = format(2)) {
+		; dialog "ログインしていません!", 1, "LOGIN ERROR"
+		return
+	}
+
+	// フォーカスを取得した時間を記録
+	mygetime login(fcs)
+
+	if (logout(fcs) ! format(2)) {
+
+		// フォーカス復帰を用いてフォーカスロスト時間を求める
+		date_calc login(fcs), logout(fcs), cnvtime
+
+		off_fcs_time(0) = cnvtime(0), cnvtime(1), cnvtime(2), cnvtime(3)
+
+		// 秒時間に変換
+		sectime = stime(offline_time.1, offline_time.2, offline_time.3), stime(cnvtime.1, cnvtime.2, cnvtime.3)
+
+		// オフラインの累計時間取得
+		time_calc sectime(0), sectime(1), offline_time, 1
+	}
+	return
+
+
+
+	;=======================================================
+	;
+	;
+	;
+#modfunc focus_lost
+
+	; ログアウト中の場合は動作しない
+	if (login(new) = format(2)) {
+		; dialog "ログインしていません!", 1, "LOGIN ERROR"
+		return
+	}
+
+	// フォーカスを失った時間を記録
+	mygetime logout(fcs)
+
+	// フォーカスロストを用いてフォーカスを得ていた時間を求める
+	if (login(fcs) = format(2)) {date_calc login(new), logout(fcs), cnvtime}    ; ロスト初回はログインから
+	else                        {date_calc login(fcs), logout(fcs), cnvtime}
+
+	on_fcs_time(0) = cnvtime(0), cnvtime(1), cnvtime(2), cnvtime(3)
+
+	// 秒時間に変換
+	sectime = stime(online_time.1, online_time.2, online_time.3), stime(cnvtime.1, cnvtime.2, cnvtime.3)
+
+	// オンライン累計時間の取得
+	time_calc sectime(0), sectime(1), online_time, 1
+	return
+
+
+
+//############################################################################//
+//                                情報取得系
+//############################################################################//
+
+
+
+	;=======================================================
+	; モジュール型変数の情報取得
+	;
+#modfunc login_data var hyouji, \
+local tmp, local tmp1
+
+	sdim hyouji, 64
+	sdim tmp, 64, 7 : tmp = first_login, login(old), logout(old), login(new), logout(new), login(fcs), logout(fcs)
+
+	repeat 7
+		split tmp(cnt), ",", tmp1
+		hyouji += strf(mvname(cnt) + format, tmp1.0, tmp1.1, tmp1.3, week(int(tmp1.2)), tmp1.4, tmp1.5, tmp1.6)
+	loop
+
+	hyouji += strf(mvname(7)  + format(1),  on_fcs_time.0,  on_fcs_time.1,  on_fcs_time.2,  on_fcs_time.3)
+	hyouji += strf(mvname(8)  + format(1), off_fcs_time.0, off_fcs_time.1, off_fcs_time.2, off_fcs_time.3)
+	hyouji += strf(mvname(9)  + format(1),  online_time.0,  online_time.1,  online_time.2,  online_time.3)
+	hyouji += strf(mvname(10) + format(1), offline_time.0, offline_time.1, offline_time.2, offline_time.3)
+	return
+
+
+	;=======================================================
+	; ログインチェッカー
+	; var = loginch(modvar)
+	;
+	;	var = 0:未ログイン / 1:ログイン済
+	;
+#modcfunc loginch
+	return (login(new) ! format(2))
+
+
+	;=======================================================
+	; ログイン日時取得
+	; var = getlogin(modvar, mode)
+	;
+	;	[ int ] mode : 取得モード (= 0)
+	;				0 : first_login
+	;				1 : login(old)
+	;				2 : login(new)
+	;				3 : login(fcs)
+	;				4 : logout(old)
+	;				5 : logout(new)
+	;				6 : logout(fcs)
+	;
+#modcfunc getlogin int mode
+	if      (mode = 0) {return first_login}
+	else:if (mode = 1) {return  login(old)}
+	else:if (mode = 2) {return  login(new)}
+	else:if (mode = 3) {return  login(fcs)}
+	else:if (mode = 4) {return logout(old)}
+	else:if (mode = 5) {return logout(new)}
+	else:if (mode = 6) {return logout(fcs)}
+
+
+
+	;=======================================================
+	; ログイン日時フォーマット変換取得
+	; var = cnvlogin(modvar, mode)
+	;
+	;	[ int ] mode : 取得モード (= 0)
+	;				0 : first_login
+	;				1 : login(old)
+	;				2 : login(new)
+	;				3 : login(fcs)
+	;				4 : logout(old)
+	;				5 : logout(new)
+	;				6 : logout(fcs)
+	;
+#modcfunc cnvlogin int mode, \
+local tmp
+
+	if      (mode = 0) {tmp = first_login}
+	else:if (mode = 1) {tmp =  login(old)}
+	else:if (mode = 2) {tmp =  login(new)}
+	else:if (mode = 3) {tmp =  login(fcs)}
+	else:if (mode = 4) {tmp = logout(old)}
+	else:if (mode = 5) {tmp = logout(new)}
+	else:if (mode = 6) {tmp = logout(fcs)}
+
+	split tmp, ",", tmp
+	return strf(subfmt, tmp.0, tmp.1, tmp.3, week(int(tmp.2)), tmp.4, tmp.5, tmp.6)
+
+
+
+	;=======================================================
+	; オンライン/オフライン時間取得
+	; getline modvar, ary1, mode
+	;
+	;	[array] ary1 : 情報を読み出す配列変数
+	;	[ int ] mode : 取得モード (= 0)
+	;				0 :  on_fcs_time
+	;				1 : off_fcs_time
+	;				2 :  online_time
+	;				3 : offline_time
+	;
+#modfunc getline array ary1, int mode
+	dim ary1, 4
+	if      (mode = 0) {repeat 4:   ary1(cnt) =  on_fcs_time(cnt)   :loop}
+	else:if (mode = 1) {repeat 4:   ary1(cnt) = off_fcs_time(cnt)   :loop}
+	else:if (mode = 2) {repeat 4:   ary1(cnt) =  online_time(cnt)   :loop}
+	else:if (mode = 3) {repeat 4:   ary1(cnt) = offline_time(cnt)   :loop}
+	return
+
+
+
+	;=======================================================
+	; デバッグ用
+	; set_time modvar, time_str, mode
+	;
+	;	[ str ] time_str : 文字列時間 "yyyy,mm,ww,dd,hh,mm,ss"
+	;	[ int ] mode : 設定モード (= 0)
+	;				0 : first_login
+	;				1 : login(old)
+	;				2 : login(new)
+	;				3 : login(fcs)
+	;				4 : logout(old)
+	;				5 : logout(new)
+	;				6 : logout(fcs)
+	;
+#modfunc set_time str time_str, int mode
+	if      (mode = 0) {first_login = time_str}
+	else:if (mode = 1) {login(old)  = time_str}
+	else:if (mode = 2) {login(new)  = time_str}
+	else:if (mode = 3) {login(fcs)  = time_str}
+	else:if (mode = 4) {logout(old) = time_str}
+	else:if (mode = 5) {logout(new) = time_str}
+	else:if (mode = 6) {logout(fcs) = time_str}
+	return
+
+
+
+	;=======================================================
+	; ログイン情報リセット (モジュール型変数強制初期化)
+	;
+	;	この後は必ず game_login でログイン処理を行う必要がある
+	;
+#modfunc login_reset
+	first_login = format(2)
+	login  = format(2), format(2), format(2)
+	logout = format(2), format(2), format(2)
+	dim on_fcs_time, 4 : dim off_fcs_time, 4
+	dim online_time, 4 : dim offline_time, 4
+	dim cnvtime, 4
+	return
+
+
+
+#global // LoginTimer
+	;
+	;
+	_login_timer_init_@LoginTimer
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+#endif // __MY_LOGIN_TIMER__
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+#if 0
+
+#cmpopt ppout 1
+
+	#varint key, tmp, ftgl
+	newmod Ltime, LoginTimer
+	sdim moni, 64
+	sdim logtext, 1024
+	tmp = 1 : ftgl = 0
+
+	// C:\\HSP.git\\savedata\\login_test.txt
+	#define savedir dir_cur + "\\savedata\\login_test.txt"
+
+	font myricaMM, 16
+
+	;
+	notesel logtext
+
+	;===================================
+	; ログイン処理
+	game_login Ltime
+	noteadd "li : " + cnvlogin(Ltime, 0)
+	onexit goto *exit_
+
+
+	//######################################################
+*main
+	await atime60 : title "tmp = " + tmp
+
+	stick key
+	if chkey(key, ESC_key) : gosub *exit_
+	if chkey(key, S_key) : gosub *ch_
+	if chkey(key, A_key) : gosub *reset_
+	;-----------------------------------
+	; HSPの画面フォーカス
+	if (ginfo_act = -1) {setoff ftgl} else {seton ftgl}
+
+	if      (ftgl = TGR_OFF) {
+		focus_lost Ltime
+		if (tmp = 1) {noteadd "\tfo : " + cnvlogin(Ltime, 6)}
+	}
+	else:if (ftgl = TGR_ON)  {
+		focus_gain Ltime
+		if (tmp = 1) {noteadd "\tfi : " + cnvlogin(Ltime, 3)}
+	}
+
+	;===================================
+	;
+	redraw 0 : rgbcolor 0xFFFFFF : boxf : rgbcolor 0x000000
+
+	login_data Ltime, moni
+
+	pos 5, 5 : mes moni
+
+	;
+	;===================================
+	redraw 1
+	goto *main
+	//######################################################
+
+
+//######################################
+*ch_
+	tmp *= -1
+	if (tmp = -1) {game_logout Ltime : noteadd "lo : " + cnvlogin(Ltime, 4)}
+	else          {game_login  Ltime : noteadd "\nli : " + cnvlogin(Ltime, 2)}
+	logmes "" + loginch(Ltime)
+	return
+
+//######################################
+*reset_
+
+	login_reset Ltime
+
+	return
+
+
+
+
+//######################################
+*exit_
+
+	if (tmp ! -1) {game_logout Ltime : noteadd "lo : " + cnvlogin(Ltime, 4)}
+	notesave savedir
+	end
+
+	goto *main
+
+
+#endif

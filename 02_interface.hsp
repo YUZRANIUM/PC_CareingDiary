@@ -1,7 +1,7 @@
 // INFO ****************************************************
 // FileName : 02_interface.hsp
-// Version : 0.3.0
-// Date    : 2022/11/02
+// Version : 0.3.2
+// Date    : 2024/02/05
 // Author  : YUZRANIUM（ゆずらにうむ）
 // Twitter : https://twitter.com/YUZRANIUM
 // Git Hub : https://github.com/YUZRANIUM/PC_CareingDiary
@@ -23,8 +23,9 @@
 
 	rm_init
 
-;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% セーブ・ロード用
-	layerobj ,,1, *master_layer_var, 0 : layidh(0) = stat
+	//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% セーブ・ロード用
+	//
+	layerobj , ,objlayer_min, *master_layer_var, 0 : layidh(0) = stat
 
 
 /*******************************************************************************
@@ -37,8 +38,8 @@
 
 	; 表示文字列の長さ取得用
 	mes : font "メイリオ", 50, 1, 4 : mes titlemes
-	winxy(0, 0) = (winw / 2.0) - (ginfo_mesx / 2)
-	winxy(1, 0) = (winh / 4.0) - (ginfo_mesy / 2)
+	winxy(0, 0) = int((winw / 2) - (ginfo_mesx / 2))
+	winxy(1, 0) = int((winh / 4) - (ginfo_mesy / 2))
 
 
 	Mycolor color_data(0) : boxf 0, 10, winw, winh - 10
@@ -79,7 +80,7 @@
 
 
 	/*****  Power用プログレスバー  *****/
-	pos 15, 250
+	pos 15, 290
 	mypb 170, 10, hPb(0), 0
 	pbset hPb(0), 0, 1000, 1000, -1
 
@@ -87,24 +88,24 @@
 
 
 	/*****  タブコントロール  *****/
-	pos 0, 260
-	My_CreateTab 800, 230, hTab_main
+	pos 0, mainTab_y
+	CreateTab winw, mainTab_h, hTab_main
 //==========================================================
 	InsertTab "Tools", ID_TAB_MOTI, 0, hTab_main
 	font "メイリオ", hFont(5) : objmode 2, 0
 	pos 0, 0
-	mesbox motimono, 794, 200, 0
+	mesbox motimono, (winw - 6), mainTab_h, 0
 	id_motimono = stat
 
 //==========================================================
 	InsertTab "Arsenal", ID_TAB_SOUKO, 1, hTab_main
 	pos 0, 0
-	mylv 794, 200, hLVsouko
+	mylv (winw - 6), mainTab_h, hLVsouko
 
 //==========================================================
 	InsertTab "Logs", ID_TAB_LOG, 2, hTab_main
 	pos 0, 0
-	mesbox logmoni, 794, 200, 0
+	mesbox logmoni, (winw - 6), mainTab_h, 0
 	id_logmoni = stat
 
 //==========================================================
@@ -113,14 +114,16 @@
 
 
 	font "メイリオ", 15 : objmode 2, 1
-;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% ゲーム内時間, ログ表示更新用
-	pos 0, 0
-	layerobj 800, 200, 3, *lay, 1
-	layidh(1) = stat
 
-;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 各ステータス管理用
-	layerobj ,,1, *laystat, 2
-	layidh(2) = stat
+	//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% ゲーム内時間, ログ表示更新用
+	//
+	pos 0, 0
+	layerobj , , objlayer_min, *lay, 1 : layidh(1) = stat
+
+	//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 各ステータス管理用
+	//
+	layerobj 800, 280, objlayer_normal, *laystat, 2 : layidh(2) = stat
+
 
 	font "メイリオ", hFont(4) : objmode 2, 1
 //--------------------------------------再開ボタン
@@ -156,7 +159,7 @@
 	SetParent hwnd, hWin_master
 
 
-	font "メイリオ", hFont(3) : objmode 2, 1
+	font "メイリオ", hFont(4) : objmode 2, 1
 
 	; 経験値と所持金
 	wx = 150, ((ginfo(12) / 2) - (wx / 2))
@@ -169,10 +172,8 @@
 	button gosub "Exit", *remain
 
 	/*****  タブコントロール  *****/
-	pos 5, 120
-	My_CreateTab 750, 300, hTabOMI
-	listx = 550
-	listy = 280
+	pos 5, amazTab_y
+	CreateTab amazTab_w, amazTab_h, hTabOMI
 
 //==========================================================
 	InsertTab "C P U", ID_OMTAB_CPU, 5, hTabOMI
@@ -253,7 +254,7 @@
 	SetWindowLong hwnd, -16, WS_CHILD
 	SetParent hwnd, hWin_master
 
-	font "メイリオ", hFont(3) : objmode 2, 1
+	font "メイリオ", hFont(4) : objmode 2, 1
 
 	pos winxy(4, 0), winxy(5, 0) : objsize 110, 30, 20
 	button gosub "Exit", *remain
@@ -272,11 +273,11 @@
 	SetWindowLong hwnd, -16, WS_CHILD
 	SetParent hwnd, hWin_master
 
-	font "メイリオ", hFont(3) : objmode 2, 0
+	font "メイリオ", hFont(4) : objmode 2, 0
 
 	pos winxy(4, 0), winxy(5, 0) : objsize 110, 30, 20
-	button gosub "Exit", *remain
-	button gosub "Title", *retitle
+	button gosub "Exit", *remain   : Btnidh(0, 0) = stat : Btnidh(0, 1) = objinfo(Btnidh(0, 0), 2)
+	button gosub "Title", *retitle : Btnidh(1, 0) = stat : Btnidh(1, 1) = objinfo(Btnidh(1, 0), 2)
 
 	pos 10, 20
 	mes "Chooes your play data slot"
@@ -284,12 +285,17 @@
 	data_slot hls,  30,  80, 200, 75, 3, color_data, 0
 	data_slot hls,  30, 175, 200, 75, 3, color_data, 1
 	data_slot hls,  30, 270, 200, 75, 3, color_data, 2
-	data_slot hls, 250,  80, 200, 75, 3, color_data, 3
-	data_slot hls, 250, 175, 200, 75, 3, color_data, 4
-	data_slot hls, 250, 270, 200, 75, 3, color_data, 5
+	data_slot hls,  30, 365, 200, 75, 3, color_data, 3
+	data_slot hls,  30, 460, 200, 75, 3, color_data, 4
+
+	data_slot hls, 250,  80, 200, 75, 3, color_data, 5
+	data_slot hls, 250, 175, 200, 75, 3, color_data, 6
+	data_slot hls, 250, 270, 200, 75, 3, color_data, 7
+	data_slot hls, 250, 365, 200, 75, 3, color_data, 8
+	data_slot hls, 250, 460, 200, 75, 3, color_data, 9
 
 	/*****  割り込み  *****/
-	oncmd gosub *mousclick, $111 //マウスクリック
+	oncmd gosub *mousclick, WM_COMMAND //マウスクリック
 
 
 
@@ -300,7 +306,7 @@
 	SetWindowLong hwnd, -16, WS_CHILD
 	SetParent hwnd, hWin_master
 
-	font "メイリオ", hFont(5) : objmode 2, 0
+	font "メイリオ", hFont(4) : objmode 2, 0
 	pos winxy(4, 0), winxy(5, 0) : objsize 110, 30, 30
 
 	button gosub "Exit", *remain
@@ -343,23 +349,13 @@
 	mes "Auto starting Game when return to Main" : font "メイリオ", hFont(5)
 
 	pos 20, 160
-	chkbox re_amaz(setting(8)), setting(8)
-	Shkidh(3, 0) = stat : Shkidh(3, 1) = objinfo(Shkidh(3, 0), 2)
-
-	chkbox re_save(setting(9)), setting(9)
-	Shkidh(4, 0) = stat : Shkidh(4, 1) = objinfo(Shkidh(4, 0), 2)
-
-	chkbox re_sett(setting(10)), setting(10)
-	Shkidh(5, 0) = stat : Shkidh(5, 1) = objinfo(Shkidh(5, 0), 2)
-
-	chkbox re_dock(setting(11)), setting(11)
-	Shkidh(6, 0) = stat : Shkidh(6, 1) = objinfo(Shkidh(6, 0), 2)
-
-	chkbox re_info(setting(12)), setting(12)
-	Shkidh(7, 0) = stat : Shkidh(7, 1) = objinfo(Shkidh(7, 0), 2)
-
+	chkbox re_amaz(setting(8)), setting(8)   : Shkidh(3, 0) = stat : Shkidh(3, 1) = objinfo(Shkidh(3, 0), 2)
+	chkbox re_save(setting(9)), setting(9)   : Shkidh(4, 0) = stat : Shkidh(4, 1) = objinfo(Shkidh(4, 0), 2)
+	chkbox re_sett(setting(10)), setting(10) : Shkidh(5, 0) = stat : Shkidh(5, 1) = objinfo(Shkidh(5, 0), 2)
+	chkbox re_dock(setting(11)), setting(11) : Shkidh(6, 0) = stat : Shkidh(6, 1) = objinfo(Shkidh(6, 0), 2)
+	chkbox re_info(setting(12)), setting(12) : Shkidh(7, 0) = stat : Shkidh(7, 1) = objinfo(Shkidh(7, 0), 2)
 	//------------------適用ボタン[ID=5]
-	pos 675, 455 : objsize 110, 30
+	pos (winw - 120), (winh - 55) : objsize 110, 30
 	button gosub "Active", *tekiou
 
 
@@ -379,24 +375,22 @@
 //						<<  オブジェクトの設置  >>
 //==============================================================================
 
-	pos ginfo_mesx + 100, (ginfo_mesy * 3) + 2
-	mylmb "Twitter", 100, 25, hLinktw, SS_CENTER | WS_BORDER
-	pos ginfo_mesx + 210, (ginfo_mesy * 3) + 2
-	mylmb "GitHub", 100, 25, hLinkgi, SS_CENTER | WS_BORDER
+	pos ginfo_mesx + 100, (ginfo_mesy * 3) + 2 : mylmb "Twitter", 100, 25, hLinktw, SS_CENTER | WS_BORDER
+	pos ginfo_mesx + 210, (ginfo_mesy * 3) + 2 : mylmb "GitHub",  100, 25, hLinkgi, SS_CENTER | WS_BORDER
 
 	font "メイリオ", hFont(5) : objmode 2, 1
 	//HSPのBMSCR構造体からフォントハンドルを取得
 	mref BMSCR2, 67 : hFont(1) = BMSCR2.38
 
 	pos winxy(4, 0), winxy(5, 0) : objsize 110, 30, 30
-	button gosub "Exit", *remain
+	button gosub "Exit", *remain : Btnidh(2, 0) = stat : Btnidh(2, 1) = objinfo(Btnidh(2, 0), 2)
 
 	pos 0, 110
-	; Mycolor 0x444444, 0 : boxf 0, 150, 800, 485
+	; Mycolor 0x444444, 0 : boxf 0, 125, 800, 485
 
 	/*****  WebView2  *****/
 	mes "  UPDATE HISTORY  "
-	font "メイリオ", hFont(5)
+	font "メイリオ", 10 : objmode 2
 
 	webv2(pEnv) = WebView2_CreateEnv()
 	webv2(pCtrl) = WebView2_CreateCtrl(webv2(pEnv), hwnd)
@@ -410,7 +404,7 @@
 	sendmsg hLinkgi, $30, hFont(0)
 
 	/*****  割り込み  *****/
-	oncmd gosub *mousclick, $111 //マウスクリック
+	oncmd gosub *mousclick, WM_COMMAND //マウスクリック
 
 //##############################################################################
 
